@@ -1,5 +1,5 @@
 <template>
-    <q-layout view="lHh Lpr lFf">
+    <q-layout view="hhh lpR fff" class="bg-grey-4">
         <q-header elevated>
             <q-toolbar>
                 <q-btn
@@ -14,26 +14,22 @@
                 <q-toolbar-title>
                     AMZ Watch
                 </q-toolbar-title>
-
-                <div>AMZ Watch 0.0.1</div>
             </q-toolbar>
         </q-header>
 
         <q-drawer
             v-model="leftDrawerOpen"
+            content-class="bg-grey-4"
+            :mini="miniState"
+            @mouseover="miniState = false"
+            @mouseout="miniState = true"
             show-if-above
             bordered
-            content-class="bg-grey-1"
+            elevated
         >
             <q-list>
-                <q-item-label
-                    header
-                    class="text-grey-8"
-                >
-                    Essential Links
-                </q-item-label>
-                <EssentialLink
-                    v-for="link in essentialLinks"
+                <drawer-links
+                    v-for="link in drawerLinks"
                     :key="link.title"
                     v-bind="link"
                 />
@@ -47,19 +43,20 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink'
+import DrawerLinks from 'components/DrawerLinks'
 
 export default {
     name: 'MainLayout',
 
     components: {
-        EssentialLink
+        DrawerLinks
     },
 
     data() {
         return {
             leftDrawerOpen: false,
-            essentialLinks: [
+            miniState: true,
+            drawerLinks: [
                 {
                     title: 'Home',
                     caption: 'Go to home',

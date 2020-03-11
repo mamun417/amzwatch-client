@@ -1,7 +1,7 @@
 <template>
     <q-item
         clickable
-        tag="a"
+        tag="router"
         :href="link"
     >
         <q-item-section
@@ -22,23 +22,19 @@
 
 <script>
 export default {
-    name: 'EssentialLink',
+    name: 'DrawerLinks',
     props: {
         title: {
             type: String,
-            required: true
         },
-
         caption: {
             type: String,
             default: ''
         },
-
         link: {
             type: String,
             default: '#'
         },
-
         icon: {
             type: String,
             default: ''
