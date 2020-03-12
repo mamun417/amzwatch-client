@@ -5,6 +5,15 @@ const routes = [
         children: [
             {path: '', component: () => import('pages/Index.vue')}
         ]
+    },
+
+    {
+        path: '/auth',
+        component: () => import('layouts/AuthLayout'),
+        children: [
+            {path: 'login', component: () => import('pages/auth/login')},
+            {path: 'register', component: () => import('pages/auth/register')}
+        ]
     }
 ]
 
