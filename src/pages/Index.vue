@@ -1,7 +1,7 @@
 <template>
-    <q-page class="flex flex-center">
+    <div>
         Coming Soon!!
-    </q-page>
+    </div>
 </template>
 
 <script>
