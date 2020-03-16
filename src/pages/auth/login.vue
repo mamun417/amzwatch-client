@@ -30,14 +30,14 @@
             </q-card-section>
 
             <q-card-actions align="around">
-                <q-btn flat>Lets Go</q-btn>
+                <q-btn color="primary" flat>Lets Go</q-btn>
             </q-card-actions>
         </q-card>
     </q-page>
 </template>
 
 <script>
-    export default {
-        name: 'Login'
-    }
+export default {
+    name: 'Login'
+}
 </script>
