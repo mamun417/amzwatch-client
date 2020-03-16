@@ -1,20 +1,22 @@
 <template>
     <q-card class="q-mb-lg">
-        <q-card-section class="bg-primary text-white flex justify-between items-center">
-            <div>
-                <div class="flex items-center q-mb-xs">
+        <q-card-section class="bg-primary text-white row justify-between items-center">
+            <div class="col">
+                <div class="row items-center q-mb-xs">
                     <div class="q-mr-sm text-subtitle1">{{projectInfo.name}}</div>
 
                     <q-badge color="positive">
                         Active
                     </q-badge>
                 </div>
-
-                <div class="text-caption">Domain: {{projectInfo.domain}}</div>
-                <div class="text-caption">Created at: 10 10 20</div>
             </div>
 
-            <div>
+            <div class="col justify-center">
+                <div class="text-caption text-center">Domain: {{projectInfo.domain}}</div>
+                <div class="text-caption text-center">Created at: 10 10 20</div>
+            </div>
+
+            <div class="col flex justify-end">
                 <q-btn flat icon="visibility" dense></q-btn>
                 <q-btn flat icon="edit" dense></q-btn>
             </div>

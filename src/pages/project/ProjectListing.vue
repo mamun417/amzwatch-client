@@ -2,12 +2,12 @@
     <section>
         <q-card class="q-mb-lg">
             <q-card-section
-                class="bg-primary text-white flex justify-between vertical-middle"
+                class="bg-primary text-white flex justify-between vertical-middle items-center"
             >
-                <div class="">
-                    <div class="text-subtitle1">Projects</div>
-                    <div v-if="projects.length" class="text-caption">Currently you have {{projects.length}} projects
-                    </div>
+                <div class="text-subtitle1">Projects</div>
+
+                <div v-if="projects.length" class="text-caption">
+                    You have total {{projects.length}} projects
                 </div>
 
                 <q-btn color="grey-3" @click="showAddNewProjectModal = true" flat>Add New</q-btn>
@@ -51,8 +51,8 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="Cancel" v-close-popup />
-                    <q-btn flat label="Submit" v-close-popup />
+                    <q-btn flat label="Cancel" v-close-popup/>
+                    <q-btn flat label="Submit" v-close-popup/>
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -61,14 +61,13 @@
 
 <script>
 import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
+
 export default {
     components: {SingleProjectInfoInListing},
     data() {
         return {
             showAddNewProjectModal: false,
-            addNewProjectData: {
-
-            },
+            addNewProjectData: {},
             projects: [
                 {
                     name: 'Test project for all',
