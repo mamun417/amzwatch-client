@@ -118,10 +118,10 @@
 
 <script>
 export default {
-    name: 'SingleProjectInfoInListing',
+    name : 'SingleProjectInfoInListing',
     props: {
         projectInfo: {
-            type: Object,
+            type   : Object,
             default: () => ({})
         }
     }

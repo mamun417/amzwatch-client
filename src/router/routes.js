@@ -1,18 +1,19 @@
 const routes = [
     {
-        path: '/',
+        path     : '/',
         component: () => import('layouts/MainLayout.vue'),
-        children: [
+        children : [
             {path: '', component: () => import('pages/Index.vue')},
             {path: '/projects', component: () => import('pages/project/ProjectListing.vue')},
-            {path: '/projects/1', component: () => import('pages/project/SingleProject.vue')}
+            {path: '/projects/1', component: () => import('pages/project/SingleProject.vue')},
+            {path: '/projects/1/broken-link-check', component: () => import('pages/broken-link/BrokenLinkListing')}
         ]
     },
 
     {
-        path: '/auth',
+        path     : '/auth',
         component: () => import('layouts/AuthLayout'),
-        children: [
+        children : [
             {path: 'login', component: () => import('pages/auth/login')},
             {path: 'register', component: () => import('pages/auth/register')}
         ]
@@ -22,7 +23,7 @@ const routes = [
 // Always leave this as last one
 if (process.env.MODE !== 'ssr') {
     routes.push({
-        path: '*',
+        path     : '*',
         component: () => import('pages/Error404.vue')
     })
 }
