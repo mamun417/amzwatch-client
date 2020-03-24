@@ -17,7 +17,7 @@
             </div>
 
             <div class="col flex justify-end">
-                <q-btn flat icon="visibility" dense></q-btn>
+                <q-btn flat icon="visibility" to="/projects/1" dense></q-btn>
                 <q-btn flat icon="edit" dense></q-btn>
             </div>
         </q-card-section>
@@ -46,7 +46,7 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('broken_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" to="/projects/1/broken-links-check" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md" flat dense/>
@@ -106,7 +106,7 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('amazon_product_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" to="/projects/1/amazon-products-check" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md" flat dense/>

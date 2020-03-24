@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="edit" flat dense/>
+                    <q-btn icon="edit" @click="showModal = !showModal" flat dense/>
                 </div>
             </q-card-section>
         </q-card>
@@ -42,6 +42,7 @@
                     <template v-if="service.active">
                         <q-btn
                             icon="visibility"
+                            :to="service.to"
                             dense flat
                         />
                         <q-btn
@@ -168,9 +169,12 @@
                             </q-item-section>
                         </q-item>
 
-                        <q-card>
-                            <q-card-section>
-                                <div class="text-caption text-bold">Last updated at: {{product.lastCheck}}</div>
+                        <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
+                            <q-card-section class="flex justify-between items-center">
+                                <q-btn color="positive" size="sm" no-caps unelevated>
+                                    This product has in: 10
+                                </q-btn>
+                                <div>Last updated at: {{product.lastCheck}}</div>
                             </q-card-section>
                         </q-card>
                     </q-expansion-item>
@@ -186,6 +190,35 @@
                 </div>
             </q-card-section>
         </q-card>
+
+        <q-dialog v-model="showModal">
+            <q-card style="min-width: 400px">
+                <q-card-section class="bg-primary text-white">
+                    <div class="text-h6">Update project info</div>
+                </q-card-section>
+
+                <q-card-section class="">
+                    <q-input label="Project Name" class="q-mb-md q-mx-sm" autofocus dense/>
+                    <q-input label="Domain URL" class="q-mb-md  q-mx-sm" dense/>
+                    <q-checkbox keep-color label="Active" class="text-weight-medium" :value="true" color="orange" />
+                </q-card-section>
+
+                <q-card-section>
+                    <q-banner class="bg-grey-3" dense>
+                        <q-icon name="error" color="warning" slot="avatar" size="xs"/>
+
+                        <div class="text-caption text-weight-medium">
+                            If you update domain url your previous domain related data will be lost
+                        </div>
+                    </q-banner>
+                </q-card-section>
+
+                <q-card-actions align="right" class="text-primary">
+                    <q-btn flat label="Cancel" v-close-popup/>
+                    <q-btn flat label="Update" v-close-popup/>
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
     </section>
 </template>
 
@@ -194,64 +227,68 @@ export default {
     components: {},
     data() {
         return {
-            projectInfo: {
-                name: 'Test project for all',
-                domain: 'https//exonhost.com',
+            showModal         : false,
+            projectInfo       : {
+                name    : 'Test project for all',
+                domain  : 'https//exonhost.com',
                 services: {
                     amazon_product_check: {
-                        icon: 'local_mall',
+                        icon           : 'local_mall',
                         expansionStatus: true,
-                        active: true
+                        active         : true,
+                        to             : '/projects/1/amazon-products-check'
                     },
-                    guest_post_check: {
-                        icon: 'record_voice_over',
+                    guest_post_check    : {
+                        icon           : 'record_voice_over',
                         expansionStatus: true,
-                        active: true
+                        active         : true,
+                        to             : '/projects/1'
                     },
-                    broken_link_check: {
-                        icon: 'link_off',
+                    broken_link_check   : {
+                        icon           : 'link_off',
                         expansionStatus: true,
-                        active: true
+                        active         : true,
+                        to             : '/projects/1/broken-links-check'
                     }
                 }
             },
             amazonProductsInfo: [
                 {
                     productName: 'watch',
-                    productUrl: 'amz/test1',
-                    status: 'available',
-                    lastCheck: '30 10 20'
+                    productUrl : 'amz/test1',
+                    status     : 'available',
+                    lastCheck  : '30 10 20'
                 },
                 {
                     productName: 'laptop',
-                    productUrl: 'amz/test2',
-                    status: 'unavailable',
-                    lastCheck: '15 10 20'
+                    productUrl : 'amz/test2',
+                    status     : 'unavailable',
+                    lastCheck  : '15 10 20'
                 }
             ],
-            guestPostInfo: [
+            guestPostInfo     : [
                 {
-                    link: 'exon/123',
+                    link      : 'exon/123',
                     hostedLink: 'google/me',
-                    status: 'available',
-                    lastCheck: '30 10 20'
+                    status    : 'available',
+                    lastCheck : '30 10 20'
                 },
                 {
-                    link: 'exon/456',
+                    link      : 'exon/456',
                     hostedLink: 'google/contact',
-                    status: 'unavailable',
-                    lastCheck: '15 10 20'
+                    status    : 'unavailable',
+                    lastCheck : '15 10 20'
                 }
             ],
-            brokenLinkInfo: [
+            brokenLinkInfo    : [
                 {
-                    link: 'exon/123',
-                    status: 200,
+                    link     : 'exon/123',
+                    status   : 200,
                     lastCheck: '30 10 20'
                 },
                 {
-                    link: 'exon/not-found',
-                    status: 404,
+                    link     : 'exon/not-found',
+                    status   : 404,
                     lastCheck: '15 10 20'
                 }
             ],

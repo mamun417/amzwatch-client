@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="settings" flat dense/>
+                    <q-btn icon="settings" @click="showModal = !showModal" flat dense/>
                 </div>
             </q-card-section>
         </q-card>
@@ -142,6 +142,21 @@
                 </div>
             </q-card-section>
         </q-card>
+
+        <q-dialog v-model="showModal">
+            <q-card style="min-width: 400px">
+                <q-card-section class="bg-primary text-white">
+                    <div class="text-h6">Deactivate this service?</div>
+                </q-card-section>
+
+                <q-card-section class="text-center q-pa-xl">
+                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
+                        class="text-positive">Active</span></div>
+
+                    <q-btn color="warning" label="Deactivate"/>
+                </q-card-section>
+            </q-card>
+        </q-dialog>
     </section>
 </template>
 
@@ -152,8 +167,10 @@ export default {
     components: {QCChart},
     data() {
         return {
-            showChart     : true,
-            showLinks     : true,
+            showChart: true,
+            showLinks: true,
+            showModal: false,
+
             brokenLinkInfo: [
                 {
                     link     : 'exon/123',
