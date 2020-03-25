@@ -7,7 +7,8 @@ const routes = [
             {path: '/projects', component: () => import('pages/project/ProjectListing.vue')},
             {path: '/projects/1', component: () => import('pages/project/SingleProject.vue')},
             {path: '/projects/1/broken-links-check', component: () => import('pages/broken-link/BrokenLinkListing')},
-            {path: '/projects/1/amazon-products-check', component: () => import('pages/amazon-product/AmazonProductListing')}
+            {path: '/projects/1/amazon-products-check', component: () => import('pages/amazon-product/AmazonProductListing')},
+            {path: '/projects/1/guest-links-check', component: () => import('pages/guest-link/GuestLinkListing')}
         ]
     },
 

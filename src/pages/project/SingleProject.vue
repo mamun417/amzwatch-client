@@ -171,10 +171,10 @@
 
                         <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                             <q-card-section class="flex justify-between items-center">
-                                <q-btn color="positive" size="sm" no-caps unelevated>
-                                    This product has in: 10
-                                </q-btn>
                                 <div>Last updated at: {{product.lastCheck}}</div>
+                                <q-btn v-if="product.status === 'available'" color="positive" size="sm" no-caps unelevated>
+                                    This product has in: 10 pages
+                                </q-btn>
                             </q-card-section>
                         </q-card>
                     </q-expansion-item>
@@ -242,7 +242,7 @@ export default {
                         icon           : 'record_voice_over',
                         expansionStatus: true,
                         active         : true,
-                        to             : '/projects/1'
+                        to             : '/projects/1/guest-links-check'
                     },
                     broken_link_check   : {
                         icon           : 'link_off',
