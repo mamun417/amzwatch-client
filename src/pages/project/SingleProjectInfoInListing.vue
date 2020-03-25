@@ -17,7 +17,7 @@
             </div>
 
             <div class="col flex justify-end">
-                <q-btn flat icon="visibility" dense></q-btn>
+                <q-btn flat icon="visibility" to="/projects/1" dense></q-btn>
                 <q-btn flat icon="edit" dense></q-btn>
             </div>
         </q-card-section>
@@ -46,10 +46,11 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('broken_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" to="/projects/1/broken-links-check" flat dense></q-btn>
                     </template>
 
-                    <q-btn v-else label="Start" color="primary" size="md" flat dense/>
+                    <q-btn v-else label="Start" color="primary" size="md"
+                           @click="showBrokenLinksActiveModal = !showBrokenLinksActiveModal" flat dense/>
                 </div>
             </div>
 
@@ -76,7 +77,7 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('guest_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" to="/projects/1/guest-links-check" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md" flat dense/>
@@ -106,13 +107,48 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('amazon_product_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" to="/projects/1/amazon-products-check" flat
+                               dense></q-btn>
                     </template>
 
-                    <q-btn v-else label="Start" color="primary" size="md" flat dense/>
+                    <q-btn v-else label="Start" color="primary" size="md"
+                           @click="showAmazonActiveModal = !showAmazonActiveModal" flat dense/>
                 </div>
             </div>
         </q-card-section>
+
+        <q-dialog v-model="showBrokenLinksActiveModal">
+            <q-card style="min-width: 400px">
+                <q-card-section class="bg-primary text-white">
+                    <div class="text-h6">Activate Broken Link Checker Service</div>
+                </q-card-section>
+
+                <q-card-section class="text-center q-pa-xl">
+                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
+                        class="text-warning">Deactivated</span></div>
+
+                    <q-btn color="positive" label="Activate"/>
+                </q-card-section>
+            </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="showAmazonActiveModal">
+            <q-card style="min-width: 400px">
+                <q-card-section class="bg-primary text-white">
+                    <div class="text-h6">Activate Amazon Product Checker Service</div>
+                </q-card-section>
+
+                <q-card-section class="text-center q-pa-xl">
+                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
+                        class="text-warning">Deactivated</span></div>
+
+                    <q-input v-model="amazonRefId" label="Amazon Ref Id" class="q-mb-lg" label-color="primary"
+                             placeholder="Ex. kjaskkkj"/>
+
+                    <q-btn color="positive" label="Activate"/>
+                </q-card-section>
+            </q-card>
+        </q-dialog>
     </q-card>
 </template>
 
@@ -120,6 +156,11 @@
 export default {
     name : 'SingleProjectInfoInListing',
     props: {
+        showBrokenLinksActiveModal: false,
+        showAmazonActiveModal     : false,
+
+        amazonRefId: '',
+
         projectInfo: {
             type   : Object,
             default: () => ({})

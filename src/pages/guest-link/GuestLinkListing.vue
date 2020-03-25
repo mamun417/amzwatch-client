@@ -5,7 +5,7 @@
                 class="bg-primary text-white row justify-between items-center"
             >
                 <div class="col">
-                    <div class="text-h6">Check Broken Links</div>
+                    <div class="text-h6">Check Guest Links</div>
                     <div class="text-caption">Project: Test project</div>
                     <div class="text-caption">Domain: exonhost.com</div>
                 </div>
@@ -73,13 +73,13 @@
         <q-card class="q-mb-xl">
             <q-card-section class="bg-primary row items-center text-white text-subtitle2">
                 <div class="col flex items-center">
-                    <q-icon name="link_off" class="q-mr-sm"/>
-                    <div>Links</div>
+                    <q-icon name="record_voice_over" class="q-mr-sm"/>
+                    <div>Guest links</div>
                 </div>
 
                 <div>
                     <q-badge color="positive">
-                        Total: 200 links
+                        Total: 200 Links
                     </q-badge>
                 </div>
 
@@ -96,13 +96,13 @@
                 <q-list>
                     <q-item class="q-mb-sm text-subtitle2 text-primary">
                         <q-item-section class="q-ml-md">Link</q-item-section>
-                        <q-item-section class="text-center">Status</q-item-section>
-                        <q-item-section class="text-right q-mr-md">Last Checked</q-item-section>
+                        <q-item-section class="text-center">Hosted Link</q-item-section>
+                        <q-item-section class="text-right q-mr-md">Status</q-item-section>
                     </q-item>
 
                     <q-expansion-item
-                        v-for="(link, index) in brokenLinkInfo" :key="index"
-                        group="brokenLink"
+                        v-for="(guest, index) in guestLinksInfo" :key="index"
+                        group="guestPost"
                         icon=""
                         header-class=""
                         expand-icon-class="hidden"
@@ -112,24 +112,24 @@
                             slot="header"
                             class="row full-width justify-between text-subtitle2 items-center"
                         >
-                            <q-item-section class="col">{{link.link}}</q-item-section>
-                            <q-item-section class="col text-center inline-block">
-                                <q-badge
-                                    :color="link.status === 404 ? 'warning' : 'positive'"
-                                >
-                                    {{link.status}} - {{link.status === 404 ? 'Not Found' : 'Ok'}}
-                                </q-badge>
+                            <q-item-section class="col">{{guest.link}}</q-item-section>
+                            <q-item-section class="col">
+                                {{guest.hostedLink}}
                             </q-item-section>
-                            <q-item-section class="col text-right">
-                                {{link.lastCheck}}
+                            <q-item-section class="col inline-block text-right">
+                                <q-badge
+                                    :color="guest.status === 'available' ? 'positive' : 'warning'"
+                                >
+                                    {{guest.status}}
+                                </q-badge>
                             </q-item-section>
                         </q-item>
 
-                        <!--                        <q-card>-->
-                        <!--                            <q-card-section>-->
-                        <!--                                <div class="text-caption text-bold">Last updated at: 10 10 10</div>-->
-                        <!--                            </q-card-section>-->
-                        <!--                        </q-card>-->
+                        <q-card>
+                            <q-card-section>
+                                <div class="text-caption text-bold">Last updated at: {{guest.lastCheck}}</div>
+                            </q-card-section>
+                        </q-card>
                     </q-expansion-item>
                 </q-list>
 
@@ -171,16 +171,18 @@ export default {
             showLinks: true,
             showModal: false,
 
-            brokenLinkInfo: [
+            guestLinksInfo     : [
                 {
-                    link     : 'exon/123',
-                    status   : 200,
-                    lastCheck: '30 10 20'
+                    link      : 'exon/123',
+                    hostedLink: 'google/me',
+                    status    : 'available',
+                    lastCheck : '30 10 20'
                 },
                 {
-                    link     : 'exon/not-found',
-                    status   : 404,
-                    lastCheck: '15 10 20'
+                    link      : 'exon/456',
+                    hostedLink: 'google/contact',
+                    status    : 'unavailable',
+                    lastCheck : '15 10 20'
                 }
             ],
         }
