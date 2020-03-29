@@ -116,6 +116,38 @@
                            @click="showAmazonActiveModal = !showAmazonActiveModal" flat dense/>
                 </div>
             </div>
+
+            <div class="row justify-between items-center q-py-sm">
+                <div class="col text-subtitle2 flex items-center q-mr-xs">
+                    <q-icon name="trending_up" class="q-mr-xs"/>
+                    <div>Uptime monitor checker</div>
+                </div>
+
+                <div class="col flex items-center justify-center">
+                    <q-badge v-if="!projectInfo.services.includes('amazon_product_link_check')" color="warning">
+                        <q-icon name="error" class="q-mr-xs"/>
+                        You are not using this service
+                    </q-badge>
+
+                    <template v-else>
+                        <q-badge color="warning">
+                            <q-icon name="error" class="q-mr-xs"/>
+                            Server is down
+                        </q-badge>
+                    </template>
+                </div>
+
+                <div class="col text-right items-center">
+                    <template v-if="projectInfo.services.includes('uptime_monitor_check')">
+                        <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" to="/projects/1/uptime-monitor-check" flat
+                               dense></q-btn>
+                    </template>
+
+                    <q-btn v-else label="Start" color="primary" size="md"
+                           @click="showUptimeMonitorActiveModal = !showUptimeMonitorActiveModal" flat dense/>
+                </div>
+            </div>
         </q-card-section>
 
         <q-dialog v-model="showBrokenLinksActiveModal">
@@ -191,13 +223,19 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+
+        <UptimeCheckActivateDeactivateModal :show.sync="showUptimeMonitorActiveModal"
+                                            :active="projectInfo.services.includes('uptime_monitor_check')"/>
     </q-card>
 </template>
 
 <script>
+import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+
 export default {
-    name   : 'SingleProjectInfoInListing',
-    props  : {
+    name      : 'SingleProjectInfoInListing',
+    components: {UptimeCheckActivateDeactivateModal},
+    props     : {
         projectInfo: {
             type   : Object,
             default: () => ({})
@@ -205,9 +243,10 @@ export default {
     },
     data() {
         return {
-            showBrokenLinksActiveModal: false,
-            showAmazonActiveModal     : false,
-            showGuestLinkActiveModal  : false,
+            showBrokenLinksActiveModal  : false,
+            showAmazonActiveModal       : false,
+            showGuestLinkActiveModal    : false,
+            showUptimeMonitorActiveModal: false,
 
             amazonRefId: '',
 
@@ -219,7 +258,7 @@ export default {
             ]
         }
     },
-    methods: {
+    methods   : {
         pushToGuestLinksForActive() {
             this.guestLinksForActive.push({
                 guestUrl : '',

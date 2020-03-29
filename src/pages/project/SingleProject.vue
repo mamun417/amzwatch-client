@@ -46,6 +46,11 @@
                             dense flat
                         />
                         <q-btn
+                            icon="edit"
+                            @click="modalOpenHandle(index)"
+                            dense flat
+                        />
+                        <q-btn
                             @click="service.expansionStatus = !service.expansionStatus"
                             :icon="service.expansionStatus ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
                             dense flat
@@ -53,6 +58,7 @@
                     </template>
 
                     <q-btn v-else label="Start service" dense flat/>
+                    <!--                    call modals-->
                 </div>
             </q-card-section>
 
@@ -172,7 +178,8 @@
                         <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                             <q-card-section class="flex justify-between items-center">
                                 <div>Last updated at: {{product.lastCheck}}</div>
-                                <q-btn v-if="product.status === 'available'" color="positive" size="sm" no-caps unelevated>
+                                <q-btn v-if="product.status === 'available'" color="positive" size="sm" no-caps
+                                       unelevated>
                                     This product has in: 10 pages
                                 </q-btn>
                             </q-card-section>
@@ -181,7 +188,16 @@
                 </q-list>
                 <!--                end amz product check link check-->
 
-                <div class="q-pa-lg flex flex-center">
+                <div v-if="index === 'uptime_monitor_check'">
+                    <q-c-chart class="q-mb-lg"/>
+
+                    <div class="q-px-sm flex justify-between items-center text-bold text-subtitle2">
+                        <div>Last Monitored: 20 20 20</div>
+                        <q-badge label="running" color="positive"/>
+                    </div>
+                </div>
+
+                <div v-if="index !== 'uptime_monitor_check'" class="q-pa-lg flex flex-center">
                     <q-pagination
                         :value="3"
                         :max="5"
@@ -200,7 +216,7 @@
                 <q-card-section class="">
                     <q-input label="Project Name" class="q-mb-md q-mx-sm" autofocus dense/>
                     <q-input label="Domain URL" class="q-mb-md  q-mx-sm" dense/>
-                    <q-checkbox keep-color label="Active" class="text-weight-medium" :value="true" color="orange" />
+                    <q-checkbox keep-color label="Active" class="text-weight-medium" :value="true" color="orange"/>
                 </q-card-section>
 
                 <q-card-section>
@@ -219,15 +235,22 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+
+        <uptime-check-activate-deactivate-modal :show.sync="showUptimeMonitorActiveModal" :active="true"/>
     </section>
 </template>
 
 <script>
+import QCChart from "components/charts/QCChart";
+import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+
 export default {
-    components: {},
+    components: {UptimeCheckActivateDeactivateModal, QCChart},
     data() {
         return {
-            showModal         : false,
+            showModal                   : false,
+            showUptimeMonitorActiveModal: false,
+
             projectInfo       : {
                 name    : 'Test project for all',
                 domain  : 'https//exonhost.com',
@@ -249,6 +272,12 @@ export default {
                         expansionStatus: true,
                         active         : true,
                         to             : '/projects/1/broken-links-check'
+                    },
+                    uptime_monitor_check: {
+                        icon           : 'trending_up',
+                        expansionStatus: true,
+                        active         : true,
+                        to             : '/projects/1/uptime-monitor-check'
                     }
                 }
             },
@@ -292,6 +321,13 @@ export default {
                     lastCheck: '15 10 20'
                 }
             ],
+        }
+    },
+    methods: {
+        modalOpenHandle(serviceType) {
+            if(serviceType === 'uptime_monitor_check') {
+                this.showUptimeMonitorActiveModal = true;
+            }
         }
     }
 }

@@ -116,7 +116,7 @@ export default {
                 {
                     name    : 'Test2',
                     domain  : 'https//exonhost.com',
-                    services: ['amazon_product_link_check']
+                    services: ['amazon_product_link_check', 'uptime_monitor_check']
                 }
             ],
 
