@@ -28,6 +28,7 @@
             v-for="(project, index) in projects"
             :key="index"
             :project-info="project"
+            @projectEdit="handleEditClick"
         />
 
         <div class="q-pa-lg flex flex-center">
@@ -56,6 +57,34 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+
+        <q-dialog v-model="showEditProjectModal" @hide="resetEditData">
+            <q-card style="min-width: 400px">
+                <q-card-section class="bg-primary text-white">
+                    <div class="text-h6">Edit {{selectedForEdit.name}} Project</div>
+                </q-card-section>
+
+                <q-card-section class="">
+                    <div class="q-px-sm q-mb-md">
+                        <q-input v-model="editProjectData.name" label="Project Name" class="q-mb-md" autofocus dense/>
+                        <q-input v-model="editProjectData.domain" label="Domain URL" dense/>
+                    </div>
+
+                    <q-toggle
+                        v-model="editProjectData.state"
+                        checked-icon="check"
+                        color="primary"
+                        label="Keep active your project"
+                        unchecked-icon="clear"
+                    />
+                </q-card-section>
+
+                <q-card-actions align="right" class="text-primary">
+                    <q-btn flat label="Cancel" v-close-popup/>
+                    <q-btn flat label="Update" v-close-popup/>
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
     </section>
 </template>
 
@@ -64,24 +93,54 @@ import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing
 
 export default {
     components: {SingleProjectInfoInListing},
+    created() {
+        // get projects first then assign to projects.
+        // dont worry for loading. we will add later
+    },
     data() {
         return {
             showAddNewProjectModal: false,
+            showEditProjectModal  : false,
+
+            selectedForEdit  : {},
             addNewProjectData: {},
-            projects: [
+            editProjectData  : {
+                state: true
+            },
+            projects         : [
                 {
-                    name: 'Test project for all',
-                    domain: 'https//exonhost.com',
+                    name    : 'Test project for all',
+                    domain  : 'https//exonhost.com',
                     services: ['broken_link_check', 'guest_link_check']
                 },
                 {
-                    name: 'Test2',
-                    domain: 'https//exonhost.com',
-                    services: ['amazon_product_link_check']
+                    name    : 'Test2',
+                    domain  : 'https//exonhost.com',
+                    services: ['amazon_product_link_check', 'uptime_monitor_check']
                 }
             ],
 
         }
+    },
+    methods   : {
+        handleEditClick(data) {
+            this.selectedForEdit = data;
+
+            this.editProjectData.name = data.name;
+            this.editProjectData.domain = data.domain;
+
+            this.showEditProjectModal = true;
+        },
+        resetEditData() {
+            this.selectedForEdit = {};
+            this.editProjectData = {
+                state: true
+            }
+        }
+
+        // use add project api
+        // use update project api
+        // use start service apis
     }
 }
 </script>
