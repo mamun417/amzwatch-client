@@ -13,6 +13,10 @@ export function login(context, payload) {
     })
 }
 
+export function updateToken(context, token) {
+    context.commit('updateToken', token);
+}
+
 export function logout(context) {
     return new Promise((resolve, reject) => {
         context.commit('authOut');
