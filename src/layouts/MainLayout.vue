@@ -40,8 +40,14 @@
 
         <q-page-container class="">
             <q-page class="">
-                <q-card class="q-mb-lg q-py-lg bg-primary text-white no-border-radius">
+                <q-card class="flex q-mb-lg q-py-lg bg-primary text-white no-border-radius">
                     <q-card-section>Home / {{$route.path.substr(1)}}</q-card-section>
+
+                    <q-space/>
+
+                    <q-card-actions>
+                        <q-btn @click="$router.push('/auth/logout')" label="Logout" class="bg-white text-primary" no-caps/>
+                    </q-card-actions>
                 </q-card>
 
                 <router-view class="q-pa-md"/>
