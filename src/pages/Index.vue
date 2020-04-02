@@ -6,6 +6,9 @@
 
 <script>
 export default {
-    name: 'PageIndex'
+    name: 'PageIndex',
+    created() {
+        this.$get('/me')
+    }
 }
 </script>

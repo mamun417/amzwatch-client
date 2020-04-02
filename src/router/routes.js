@@ -2,6 +2,7 @@ const routes = [
     {
         path     : '/',
         component: () => import('layouts/MainLayout.vue'),
+        meta: {requiresAuth: true},
         children : [
             {path: '', component: () => import('pages/Index.vue')},
             {path: '/projects', component: () => import('pages/project/ProjectListing.vue')},
@@ -18,7 +19,8 @@ const routes = [
         component: () => import('layouts/AuthLayout'),
         children : [
             {path: 'login', component: () => import('pages/auth/login')},
-            {path: 'register', component: () => import('pages/auth/register')}
+            {path: 'register', component: () => import('pages/auth/register')},
+            {path: 'logout', component: () => import('pages/auth/Logout')}
         ]
     }
 ]
