@@ -45,7 +45,7 @@ export default function ({store, Vue, router}) {
                         // think what we need to do. i think do logout cz we cant refresh so do manual login
                     })
             } else {
-                Promise.reject(err).then(r => r)
+                return Promise.reject(err)
             }
         }
     )
