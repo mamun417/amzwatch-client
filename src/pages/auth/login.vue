@@ -7,16 +7,18 @@
                     style="margin-top: -30%; border-radius: 4px"
                 >
                     <div class="text-h6">Log in</div>
-<!--                    or social login-->
+                    <!--                    or social login-->
                 </div>
             </q-card-section>
 
             <q-card-section>
-                <q-input v-model="formData.email" label="Email" class="q-mb-sm">
+                <q-input v-model="formData.email" label="Email" class="q-mb-sm" no-error-icon hide-bottom-space
+                         :error-message="formErrors.email" :error="!!formErrors.email" @input="formErrors.email = ''">
                     <q-icon name="email" slot="append"/>
                 </q-input>
 
-                <q-input v-model="formData.password" label="Password">
+                <q-input v-model="formData.password" label="Password" no-error-icon hide-bottom-space
+                         :error-message="formErrors.password" :error="!!formErrors.password" @input="formErrors.password = ''">
                     <q-icon slot="append" name="lock"/>
                 </q-input>
             </q-card-section>
@@ -33,10 +35,11 @@ export default {
     name   : 'Login',
     data() {
         return {
-            formData: {
+            formData  : {
                 email   : 'john@example.com',
                 password: '123'
-            }
+            },
+            formErrors: {}
         }
     },
     methods: {
@@ -52,7 +55,7 @@ export default {
                     this.$router.push('/')
                 })
                 .catch(err => {
-
+                    this.formErrors = err.response.data.errors
                 })
         }
     }

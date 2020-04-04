@@ -30,16 +30,24 @@ export default function ({store}) {
         if (to.matched.some(record => record.meta.requiresAuth)) {
             if (store.getters['auth/isLoggedIn']) {
                 if (to.path !== '/' && to.path.slice(-1) === '/') {
+
                     next(to.path.substring(0, to.path.length - 1));
                     return;
+
                 } else {
+
                     next();
                     return;
+
                 }
             }
+
             next('/auth/login');
-        } else if (to.path === '/auth/login' && store.getters['auth/isLoggedIn']) {
+
+        } else if (['/auth/login', '/auth/register'].includes(to.path) && store.getters['auth/isLoggedIn']) {
+
             next('/'); // dont use only slash cz in line 37 we omit slash otherwise it will loop
+
         }
 
         next()
