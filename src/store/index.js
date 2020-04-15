@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import auth from './auth'
+import broken_links from './broken-links'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
     return new Vuex.Store({
         modules: {
-            auth
+            auth,
+            broken_links
         },
 
         // enable strict mode (adds overhead!)

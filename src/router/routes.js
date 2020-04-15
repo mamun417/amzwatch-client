@@ -17,7 +17,7 @@ const routes = [
                 component: () => import('pages/project/SingleProject.vue')
             },
             {
-                path     : '/projects/1/broken-links-check',
+                path     : '/projects/:project_id/broken-links-check',
                 component: () => import('pages/broken-link/BrokenLinkListing')
             },
             {
