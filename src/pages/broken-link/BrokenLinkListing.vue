@@ -41,6 +41,7 @@
                                 bg-color="primary"
                                 hide-bottom-space
                                 dense
+                                value=""
                             />
                             <q-select
                                 color="white"
@@ -51,6 +52,7 @@
                                 style="max-width: 120px"
                                 hide-bottom-space
                                 dense
+                                value=""
                             />
                         </div>
 
@@ -79,7 +81,7 @@
 
                 <div>
                     <q-badge color="positive">
-                        Total: 200 links
+                        Total: {{ brokenLinkInfo.length }} links
                     </q-badge>
                 </div>
 
@@ -112,16 +114,16 @@
                             slot="header"
                             class="row full-width justify-between text-subtitle2 items-center"
                         >
-                            <q-item-section class="col">{{link.link}}</q-item-section>
+                            <q-item-section class="col">{{link.url}}</q-item-section>
                             <q-item-section class="col text-center inline-block">
                                 <q-badge
-                                    :color="link.status === 404 ? 'warning' : 'positive'"
+                                    :color="link.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{link.status}} - {{link.status === 404 ? 'Not Found' : 'Ok'}}
+                                    {{link.status}} - {{link.status === '404' ? 'Not Found' : 'Ok'}}
                                 </q-badge>
                             </q-item-section>
                             <q-item-section class="col text-right">
-                                {{link.lastCheck}}
+                                {{link.updatedAt}}
                             </q-item-section>
                         </q-item>
 
@@ -161,29 +163,28 @@
 </template>
 
 <script>
-import QCChart from "components/charts/QCChart";
+    import QCChart from "components/charts/QCChart";
 
-export default {
-    components: {QCChart},
-    data() {
-        return {
-            showChart: true,
-            showLinks: true,
-            showModal: false,
+    export default {
+        components: {QCChart},
+        data() {
+            return {
+                showChart: true,
+                showLinks: true,
+                showModal: false,
 
-            brokenLinkInfo: [
-                {
-                    link     : 'exon/123',
-                    status   : 200,
-                    lastCheck: '30 10 20'
-                },
-                {
-                    link     : 'exon/not-found',
-                    status   : 404,
-                    lastCheck: '15 10 20'
-                }
-            ],
-        }
+                brokenLinkInfo: [],
+            }
+        },
+
+        mounted(){
+            this.$store.dispatch('broken_links/getBrokenLinks', {vm: this, project_id: this.$route.params.project_id})
+                .then(res => {
+                    this.brokenLinkInfo = res.data;
+                })
+                .catch(err => {
+                    //handle error
+                })
+        },
     }
-}
 </script>
