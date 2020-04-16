@@ -55,8 +55,16 @@ export default {
                     this.$router.push('/')
                 })
                 .catch(err => {
-                    this.formErrors = err.response.data.errors
-                })
+                    if (!err.response.data.errors){
+                        this.$q.notify({
+                            color   : 'negative',
+                            message : err.response.data.message,
+                            position: 'top'
+                        })
+                    }else {
+                        this.formErrors = err.response.data.errors
+                    }
+                });
         }
     }
 }
