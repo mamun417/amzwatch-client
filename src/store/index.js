@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import auth from './auth'
 import broken_links from './broken-links'
+import amazon_products_links from './amazon-products-check'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default function (/* { ssrContext } */) {
     return new Vuex.Store({
         modules: {
             auth,
-            broken_links
+            broken_links,
+            amazon_products_links,
         },
 
         // enable strict mode (adds overhead!)

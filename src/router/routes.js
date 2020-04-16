@@ -21,7 +21,7 @@ const routes = [
                 component: () => import('pages/broken-link/BrokenLinkListing')
             },
             {
-                path     : '/projects/1/amazon-products-check',
+                path     : '/projects/:project_id/amazon-products-check',
                 component: () => import('pages/amazon-product/AmazonProductListing')
             },
             {
