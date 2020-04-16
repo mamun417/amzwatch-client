@@ -41,6 +41,7 @@
                                 bg-color="primary"
                                 hide-bottom-space
                                 dense
+                                value=""
                             />
                             <q-select
                                 color="white"
@@ -51,6 +52,7 @@
                                 style="max-width: 120px"
                                 hide-bottom-space
                                 dense
+                                value=""
                             />
                         </div>
 
@@ -79,7 +81,7 @@
 
                 <div>
                     <q-badge color="positive">
-                        Total: 200 Products
+                        Total: {{ amazonProductsInfo.length }} Products
                     </q-badge>
                 </div>
 
@@ -116,16 +118,16 @@
                             <q-item-section class="col">{{product.productName}}</q-item-section>
                             <q-item-section class="col inline-block text-right">
                                 <q-badge
-                                    :color="product.status === 'available' ? 'positive' : 'warning'"
+                                    :color="product.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{product.status}}
+                                    {{product.status}} - {{product.status === '404' ? 'unavailable' : 'available'}}
                                 </q-badge>
                             </q-item-section>
                         </q-item>
 
                         <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                             <q-card-section>
-                                <div class="">Last checked this product: {{product.lastCheck}}
+                                <div class="">Last checked this product: {{product.lastUpdated}}
                                 </div>
                             </q-card-section>
                             <q-card-section>
@@ -180,40 +182,38 @@
 </template>
 
 <script>
-import QCChart from "components/charts/QCChart";
+    import QCChart from "components/charts/QCChart";
 
-export default {
-    components: {QCChart},
-    data() {
-        return {
-            showChart: true,
-            showLinks: true,
-            showModal: false,
+    export default {
+        components: {QCChart},
+        data() {
+            return {
+                showChart: true,
+                showLinks: true,
+                showModal: false,
 
-            amazonProductsInfo: [
-                {
-                    productName: 'watch',
-                    productUrl : 'amz/test1',
-                    status     : 'available',
-                    lastCheck  : '30 10 20'
-                },
-                {
-                    productName: 'laptop',
-                    productUrl : 'amz/test2',
-                    status     : 'unavailable',
-                    lastCheck  : '15 10 20'
-                }
-            ],
+                amazonProductsInfo: [],
 
-            productInPages: [
-                'a/a',
-                'a/b',
-                'a/c',
-                'a/d',
-                'a/e',
-                'a/f'
-            ]
+                productInPages: [
+                    'a/a',
+                    'a/b',
+                    'a/c',
+                    'a/d',
+                    'a/e',
+                    'a/f'
+                ]
+            }
+        },
+
+        mounted(){
+
+            this.$store.dispatch('amazon_products_links/getAmazonProducts', {vm: this, project_id: this.$route.params.project_id})
+                .then(res => {
+                    this.amazonProductsInfo = res.data
+                })
+                .catch(err => {
+                    //handle error
+                });
         }
     }
-}
 </script>
