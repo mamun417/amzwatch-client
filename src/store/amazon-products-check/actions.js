@@ -9,3 +9,15 @@ export function getAmazonProducts(context, payload) {
             })
     })
 }
+
+export function getAmazonProductInPages(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/amazon-products/'+payload.id, payload.inputs) //amazonproduct id
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
