@@ -109,6 +109,7 @@
                         header-class=""
                         expand-icon-class="hidden"
                         class="shadow-3 q-mb-sm"
+                        @show="showProductLinks(product)"
                     >
                         <q-item
                             slot="header"
@@ -133,7 +134,7 @@
                             <q-card-section>
                                 <div class="flex q-mb-sm">
                                     <div class="q-mr-sm">This product has in:</div>
-                                    <q-badge>6 Links</q-badge>
+                                    <q-badge>{{ productInPages.length }} Links</q-badge>
                                 </div>
                                 <q-list bordered dense>
                                     <q-item class="text-primary text-subtitle2 text-bold">
@@ -145,8 +146,8 @@
                                         class=""
                                         clickable
                                     >
-                                        <q-item-section>http://www.{{link}}</q-item-section>
-                                        <q-item-section class="text-right">30 30 20</q-item-section>
+                                        <q-item-section>{{link.pageUrl}}</q-item-section>
+                                        <q-item-section class="text-right">{{ link.lastUpdated }}</q-item-section>
                                     </q-item>
                                 </q-list>
                             </q-card-section>
@@ -194,14 +195,7 @@
 
                 amazonProductsInfo: [],
 
-                productInPages: [
-                    'a/a',
-                    'a/b',
-                    'a/c',
-                    'a/d',
-                    'a/e',
-                    'a/f'
-                ]
+                productInPages: []
             }
         },
 
@@ -209,11 +203,28 @@
 
             this.$store.dispatch('amazon_products_links/getAmazonProducts', {vm: this, project_id: this.$route.params.project_id})
                 .then(res => {
-                    this.amazonProductsInfo = res.data
+                    this.amazonProductsInfo = res.data;
                 })
                 .catch(err => {
                     //handle error
                 });
+        },
+
+        methods: {
+
+            showProductLinks(product) {
+                this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
+                    vm: this,
+                    id: product.id, //amazonproduct id
+                    inputs: {affiliate_id: product.affiliateId}
+                })
+                    .then(res => {
+                        this.productInPages = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    });
+            }
         }
     }
 </script>
