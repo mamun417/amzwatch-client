@@ -3,7 +3,8 @@ import Vuex from 'vuex'
 
 import auth from './auth'
 import broken_links from './broken-links'
-import amazon_products_links from './amazon-products-check'
+import amazon_products_links from './amazon-product'
+import guest_links from './guest-links'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export default function (/* { ssrContext } */) {
             auth,
             broken_links,
             amazon_products_links,
+            guest_links,
         },
 
         // enable strict mode (adds overhead!)

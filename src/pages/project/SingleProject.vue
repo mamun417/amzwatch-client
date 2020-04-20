@@ -85,13 +85,13 @@
                             <q-item-section class="col">img</q-item-section>
                             <q-item-section class="col text-center inline-block">
                                 <q-badge
-                                    :color="link.status === 404 ? 'warning' : 'positive'"
+                                    :color="link.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{link.status}} - {{link.status === 404 ? 'Not Found' : 'Ok'}}
+                                    {{link.status}} - {{link.status === '404' ? 'unavailable' : 'available'}}
                                 </q-badge>
                             </q-item-section>
                             <q-item-section class="col text-right">
-                                {{link.lastCheck}}
+                                {{link.lastUpdated}}
                             </q-item-section>
                         </q-item>
 
@@ -102,8 +102,9 @@
                         <!--                        </q-card>-->
                     </q-expansion-item>
                 </q-list>
-                <!--                end broken link check-->
+                <!--end broken link check-->
 
+                <!--start guest link check-->
                 <q-list v-if="index === 'guest_post_check'">
                     <q-item class="q-mb-sm text-subtitle2 text-primary">
                         <q-item-section class="q-ml-md">Link</q-item-section>
@@ -123,27 +124,27 @@
                             slot="header"
                             class="row full-width justify-between text-subtitle2 items-center"
                         >
-                            <q-item-section class="col">{{guest.link}}</q-item-section>
+                            <q-item-section class="col">{{guest.url}}</q-item-section>
                             <q-item-section class="col">
-                                {{guest.hostedLink}}
+                                {{guest.remoteUrl}}
                             </q-item-section>
-                            <q-item-section class="col inline-block text-right">
+                            <q-item-section class="col text-center inline-block">
                                 <q-badge
-                                    :color="guest.status === 'available' ? 'positive' : 'warning'"
+                                    :color="guest.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{guest.status}}
+                                    {{guest.status}} - {{guest.status === '404' ? 'unavailable' : 'available'}}
                                 </q-badge>
                             </q-item-section>
                         </q-item>
 
                         <q-card>
                             <q-card-section>
-                                <div class="text-caption text-bold">Last updated at: {{guest.lastCheck}}</div>
+                                <div class="text-caption text-bold">Last updated at: {{guest.lastUpdated}}</div>
                             </q-card-section>
                         </q-card>
                     </q-expansion-item>
                 </q-list>
-                <!--                guest post check-->
+                <!--end guest post check-->
 
                 <q-list v-if="index === 'amazon_product_check'">
                     <q-item class="q-mb-sm text-subtitle2 text-primary">
@@ -159,6 +160,7 @@
                         header-class=""
                         expand-icon-class="hidden"
                         class="shadow-3 q-mb-sm"
+                        @show="product.status !== '404' ? showProductLinks(product):''"
                     >
                         <q-item
                             slot="header"
@@ -168,19 +170,19 @@
                             <q-item-section class="col">{{product.productName}}</q-item-section>
                             <q-item-section class="col inline-block text-right">
                                 <q-badge
-                                    :color="product.status === 'available' ? 'positive' : 'warning'"
+                                    :color="product.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{product.status}}
+                                    {{product.status}} - {{product.status === '404' ? 'unavailable' : 'available'}}
                                 </q-badge>
                             </q-item-section>
                         </q-item>
 
                         <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                             <q-card-section class="flex justify-between items-center">
-                                <div>Last updated at: {{product.lastCheck}}</div>
-                                <q-btn v-if="product.status === 'available'" color="positive" size="sm" no-caps
+                                <div>Last updated at: {{product.lastUpdated}}</div>
+                                <q-btn v-if="product.status === '200'" color="positive" size="sm" no-caps
                                        unelevated>
-                                    This product has in: 10 pages
+                                    This product has in: {{ product.inPages }} pages
                                 </q-btn>
                             </q-card-section>
                         </q-card>
@@ -241,94 +243,115 @@
 </template>
 
 <script>
-import QCChart from "components/charts/QCChart";
-import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+    import QCChart from "components/charts/QCChart";
+    import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
 
-export default {
-    components: {UptimeCheckActivateDeactivateModal, QCChart},
-    data() {
-        return {
-            showModal                   : false,
-            showUptimeMonitorActiveModal: false,
+    export default {
+        components: {UptimeCheckActivateDeactivateModal, QCChart},
+        data() {
+            return {
+                showModal: false,
+                showUptimeMonitorActiveModal: false,
 
-            projectInfo       : {
-                name    : 'Test project for all',
-                domain  : 'https//exonhost.com',
-                services: {
-                    amazon_product_check: {
-                        icon           : 'local_mall',
-                        expansionStatus: true,
-                        active         : true,
-                        to             : '/projects/1/amazon-products-check'
-                    },
-                    guest_post_check    : {
-                        icon           : 'record_voice_over',
-                        expansionStatus: true,
-                        active         : true,
-                        to             : '/projects/1/guest-links-check'
-                    },
-                    broken_link_check   : {
-                        icon           : 'link_off',
-                        expansionStatus: true,
-                        active         : true,
-                        to             : '/projects/1/broken-links-check'
-                    },
-                    uptime_monitor_check: {
-                        icon           : 'trending_up',
-                        expansionStatus: true,
-                        active         : true,
-                        to             : '/projects/1/uptime-monitor-check'
+                projectInfo: {
+                    name: 'Test project for all',
+                    domain: 'https//exonhost.com',
+                    services: {
+                        amazon_product_check: {
+                            icon: 'local_mall',
+                            expansionStatus: true,
+                            active: true,
+                            to: '/projects/'+this.$route.params.project_id+'/amazon-products-check'
+                        },
+                        guest_post_check: {
+                            icon: 'record_voice_over',
+                            expansionStatus: true,
+                            active: true,
+                            to: '/projects/'+this.$route.params.project_id+'/guest-links-check'
+                        },
+                        broken_link_check: {
+                            icon: 'link_off',
+                            expansionStatus: true,
+                            active: true,
+                            to: '/projects/'+this.$route.params.project_id+'/broken-links-check'
+                        },
+                        uptime_monitor_check: {
+                            icon: 'trending_up',
+                            expansionStatus: true,
+                            active: true,
+                            to: '/projects/'+this.$route.params.project_id+'/uptime-monitor-check'
+                        }
                     }
+                },
+                amazonProductsInfo: [],
+                guestPostInfo: [],
+                brokenLinkInfo: [],
+            }
+        },
+
+        mounted() {
+            this.getAmazonProductsInfo();
+            this.getGuestPostInfo();
+            this.getBrokenLinkInfo();
+        },
+
+        methods: {
+            modalOpenHandle(serviceType) {
+                if (serviceType === 'uptime_monitor_check') {
+                    this.showUptimeMonitorActiveModal = true;
                 }
             },
-            amazonProductsInfo: [
-                {
-                    productName: 'watch',
-                    productUrl : 'amz/test1',
-                    status     : 'available',
-                    lastCheck  : '30 10 20'
-                },
-                {
-                    productName: 'laptop',
-                    productUrl : 'amz/test2',
-                    status     : 'unavailable',
-                    lastCheck  : '15 10 20'
-                }
-            ],
-            guestPostInfo     : [
-                {
-                    link      : 'exon/123',
-                    hostedLink: 'google/me',
-                    status    : 'available',
-                    lastCheck : '30 10 20'
-                },
-                {
-                    link      : 'exon/456',
-                    hostedLink: 'google/contact',
-                    status    : 'unavailable',
-                    lastCheck : '15 10 20'
-                }
-            ],
-            brokenLinkInfo    : [
-                {
-                    link     : 'exon/123',
-                    status   : 200,
-                    lastCheck: '30 10 20'
-                },
-                {
-                    link     : 'exon/not-found',
-                    status   : 404,
-                    lastCheck: '15 10 20'
-                }
-            ],
-        }
-    },
-    methods: {
-        modalOpenHandle(serviceType) {
-            if(serviceType === 'uptime_monitor_check') {
-                this.showUptimeMonitorActiveModal = true;
+
+            getAmazonProductsInfo() {
+                this.$store.dispatch('amazon_products_links/getAmazonProducts', {
+                    vm: this,
+                    project_id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.amazonProductsInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    });
+            },
+
+            getGuestPostInfo() {
+                this.$store.dispatch('guest_links/getGuestLinks', {
+                    vm: this,
+                    project_id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.guestPostInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    });
+            },
+
+            getBrokenLinkInfo() {
+                this.$store.dispatch('broken_links/getBrokenLinks', {vm: this, project_id: this.$route.params.project_id})
+                    .then(res => {
+                        this.brokenLinkInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    })
+            },
+
+            showProductLinks(product) {
+
+                this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
+                    vm: this,
+                    id: product.id, //amazonproduct id
+                    inputs: {affiliate_id: product.affiliateId, only_total: true}
+                })
+                    .then(res => {
+
+                    })
+                    .catch(err => {
+                        //handle error
+                    });
             }
         }
     }
-}
 </script>
