@@ -213,6 +213,9 @@
         methods: {
 
             showProductLinks(product) {
+
+                this.productInPages = [];
+
                 this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
                     vm: this,
                     id: product.id, //amazonproduct id

@@ -123,7 +123,7 @@
                                 </q-badge>
                             </q-item-section>
                             <q-item-section class="col text-right">
-                                {{link.updatedAt}}
+                                {{link.lastUpdated}}
                             </q-item-section>
                         </q-item>
 
