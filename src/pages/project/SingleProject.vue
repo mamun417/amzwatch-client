@@ -346,7 +346,13 @@
                     inputs: {affiliate_id: product.affiliateId, only_total: true}
                 })
                     .then(res => {
+                        this.amazonProductsInfo = this.amazonProductsInfo.map(amazonProduct => {
+                            if (product.id === amazonProduct.id) {
+                                amazonProduct['inPages'] = res.data.count;
+                            }
 
+                            return amazonProduct;
+                        });
                     })
                     .catch(err => {
                         //handle error
