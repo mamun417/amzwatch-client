@@ -119,7 +119,7 @@
                                 <q-badge
                                     :color="link.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{link.status}} - {{link.status === '404' ? 'Not Found' : 'Ok'}}
+                                    {{link.status}} - {{link.status === '404' ? 'unavailable' : 'available'}}
                                 </q-badge>
                             </q-item-section>
                             <q-item-section class="col text-right">
@@ -177,14 +177,23 @@
             }
         },
 
-        mounted(){
-            this.$store.dispatch('broken_links/getBrokenLinks', {vm: this, project_id: this.$route.params.project_id})
-                .then(res => {
-                    this.brokenLinkInfo = res.data;
-                })
-                .catch(err => {
-                    //handle error
-                })
+        mounted() {
+            this.getBrokenLinks();
         },
+
+        methods: {
+            getBrokenLinks() {
+                this.$store.dispatch('broken_links/getBrokenLinks', {
+                    vm: this,
+                    project_id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.brokenLinkInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    })
+            }
+        }
     }
 </script>
