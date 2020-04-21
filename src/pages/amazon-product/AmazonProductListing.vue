@@ -109,7 +109,7 @@
                         header-class=""
                         expand-icon-class="hidden"
                         class="shadow-3 q-mb-sm"
-                        @show="showProductLinks(product)"
+                        @show="showProductInPages(product)"
                     >
                         <q-item
                             slot="header"
@@ -199,20 +199,26 @@
             }
         },
 
-        mounted(){
-
-            this.$store.dispatch('amazon_products_links/getAmazonProducts', {vm: this, project_id: this.$route.params.project_id})
-                .then(res => {
-                    this.amazonProductsInfo = res.data;
-                })
-                .catch(err => {
-                    //handle error
-                });
+        mounted() {
+            this.getAmazonProducts();
         },
 
         methods: {
 
-            showProductLinks(product) {
+            getAmazonProducts() {
+                this.$store.dispatch('amazon_products_links/getAmazonProducts', {
+                    vm: this,
+                    project_id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.amazonProductsInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    });
+            },
+
+            showProductInPages(product) {
 
                 this.productInPages = [];
 

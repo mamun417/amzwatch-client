@@ -25,7 +25,7 @@ const routes = [
                 component: () => import('pages/amazon-product/AmazonProductListing')
             },
             {
-                path     : '/projects/1/guest-links-check',
+                path     : '/projects/:project_id/guest-links-check',
                 component: () => import('pages/guest-link/GuestLinkListing')
             },
             {

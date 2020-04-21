@@ -41,6 +41,7 @@
                                 bg-color="primary"
                                 hide-bottom-space
                                 dense
+                                value=""
                             />
                             <q-select
                                 color="white"
@@ -51,6 +52,7 @@
                                 style="max-width: 120px"
                                 hide-bottom-space
                                 dense
+                                value=""
                             />
                         </div>
 
@@ -112,22 +114,22 @@
                             slot="header"
                             class="row full-width justify-between text-subtitle2 items-center"
                         >
-                            <q-item-section class="col">{{guest.link}}</q-item-section>
+                            <q-item-section class="col">{{guest.url}}</q-item-section>
                             <q-item-section class="col">
-                                {{guest.hostedLink}}
+                                {{guest.remoteUrl}}
                             </q-item-section>
                             <q-item-section class="col inline-block text-right">
                                 <q-badge
-                                    :color="guest.status === 'available' ? 'positive' : 'warning'"
+                                    :color="guest.status === '404' ? 'warning' : 'positive'"
                                 >
-                                    {{guest.status}}
+                                    {{guest.status}} - {{guest.status === '404' ? 'unavailable' : 'available'}}
                                 </q-badge>
                             </q-item-section>
                         </q-item>
 
                         <q-card>
                             <q-card-section>
-                                <div class="text-caption text-bold">Last updated at: {{guest.lastCheck}}</div>
+                                <div class="text-caption text-bold">Last updated at: {{guest.lastUpdated}}</div>
                             </q-card-section>
                         </q-card>
                     </q-expansion-item>
@@ -161,31 +163,34 @@
 </template>
 
 <script>
-import QCChart from "components/charts/QCChart";
+    import QCChart from "components/charts/QCChart";
 
-export default {
-    components: {QCChart},
-    data() {
-        return {
-            showChart: true,
-            showLinks: true,
-            showModal: false,
+    export default {
+        components: {QCChart},
+        data() {
+            return {
+                showChart: true,
+                showLinks: true,
+                showModal: false,
 
-            guestLinksInfo     : [
-                {
-                    link      : 'exon/123',
-                    hostedLink: 'google/me',
-                    status    : 'available',
-                    lastCheck : '30 10 20'
-                },
-                {
-                    link      : 'exon/456',
-                    hostedLink: 'google/contact',
-                    status    : 'unavailable',
-                    lastCheck : '15 10 20'
-                }
-            ],
+                guestLinksInfo: [],
+            }
+        },
+
+        mounted() {
+            this.getGuestLinks();
+        },
+
+        methods: {
+            getGuestLinks() {
+                this.$store.dispatch('guest_links/getGuestLinks', {vm: this, project_id: this.$route.params.project_id})
+                    .then(res => {
+                        this.guestLinksInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    })
+            }
         }
     }
-}
 </script>

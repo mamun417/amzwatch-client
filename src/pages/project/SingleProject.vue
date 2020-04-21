@@ -160,7 +160,7 @@
                         header-class=""
                         expand-icon-class="hidden"
                         class="shadow-3 q-mb-sm"
-                        @show="product.status !== '404' ? showProductLinks(product):''"
+                        @show="product.status !== '404' ? showProductLinksCount(product):''"
                     >
                         <q-item
                             slot="header"
@@ -279,7 +279,7 @@
                             icon: 'trending_up',
                             expansionStatus: true,
                             active: true,
-                            to: '/projects/'+this.$route.params.project_id+'/uptime-monitor-check'
+                            to: '/projects/1/uptime-monitor-check'
                         }
                     }
                 },
@@ -329,7 +329,10 @@
             },
 
             getBrokenLinkInfo() {
-                this.$store.dispatch('broken_links/getBrokenLinks', {vm: this, project_id: this.$route.params.project_id})
+                this.$store.dispatch('broken_links/getBrokenLinks', {
+                    vm: this,
+                    project_id: this.$route.params.project_id
+                })
                     .then(res => {
                         this.brokenLinkInfo = res.data;
                     })
@@ -338,7 +341,7 @@
                     })
             },
 
-            showProductLinks(product) {
+            showProductLinksCount(product) {
 
                 this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
                     vm: this,
