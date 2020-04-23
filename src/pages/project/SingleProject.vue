@@ -181,7 +181,7 @@
                             <q-card-section class="flex justify-between items-center">
                                 <div>Last updated at: {{product.lastUpdated}}</div>
                                 <q-btn v-if="product.status === '200'" color="positive" size="sm" no-caps
-                                       unelevated>
+                                       unelevated @click="showProductInPages(product)">
                                     This product has in: {{ product.inPages }} pages
                                 </q-btn>
                             </q-card-section>
@@ -239,19 +239,31 @@
         </q-dialog>
 
         <uptime-check-activate-deactivate-modal :show.sync="showUptimeMonitorActiveModal" :active="true"/>
+
+        <product-in-pages-modal
+            v-if="showProductsInPagesModal.showModal"
+            :active.sync="showProductsInPagesModal.showModal"
+            :product="showProductsInPagesModal.product"
+        />
+
     </section>
 </template>
 
 <script>
     import QCChart from "components/charts/QCChart";
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+    import ProductInPagesModal from "components/modals/ProductInPagesModal";
 
     export default {
-        components: {UptimeCheckActivateDeactivateModal, QCChart},
+        components: {UptimeCheckActivateDeactivateModal, QCChart, ProductInPagesModal},
         data() {
             return {
                 showModal: false,
                 showUptimeMonitorActiveModal: false,
+                showProductsInPagesModal: {
+                    showModal: false,
+                    product: {},
+                },
 
                 projectInfo: {
                     name: 'Test project for all',
@@ -285,7 +297,7 @@
                 },
                 amazonProductsInfo: [],
                 guestPostInfo: [],
-                brokenLinkInfo: [],
+                brokenLinkInfo: []
             }
         },
 
@@ -360,6 +372,11 @@
                     .catch(err => {
                         //handle error
                     });
+            },
+
+            showProductInPages(product){
+                this.showProductsInPagesModal.showModal = !this.showProductsInPagesModal.showModal;
+                this.showProductsInPagesModal.product = product;
             }
         }
     }
