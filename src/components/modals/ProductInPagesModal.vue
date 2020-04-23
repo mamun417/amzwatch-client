@@ -2,7 +2,7 @@
     <q-dialog :value="active" @hide="$emit('update:active', false)">
         <q-card style="min-width: 400px">
             <q-card-section class="bg-primary text-white">
-                <div class="text-h6">Update project info</div>
+                <div class="text-h6">Product in pages</div>
             </q-card-section>
 
             <q-list class="shadow-3 q-pa-md" bordered dense>
