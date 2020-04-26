@@ -89,58 +89,93 @@
 </template>
 
 <script>
-import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
 
-export default {
-    components: {SingleProjectInfoInListing},
-    created() {
-        // get projects first then assign to projects.
-        // dont worry for loading. we will add later
-    },
-    data() {
-        return {
-            showAddNewProjectModal: false,
-            showEditProjectModal  : false,
+    import QCChart from "components/charts/QCChart";
 
-            selectedForEdit  : {},
-            addNewProjectData: {},
-            editProjectData  : {
-                state: true
-            },
-            projects         : [
-                {
-                    name    : 'Test project for all',
-                    domain  : 'https//exonhost.com',
-                    services: ['broken_link_check', 'guest_link_check']
-                },
-                {
-                    name    : 'Test2',
-                    domain  : 'https//exonhost.com',
-                    services: ['amazon_product_link_check', 'uptime_monitor_check']
-                }
-            ],
+    export default {
+        components: {QCChart},
+        data() {
+            return {
+                showChart: true,
+                showLinks: true,
+                showModal: false,
 
-        }
-    },
-    methods   : {
-        handleEditClick(data) {
-            this.selectedForEdit = data;
-
-            this.editProjectData.name = data.name;
-            this.editProjectData.domain = data.domain;
-
-            this.showEditProjectModal = true;
+                projectInfo: [],
+            }
         },
-        resetEditData() {
-            this.selectedForEdit = {};
-            this.editProjectData = {
-                state: true
+
+        mounted() {
+            this.getProjects();
+        },
+
+        methods: {
+            getProjects() {
+                this.$store.dispatch('projects/getProjects', {
+                    vm: this,
+                    //project_id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.projectInfo = res.data;
+                    })
+                    .catch(err => {
+                        //handle error
+                    })
             }
         }
-
-        // use add project api
-        // use update project api
-        // use start service apis
     }
-}
+
+// import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
+//
+// export default {
+//     components: {SingleProjectInfoInListing},
+//     created() {
+//         // get projects first then assign to projects.
+//         // dont worry for loading. we will add later
+//     },
+//     data() {
+//         return {
+//             showAddNewProjectModal: false,
+//             showEditProjectModal  : false,
+//
+//             selectedForEdit  : {},
+//             addNewProjectData: {},
+//             editProjectData  : {
+//                 state: true
+//             },
+//             projects         : [
+//                 {
+//                     name    : 'Test project for all',
+//                     domain  : 'https//exonhost.com',
+//                     services: ['broken_link_check', 'guest_link_check']
+//                 },
+//                 {
+//                     name    : 'Test2',
+//                     domain  : 'https//exonhost.com',
+//                     services: ['amazon_product_link_check', 'uptime_monitor_check']
+//                 }
+//             ],
+//
+//         }
+//     },
+//     methods   : {
+//         handleEditClick(data) {
+//             this.selectedForEdit = data;
+//
+//             this.editProjectData.name = data.name;
+//             this.editProjectData.domain = data.domain;
+//
+//             this.showEditProjectModal = true;
+//         },
+//         resetEditData() {
+//             this.selectedForEdit = {};
+//             this.editProjectData = {
+//                 state: true
+//             }
+//         }
+//
+//         // use add project api
+//         // use update project api
+//         // use start service apis
+//     }
+// }
 </script>
