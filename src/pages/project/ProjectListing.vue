@@ -7,7 +7,7 @@
                 <div class="text-subtitle1">Projects</div>
 
                 <div v-if="projects.length" class="text-caption">
-                    You have total {{projects.length}} projects
+                    You have total {{ projectInfo.length }} projects
                 </div>
 
                 <q-btn color="grey-3" @click="showAddNewProjectModal = true" flat>Add New</q-btn>
