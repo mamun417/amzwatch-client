@@ -146,7 +146,7 @@
                 </q-list>
                 <!--end guest post check-->
 
-                <q-list v-if="index === 'amazon_product_check'">
+                <!--<q-list v-if="index === 'amazon_product_check'">
                     <q-item class="q-mb-sm text-subtitle2 text-primary">
                         <q-item-section class="q-ml-md">Image</q-item-section>
                         <q-item-section class="text-center">Product Name</q-item-section>
@@ -187,8 +187,11 @@
                             </q-card-section>
                         </q-card>
                     </q-expansion-item>
-                </q-list>
-                <!--                end amz product check link check-->
+                </q-list>-->
+
+                <amazon-products-list
+                    :showCondition="index === 'amazon_product_check'"
+                />
 
                 <div v-if="index === 'uptime_monitor_check'">
                     <q-c-chart class="q-mb-lg"/>
@@ -240,30 +243,20 @@
 
         <uptime-check-activate-deactivate-modal :show.sync="showUptimeMonitorActiveModal" :active="true"/>
 
-        <product-in-pages-modal
-            v-if="showProductsInPagesModal.showModal"
-            :active.sync="showProductsInPagesModal.showModal"
-            :product="showProductsInPagesModal.product"
-        />
-
     </section>
 </template>
 
 <script>
     import QCChart from "components/charts/QCChart";
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
-    import ProductInPagesModal from "components/modals/ProductInPagesModal";
+    import AmazonProductsList from "components/amazon-products/AmazonProductsList";
 
     export default {
-        components: {UptimeCheckActivateDeactivateModal, QCChart, ProductInPagesModal},
+        components: {UptimeCheckActivateDeactivateModal, QCChart, AmazonProductsList},
         data() {
             return {
                 showModal: false,
                 showUptimeMonitorActiveModal: false,
-                showProductsInPagesModal: {
-                    showModal: false,
-                    product: {},
-                },
 
                 projectInfo: {
                     name: 'Test project for all',
@@ -295,14 +288,12 @@
                         }
                     }
                 },
-                amazonProductsInfo: [],
                 guestPostInfo: [],
                 brokenLinkInfo: []
             }
         },
 
         mounted() {
-            this.getAmazonProductsInfo();
             this.getGuestPostInfo();
             this.getBrokenLinkInfo();
         },
@@ -312,19 +303,6 @@
                 if (serviceType === 'uptime_monitor_check') {
                     this.showUptimeMonitorActiveModal = true;
                 }
-            },
-
-            getAmazonProductsInfo() {
-                this.$store.dispatch('amazon_products_links/getAmazonProducts', {
-                    vm: this,
-                    project_id: this.$route.params.project_id
-                })
-                    .then(res => {
-                        this.amazonProductsInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    });
             },
 
             getGuestPostInfo() {
@@ -352,32 +330,6 @@
                         //handle error
                     })
             },
-
-            showProductLinksCount(product) {
-
-                this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
-                    vm: this,
-                    id: product.id, //amazonproduct id
-                    inputs: {affiliate_id: product.affiliateId, only_total: true}
-                })
-                    .then(res => {
-                        this.amazonProductsInfo = this.amazonProductsInfo.map(amazonProduct => {
-                            if (product.id === amazonProduct.id) {
-                                amazonProduct['inPages'] = res.data.count;
-                            }
-
-                            return amazonProduct;
-                        });
-                    })
-                    .catch(err => {
-                        //handle error
-                    });
-            },
-
-            showProductInPages(product){
-                this.showProductsInPagesModal.showModal = !this.showProductsInPagesModal.showModal;
-                this.showProductsInPagesModal.product = product;
-            }
         }
     }
 </script>
