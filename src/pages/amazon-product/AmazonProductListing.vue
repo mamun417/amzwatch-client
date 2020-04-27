@@ -142,7 +142,7 @@
                                         <q-item-section class="text-right">Last checked</q-item-section>
                                     </q-item>
                                     <q-item
-                                        v-for="(link, index) in productInPages"
+                                        v-for="(link, index) in productInPages.slice(0, 1)"
                                         class=""
                                         clickable
                                     >
@@ -151,6 +151,16 @@
                                     </q-item>
                                 </q-list>
                             </q-card-section>
+                            <div v-if="productInPages.length > 1" align="right">
+                                <q-btn
+                                    color="primary"
+                                    size="sm"
+                                    label="Show more"
+                                    no-caps
+                                    class="q-mr-md"
+                                    @click="showMoreProductInPages(product)"
+                                />
+                            </div>
                         </q-card>
                     </q-expansion-item>
                 </q-list>
@@ -179,14 +189,22 @@
                 </q-card-section>
             </q-card>
         </q-dialog>
+
+        <product-in-pages-modal
+            v-if="showProductsInPagesModal.showModal"
+            :active.sync="showProductsInPagesModal.showModal"
+            :product="showProductsInPagesModal.product"
+        />
+
     </section>
 </template>
 
 <script>
     import QCChart from "components/charts/QCChart";
+    import ProductInPagesModal from "components/modals/ProductInPagesModal";
 
     export default {
-        components: {QCChart},
+        components: {QCChart, ProductInPagesModal},
         data() {
             return {
                 showChart: true,
@@ -195,7 +213,11 @@
 
                 amazonProductsInfo: [],
 
-                productInPages: []
+                productInPages: [],
+                showProductsInPagesModal: {
+                    showModal: false,
+                    product: {},
+                },
             }
         },
 
@@ -233,6 +255,11 @@
                     .catch(err => {
                         //handle error
                     });
+            },
+
+            showMoreProductInPages(product){
+                this.showProductsInPagesModal.showModal = !this.showProductsInPagesModal.showModal;
+                this.showProductsInPagesModal.product = product;
             }
         }
     }
