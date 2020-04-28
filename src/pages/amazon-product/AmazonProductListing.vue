@@ -94,85 +94,11 @@
                 </div>
             </q-card-section>
 
-            <q-card-section v-if="showLinks">
-                <q-list>
-                    <q-item class="q-mb-sm text-subtitle2 text-primary">
-                        <q-item-section class="q-ml-md">Image</q-item-section>
-                        <q-item-section class="text-center">Product Name</q-item-section>
-                        <q-item-section class="text-right q-mr-md">In Pages</q-item-section>
-                    </q-item>
+            <amazon-products-list
+                :showCondition="showLinks"
+                :showLinksCountAfterExpand="false"
+            />
 
-                    <q-expansion-item
-                        v-for="(product, index) in amazonProductsInfo" :key="index"
-                        group="amzProduct"
-                        icon=""
-                        header-class=""
-                        expand-icon-class="hidden"
-                        class="shadow-3 q-mb-sm"
-                        @show="showProductInPages(product)"
-                    >
-                        <q-item
-                            slot="header"
-                            class="row full-width justify-between text-subtitle2 items-center"
-                        >
-                            <q-item-section class="col">img</q-item-section>
-                            <q-item-section class="col">{{product.productName}}</q-item-section>
-                            <q-item-section class="col inline-block text-right">
-                                <q-badge
-                                    :color="product.status === '404' ? 'warning' : 'positive'"
-                                >
-                                    {{product.status}} - {{product.status === '404' ? 'unavailable' : 'available'}}
-                                </q-badge>
-                            </q-item-section>
-                        </q-item>
-
-                        <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
-                            <q-card-section>
-                                <div class="">Last checked this product: {{product.lastUpdated}}
-                                </div>
-                            </q-card-section>
-                            <q-card-section>
-                                <div class="flex q-mb-sm">
-                                    <div class="q-mr-sm">This product has in:</div>
-                                    <q-badge>{{ productInPages.length }} Links</q-badge>
-                                </div>
-                                <q-list bordered dense>
-                                    <q-item class="text-primary text-subtitle2 text-bold">
-                                        <q-item-section>Link</q-item-section>
-                                        <q-item-section class="text-right">Last checked</q-item-section>
-                                    </q-item>
-                                    <q-item
-                                        v-for="(link, index) in productInPages.slice(0, 1)"
-                                        class=""
-                                        clickable
-                                    >
-                                        <q-item-section>{{link.pageUrl}}</q-item-section>
-                                        <q-item-section class="text-right">{{ link.lastUpdated }}</q-item-section>
-                                    </q-item>
-                                </q-list>
-                            </q-card-section>
-                            <div v-if="productInPages.length > 1" align="right">
-                                <q-btn
-                                    color="primary"
-                                    size="sm"
-                                    label="Show more"
-                                    no-caps
-                                    class="q-mr-md"
-                                    @click="showMoreProductInPages(product)"
-                                />
-                            </div>
-                        </q-card>
-                    </q-expansion-item>
-                </q-list>
-
-                <div class="q-pa-lg flex flex-center">
-                    <q-pagination
-                        :value="3"
-                        :max="5"
-                    >
-                    </q-pagination>
-                </div>
-            </q-card-section>
         </q-card>
 
         <q-dialog v-model="showModal">
@@ -190,21 +116,16 @@
             </q-card>
         </q-dialog>
 
-        <product-in-pages-modal
-            v-if="showProductsInPagesModal.showModal"
-            :active.sync="showProductsInPagesModal.showModal"
-            :product="showProductsInPagesModal.product"
-        />
-
     </section>
 </template>
 
 <script>
     import QCChart from "components/charts/QCChart";
     import ProductInPagesModal from "components/modals/ProductInPagesModal";
+    import AmazonProductsList from "components/amazon-products/AmazonProductsList";
 
     export default {
-        components: {QCChart, ProductInPagesModal},
+        components: {QCChart, ProductInPagesModal, AmazonProductsList},
         data() {
             return {
                 showChart: true,
@@ -212,12 +133,6 @@
                 showModal: false,
 
                 amazonProductsInfo: [],
-
-                productInPages: [],
-                showProductsInPagesModal: {
-                    showModal: false,
-                    product: {},
-                },
             }
         },
 
@@ -239,28 +154,6 @@
                         //handle error
                     });
             },
-
-            showProductInPages(product) {
-
-                this.productInPages = [];
-
-                this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
-                    vm: this,
-                    id: product.id, //amazonproduct id
-                    inputs: {affiliate_id: product.affiliateId}
-                })
-                    .then(res => {
-                        this.productInPages = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    });
-            },
-
-            showMoreProductInPages(product){
-                this.showProductsInPagesModal.showModal = !this.showProductsInPagesModal.showModal;
-                this.showProductsInPagesModal.product = product;
-            }
         }
     }
 </script>

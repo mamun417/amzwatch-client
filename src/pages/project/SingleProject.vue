@@ -191,6 +191,7 @@
 
                 <amazon-products-list
                     :showCondition="index === 'amazon_product_check'"
+                    :showLinksCountAfterExpand="true"
                 />
 
                 <div v-if="index === 'uptime_monitor_check'">
