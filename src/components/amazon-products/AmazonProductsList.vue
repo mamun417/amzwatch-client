@@ -13,7 +13,7 @@
             header-class=""
             expand-icon-class="hidden"
             class="shadow-3 q-mb-sm"
-            @show="product.status !== '404' ? showProductLinksCount(product):''"
+            @show="showProductLinksInfo(product)"
         >
             <q-item
                 slot="header"
@@ -30,15 +30,53 @@
                 </q-item-section>
             </q-item>
 
-            <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
+            <q-card v-if="showLinksCountAfterExpand" class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                 <q-card-section class="flex justify-between items-center">
                     <div>Last updated at: {{product.lastUpdated}}</div>
-                    <q-btn v-if="product.status === '200'" color="positive" size="sm" no-caps
-                           unelevated @click="showProductInPages(product)">
+                    <q-btn color="positive" size="sm" no-caps
+                           unelevated @click="showProductInPagesModal(product)">
                         This product has in: {{ product.inPages }} pages
                     </q-btn>
                 </q-card-section>
             </q-card>
+
+            <q-card v-else class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
+                <q-card-section>
+                    <div class="">Last checked this product: {{product.lastUpdated}}
+                    </div>
+                </q-card-section>
+                <q-card-section>
+                    <div class="flex q-mb-sm">
+                        <div class="q-mr-sm">This product has in:</div>
+                        <q-badge>{{ product.productInPagesLinks ? product.productInPagesLinks.length : '' }} Links</q-badge>
+                    </div>
+                    <q-list bordered dense>
+                        <q-item class="text-primary text-subtitle2 text-bold">
+                            <q-item-section>Link</q-item-section>
+                            <q-item-section class="text-right">Last checked</q-item-section>
+                        </q-item>
+                        <q-item
+                            v-for="(link, index) in product.productInPagesLinks ? product.productInPagesLinks.slice(0, 1) : []"
+                            class=""
+                            clickable
+                        >
+                            <q-item-section>{{link.pageUrl}}</q-item-section>
+                            <q-item-section class="text-right">{{ link.lastUpdated }}</q-item-section>
+                        </q-item>
+                    </q-list>
+                </q-card-section>
+                <div v-if="product.productInPagesLinks ? product.productInPagesLinks.length > 1 : ''" align="right">
+                    <q-btn
+                        color="primary"
+                        size="sm"
+                        label="Show more"
+                        no-caps
+                        class="q-mr-md"
+                        @click="showProductInPagesModal(product)"
+                    />
+                </div>
+            </q-card>
+
         </q-expansion-item>
 
         <product-in-pages-modal
@@ -58,6 +96,9 @@
         name: "AmazonProductsList",
         props: {
             showCondition: {
+                type: Boolean
+            },
+            showLinksCountAfterExpand: {
                 type: Boolean
             },
         },
@@ -90,16 +131,20 @@
                     });
             },
 
-            showProductLinksCount(product) {
+            showProductLinksInfo(product) {
                 this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
                     vm: this,
                     id: product.id, //amazonproduct id
-                    inputs: {affiliate_id: product.affiliateId, only_total: true}
+                    inputs: {affiliate_id: product.affiliateId, only_total: this.showLinksCountAfterExpand}
                 })
                     .then(res => {
                         this.amazonProductsInfo = this.amazonProductsInfo.map(amazonProduct => {
                             if (product.id === amazonProduct.id) {
-                                amazonProduct['inPages'] = res.data.count;
+                                if (this.showLinksCountAfterExpand){
+                                    amazonProduct['inPages'] = res.data.count;
+                                }else {
+                                    amazonProduct['productInPagesLinks'] = res.data;
+                                }
                             }
 
                             return amazonProduct;
@@ -110,7 +155,7 @@
                     });
             },
 
-            showProductInPages(product){
+            showProductInPagesModal(product){
                 this.showProductsInPagesModal.showModal = !this.showProductsInPagesModal.showModal;
                 this.showProductsInPagesModal.product = product;
             },
