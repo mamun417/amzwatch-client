@@ -81,7 +81,7 @@
 
                 <div>
                     <q-badge color="positive">
-                        Total: {{ brokenLinkInfo.length }} links
+                        Total: {{ brokenLinksCount }} links
                     </q-badge>
                 </div>
 
@@ -95,45 +95,12 @@
             </q-card-section>
 
             <q-card-section v-if="showLinks">
-                <q-list>
-                    <q-item class="q-mb-sm text-subtitle2 text-primary">
-                        <q-item-section class="q-ml-md">Link</q-item-section>
-                        <q-item-section class="text-center">Status</q-item-section>
-                        <q-item-section class="text-right q-mr-md">Last Checked</q-item-section>
-                    </q-item>
 
-                    <q-expansion-item
-                        v-for="(link, index) in brokenLinkInfo" :key="index"
-                        group="brokenLink"
-                        icon=""
-                        header-class=""
-                        expand-icon-class="hidden"
-                        class="shadow-3 q-mb-sm"
-                    >
-                        <q-item
-                            slot="header"
-                            class="row full-width justify-between text-subtitle2 items-center"
-                        >
-                            <q-item-section class="col">{{link.url}}</q-item-section>
-                            <q-item-section class="col text-center inline-block">
-                                <q-badge
-                                    :color="link.status === '404' ? 'warning' : 'positive'"
-                                >
-                                    {{link.status}} - {{link.status === '404' ? 'unavailable' : 'available'}}
-                                </q-badge>
-                            </q-item-section>
-                            <q-item-section class="col text-right">
-                                {{link.lastUpdated}}
-                            </q-item-section>
-                        </q-item>
-
-                        <!--                        <q-card>-->
-                        <!--                            <q-card-section>-->
-                        <!--                                <div class="text-caption text-bold">Last updated at: 10 10 10</div>-->
-                        <!--                            </q-card-section>-->
-                        <!--                        </q-card>-->
-                    </q-expansion-item>
-                </q-list>
+                <broken-links-list
+                    :showCondition="true"
+                    :getBrokenLinksCount="true"
+                    @getBrokenLinksCount="brokenLinksCount = $event"
+                />
 
                 <div class="q-pa-lg flex flex-center">
                     <q-pagination
@@ -164,35 +131,16 @@
 
 <script>
     import QCChart from "components/charts/QCChart";
+    import BrokenLinksList from "components/broken-links/BrokenLinksList";
 
     export default {
-        components: {QCChart},
+        components: {BrokenLinksList, QCChart},
         data() {
             return {
                 showChart: true,
                 showLinks: true,
                 showModal: false,
-
-                brokenLinkInfo: [],
-            }
-        },
-
-        mounted() {
-            this.getBrokenLinks();
-        },
-
-        methods: {
-            getBrokenLinks() {
-                this.$store.dispatch('broken_links/getBrokenLinks', {
-                    vm: this,
-                    project_id: this.$route.params.project_id
-                })
-                    .then(res => {
-                        this.brokenLinkInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
+                brokenLinksCount: '',
             }
         }
     }
