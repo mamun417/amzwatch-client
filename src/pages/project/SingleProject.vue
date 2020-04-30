@@ -24,8 +24,7 @@
         <q-card
             v-for="(service, index) in projectInfo.services"
             :key="index"
-            class="q-mb-xl"
-        >
+            class="q-mb-xl">
             <q-card-section class="bg-primary row items-center text-white text-subtitle2">
                 <div class="col flex items-center">
                     <q-icon :name="service.icon" class="q-mr-sm"/>
@@ -63,46 +62,8 @@
             </q-card-section>
 
             <q-card-section v-if="service.expansionStatus && service.active">
-                <q-list v-if="index === 'broken_link_check'">
-                    <q-item class="q-mb-sm text-subtitle2 text-primary">
-                        <q-item-section class="q-ml-md">Link</q-item-section>
-                        <q-item-section class="text-center">Status</q-item-section>
-                        <q-item-section class="text-right q-mr-md">Last Checked</q-item-section>
-                    </q-item>
 
-                    <q-expansion-item
-                        v-for="(link, index) in brokenLinkInfo" :key="index"
-                        group="brokenLink"
-                        icon=""
-                        header-class=""
-                        expand-icon-class="hidden"
-                        class="shadow-3 q-mb-sm"
-                    >
-                        <q-item
-                            slot="header"
-                            class="row full-width justify-between text-subtitle2 items-center"
-                        >
-                            <q-item-section class="col">img</q-item-section>
-                            <q-item-section class="col text-center inline-block">
-                                <q-badge
-                                    :color="link.status === '404' ? 'warning' : 'positive'"
-                                >
-                                    {{link.status}} - {{link.status === '404' ? 'unavailable' : 'available'}}
-                                </q-badge>
-                            </q-item-section>
-                            <q-item-section class="col text-right">
-                                {{link.lastUpdated}}
-                            </q-item-section>
-                        </q-item>
-
-                        <!--                        <q-card>-->
-                        <!--                            <q-card-section>-->
-                        <!--                                <div class="text-caption text-bold">Last updated at: 10 10 10</div>-->
-                        <!--                            </q-card-section>-->
-                        <!--                        </q-card>-->
-                    </q-expansion-item>
-                </q-list>
-                <!--end broken link check-->
+                <broken-links-list :showCondition="index === 'broken_link_check'" />
 
                 <!--start guest link check-->
                 <q-list v-if="index === 'guest_post_check'">
@@ -145,49 +106,6 @@
                     </q-expansion-item>
                 </q-list>
                 <!--end guest post check-->
-
-                <!--<q-list v-if="index === 'amazon_product_check'">
-                    <q-item class="q-mb-sm text-subtitle2 text-primary">
-                        <q-item-section class="q-ml-md">Image</q-item-section>
-                        <q-item-section class="text-center">Product Name</q-item-section>
-                        <q-item-section class="text-right q-mr-md">In Pages</q-item-section>
-                    </q-item>
-
-                    <q-expansion-item
-                        v-for="(product, index) in amazonProductsInfo" :key="index"
-                        group="amzProduct"
-                        icon=""
-                        header-class=""
-                        expand-icon-class="hidden"
-                        class="shadow-3 q-mb-sm"
-                        @show="product.status !== '404' ? showProductLinksCount(product):''"
-                    >
-                        <q-item
-                            slot="header"
-                            class="row full-width justify-between text-subtitle2 items-center"
-                        >
-                            <q-item-section class="col">img</q-item-section>
-                            <q-item-section class="col">{{product.productName}}</q-item-section>
-                            <q-item-section class="col inline-block text-right">
-                                <q-badge
-                                    :color="product.status === '404' ? 'warning' : 'positive'"
-                                >
-                                    {{product.status}} - {{product.status === '404' ? 'unavailable' : 'available'}}
-                                </q-badge>
-                            </q-item-section>
-                        </q-item>
-
-                        <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
-                            <q-card-section class="flex justify-between items-center">
-                                <div>Last updated at: {{product.lastUpdated}}</div>
-                                <q-btn v-if="product.status === '200'" color="positive" size="sm" no-caps
-                                       unelevated @click="showProductInPages(product)">
-                                    This product has in: {{ product.inPages }} pages
-                                </q-btn>
-                            </q-card-section>
-                        </q-card>
-                    </q-expansion-item>
-                </q-list>-->
 
                 <amazon-products-list
                     :showCondition="index === 'amazon_product_check'"
@@ -251,9 +169,10 @@
     import QCChart from "components/charts/QCChart";
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
     import AmazonProductsList from "components/amazon-products/AmazonProductsList";
+    import BrokenLinksList from "components/broken-links/BrokenLinksList";
 
     export default {
-        components: {UptimeCheckActivateDeactivateModal, QCChart, AmazonProductsList},
+        components: {UptimeCheckActivateDeactivateModal, QCChart, AmazonProductsList, BrokenLinksList},
         data() {
             return {
                 showModal: false,
@@ -267,19 +186,19 @@
                             icon: 'local_mall',
                             expansionStatus: true,
                             active: true,
-                            to: '/projects/'+this.$route.params.project_id+'/amazon-products-check'
+                            to: '/projects/' + this.$route.params.project_id + '/amazon-products-check'
                         },
                         guest_post_check: {
                             icon: 'record_voice_over',
                             expansionStatus: true,
                             active: true,
-                            to: '/projects/'+this.$route.params.project_id+'/guest-links-check'
+                            to: '/projects/' + this.$route.params.project_id + '/guest-links-check'
                         },
                         broken_link_check: {
                             icon: 'link_off',
                             expansionStatus: true,
                             active: true,
-                            to: '/projects/'+this.$route.params.project_id+'/broken-links-check'
+                            to: '/projects/' + this.$route.params.project_id + '/broken-links-check'
                         },
                         uptime_monitor_check: {
                             icon: 'trending_up',
@@ -290,13 +209,11 @@
                     }
                 },
                 guestPostInfo: [],
-                brokenLinkInfo: []
             }
         },
 
         mounted() {
             this.getGuestPostInfo();
-            this.getBrokenLinkInfo();
         },
 
         methods: {
@@ -317,20 +234,7 @@
                     .catch(err => {
                         //handle error
                     });
-            },
-
-            getBrokenLinkInfo() {
-                this.$store.dispatch('broken_links/getBrokenLinks', {
-                    vm: this,
-                    project_id: this.$route.params.project_id
-                })
-                    .then(res => {
-                        this.brokenLinkInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
-            },
+            }
         }
     }
 </script>
