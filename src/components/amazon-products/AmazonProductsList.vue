@@ -1,5 +1,5 @@
 <template>
-    <q-list v-if="showCondition">
+    <q-list>
         <q-item class="q-mb-sm text-subtitle2 text-primary">
             <q-item-section class="q-ml-md">Image</q-item-section>
             <q-item-section class="text-center">Product Name</q-item-section>
@@ -95,12 +95,9 @@
         components: {ProductInPagesModal},
         name: "AmazonProductsList",
         props: {
-            showCondition: {
-                type: Boolean
-            },
             showLinksCountAfterExpand: {
                 type: Boolean
-            },
+            }
         },
 
         data() {

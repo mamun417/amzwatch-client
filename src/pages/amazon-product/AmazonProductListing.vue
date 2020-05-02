@@ -95,7 +95,7 @@
             </q-card-section>
 
             <amazon-products-list
-                :showCondition="showLinks"
+                v-if="showLinks"
                 :showLinksCountAfterExpand="false"
             />
 

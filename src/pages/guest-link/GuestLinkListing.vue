@@ -81,7 +81,7 @@
 
                 <div>
                     <q-badge color="positive">
-                        Total: 200 Links
+                        Total: {{ guestLinksCount }} Links
                     </q-badge>
                 </div>
 
@@ -95,45 +95,11 @@
             </q-card-section>
 
             <q-card-section v-if="showLinks">
-                <q-list>
-                    <q-item class="q-mb-sm text-subtitle2 text-primary">
-                        <q-item-section class="q-ml-md">Link</q-item-section>
-                        <q-item-section class="text-center">Hosted Link</q-item-section>
-                        <q-item-section class="text-right q-mr-md">Status</q-item-section>
-                    </q-item>
 
-                    <q-expansion-item
-                        v-for="(guest, index) in guestLinksInfo" :key="index"
-                        group="guestPost"
-                        icon=""
-                        header-class=""
-                        expand-icon-class="hidden"
-                        class="shadow-3 q-mb-sm"
-                    >
-                        <q-item
-                            slot="header"
-                            class="row full-width justify-between text-subtitle2 items-center"
-                        >
-                            <q-item-section class="col">{{guest.url}}</q-item-section>
-                            <q-item-section class="col">
-                                {{guest.remoteUrl}}
-                            </q-item-section>
-                            <q-item-section class="col inline-block text-right">
-                                <q-badge
-                                    :color="guest.status === '404' ? 'warning' : 'positive'"
-                                >
-                                    {{guest.status}} - {{guest.status === '404' ? 'unavailable' : 'available'}}
-                                </q-badge>
-                            </q-item-section>
-                        </q-item>
-
-                        <q-card>
-                            <q-card-section>
-                                <div class="text-caption text-bold">Last updated at: {{guest.lastUpdated}}</div>
-                            </q-card-section>
-                        </q-card>
-                    </q-expansion-item>
-                </q-list>
+                <guest-links-list
+                    :getGuestLinksCount="true"
+                    @getGuestLinksCount="guestLinksCount = $event"
+                />
 
                 <div class="q-pa-lg flex flex-center">
                     <q-pagination
@@ -164,24 +130,24 @@
 
 <script>
     import QCChart from "components/charts/QCChart";
+    import GuestLinksList from "components/guest-links/GuestLinksList";
 
     export default {
-        components: {QCChart},
+        components: {QCChart, GuestLinksList},
         data() {
             return {
                 showChart: true,
                 showLinks: true,
                 showModal: false,
-
-                guestLinksInfo: [],
+                guestLinksCount: '',
             }
         },
 
         mounted() {
-            this.getGuestLinks();
+            //this.getGuestLinks();
         },
 
-        methods: {
+       /* methods: {
             getGuestLinks() {
                 this.$store.dispatch('guest_links/getGuestLinks', {vm: this, project_id: this.$route.params.project_id})
                     .then(res => {
@@ -191,6 +157,6 @@
                         //handle error
                     })
             }
-        }
+        }*/
     }
 </script>

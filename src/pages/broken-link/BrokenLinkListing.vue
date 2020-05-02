@@ -97,7 +97,6 @@
             <q-card-section v-if="showLinks">
 
                 <broken-links-list
-                    :showCondition="true"
                     :getBrokenLinksCount="true"
                     @getBrokenLinksCount="brokenLinksCount = $event"
                 />
