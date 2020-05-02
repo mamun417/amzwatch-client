@@ -57,58 +57,18 @@
                     </template>
 
                     <q-btn v-else label="Start service" dense flat/>
-                    <!--                    call modals-->
+                    <!--call modals-->
                 </div>
             </q-card-section>
 
             <q-card-section v-if="service.expansionStatus && service.active">
 
-                <broken-links-list :showCondition="index === 'broken_link_check'" />
+                <broken-links-list v-if="index === 'broken_link_check'" />
 
-                <!--start guest link check-->
-                <q-list v-if="index === 'guest_post_check'">
-                    <q-item class="q-mb-sm text-subtitle2 text-primary">
-                        <q-item-section class="q-ml-md">Link</q-item-section>
-                        <q-item-section class="text-center">Hosted Link</q-item-section>
-                        <q-item-section class="text-right q-mr-md">Status</q-item-section>
-                    </q-item>
-
-                    <q-expansion-item
-                        v-for="(guest, index) in guestPostInfo" :key="index"
-                        group="guestPost"
-                        icon=""
-                        header-class=""
-                        expand-icon-class="hidden"
-                        class="shadow-3 q-mb-sm"
-                    >
-                        <q-item
-                            slot="header"
-                            class="row full-width justify-between text-subtitle2 items-center"
-                        >
-                            <q-item-section class="col">{{guest.url}}</q-item-section>
-                            <q-item-section class="col">
-                                {{guest.remoteUrl}}
-                            </q-item-section>
-                            <q-item-section class="col text-center inline-block">
-                                <q-badge
-                                    :color="guest.status === '404' ? 'warning' : 'positive'"
-                                >
-                                    {{guest.status}} - {{guest.status === '404' ? 'unavailable' : 'available'}}
-                                </q-badge>
-                            </q-item-section>
-                        </q-item>
-
-                        <q-card>
-                            <q-card-section>
-                                <div class="text-caption text-bold">Last updated at: {{guest.lastUpdated}}</div>
-                            </q-card-section>
-                        </q-card>
-                    </q-expansion-item>
-                </q-list>
-                <!--end guest post check-->
+                <guest-links-list v-if="index === 'guest_post_check'"/>
 
                 <amazon-products-list
-                    :showCondition="index === 'amazon_product_check'"
+                    v-if="index === 'amazon_product_check'"
                     :showLinksCountAfterExpand="true"
                 />
 
@@ -170,9 +130,10 @@
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
     import AmazonProductsList from "components/amazon-products/AmazonProductsList";
     import BrokenLinksList from "components/broken-links/BrokenLinksList";
+    import GuestLinksList from "components/guest-links/GuestLinksList";
 
     export default {
-        components: {UptimeCheckActivateDeactivateModal, QCChart, AmazonProductsList, BrokenLinksList},
+        components: {GuestLinksList, UptimeCheckActivateDeactivateModal, QCChart, AmazonProductsList, BrokenLinksList},
         data() {
             return {
                 showModal: false,

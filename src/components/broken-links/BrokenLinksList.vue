@@ -1,5 +1,5 @@
 <template>
-    <q-list v-if="showCondition">
+    <q-list>
         <q-item class="q-mb-sm text-subtitle2 text-primary">
             <q-item-section class="q-ml-md">Link</q-item-section>
             <q-item-section class="text-center">Status</q-item-section>
@@ -35,9 +35,6 @@
     export default {
         name: "BrokenLinksList",
         props: {
-            showCondition: {
-                type: Boolean
-            },
             getBrokenLinksCount: {
                 type: Boolean,
                 default: false
