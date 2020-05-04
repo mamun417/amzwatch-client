@@ -81,7 +81,7 @@
 
                 <div>
                     <q-badge color="positive">
-                        Total: {{ amazonProductsInfo.length }} Products
+                        Total: {{ amazonProductsCount }} Products
                     </q-badge>
                 </div>
 
@@ -97,6 +97,8 @@
             <amazon-products-list
                 v-if="showLinks"
                 :showLinksCountAfterExpand="false"
+                :getAmazonProductsCount="true"
+                @getAmazonProductsCount="amazonProductsCount = $event"
             />
 
         </q-card>
@@ -131,29 +133,12 @@
                 showChart: true,
                 showLinks: true,
                 showModal: false,
-
-                amazonProductsInfo: [],
+                amazonProductsCount: ''
             }
         },
 
-        mounted() {
-            this.getAmazonProducts();
-        },
+        mounted() {},
 
-        methods: {
-
-            getAmazonProducts() {
-                this.$store.dispatch('amazon_products_links/getAmazonProducts', {
-                    vm: this,
-                    project_id: this.$route.params.project_id
-                })
-                    .then(res => {
-                        this.amazonProductsInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    });
-            },
-        }
+        methods: {}
     }
 </script>
