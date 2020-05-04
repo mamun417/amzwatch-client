@@ -5,6 +5,7 @@ import auth from './auth'
 import broken_links from './broken-links'
 import amazon_products_links from './amazon-product'
 import guest_links from './guest-links'
+import projects from './project'
 
 Vue.use(Vuex)
 
@@ -24,6 +25,7 @@ export default function (/* { ssrContext } */) {
             broken_links,
             amazon_products_links,
             guest_links,
+            projects
         },
 
         // enable strict mode (adds overhead!)
