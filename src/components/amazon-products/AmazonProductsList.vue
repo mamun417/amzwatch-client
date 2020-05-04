@@ -97,6 +97,10 @@
         props: {
             showLinksCountAfterExpand: {
                 type: Boolean
+            },
+            getAmazonProductsCount: {
+                type: Boolean,
+                default: false
             }
         },
 
@@ -122,6 +126,10 @@
                 })
                     .then(res => {
                         this.amazonProductsInfo = res.data;
+
+                        if (this.getAmazonProductsCount){
+                            this.$emit('getAmazonProductsCount', res.data.length);
+                        }
                     })
                     .catch(err => {
                         //handle error
