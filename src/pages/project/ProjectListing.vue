@@ -7,7 +7,7 @@
                 <div class="text-subtitle1">Projects</div>
 
                 <div v-if="projects.length" class="text-caption">
-                    You have total {{ projectInfo.length }} projects
+                    You have total {{ projects.length }} projects
                 </div>
 
                 <q-btn color="grey-3" @click="showAddNewProjectModal = true" flat>Add New</q-btn>
@@ -39,7 +39,6 @@
             </q-pagination>
         </div>
 
-
         <q-dialog v-model="showAddNewProjectModal">
             <q-card style="min-width: 400px">
                 <q-card-section class="bg-primary text-white">
@@ -61,7 +60,7 @@
         <q-dialog v-model="showEditProjectModal" @hide="resetEditData">
             <q-card style="min-width: 400px">
                 <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Edit {{selectedForEdit.name}} Project</div>
+                    <div class="text-h6">Edit {{selectedForEdit.projectName}} Project</div>
                 </q-card-section>
 
                 <q-card-section class="">
@@ -90,92 +89,68 @@
 
 <script>
 
-    import QCChart from "components/charts/QCChart";
+import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
 
-    export default {
-        components: {QCChart},
-        data() {
-            return {
-                showChart: true,
-                showLinks: true,
-                showModal: false,
+export default {
+    components: {SingleProjectInfoInListing},
+    data() {
+        return {
+            showAddNewProjectModal: false,
+            showEditProjectModal  : false,
 
-                projectInfo: [],
-            }
-        },
+            selectedForEdit  : {},
+            addNewProjectData: {},
+            editProjectData  : {
+                state: true
+            },
+            projects: [],
 
-        mounted() {
-            this.getProjects();
-        },
-
-        methods: {
-            getProjects() {
-                this.$store.dispatch('projects/getProjects', {
-                    vm: this,
-                    //project_id: this.$route.params.project_id
-                })
-                    .then(res => {
-                        this.projectInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
-            }
         }
-    }
+    },
 
-// import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
-//
-// export default {
-//     components: {SingleProjectInfoInListing},
-//     created() {
-//         // get projects first then assign to projects.
-//         // dont worry for loading. we will add later
-//     },
-//     data() {
-//         return {
-//             showAddNewProjectModal: false,
-//             showEditProjectModal  : false,
-//
-//             selectedForEdit  : {},
-//             addNewProjectData: {},
-//             editProjectData  : {
-//                 state: true
-//             },
-//             projects         : [
-//                 {
-//                     name    : 'Test project for all',
-//                     domain  : 'https//exonhost.com',
-//                     services: ['broken_link_check', 'guest_link_check']
-//                 },
-//                 {
-//                     name    : 'Test2',
-//                     domain  : 'https//exonhost.com',
-//                     services: ['amazon_product_link_check', 'uptime_monitor_check']
-//                 }
-//             ],
-//
-//         }
-//     },
-//     methods   : {
-//         handleEditClick(data) {
-//             this.selectedForEdit = data;
-//
-//             this.editProjectData.name = data.name;
-//             this.editProjectData.domain = data.domain;
-//
-//             this.showEditProjectModal = true;
-//         },
-//         resetEditData() {
-//             this.selectedForEdit = {};
-//             this.editProjectData = {
-//                 state: true
-//             }
-//         }
-//
-//         // use add project api
-//         // use update project api
-//         // use start service apis
-//     }
-// }
+    created() {
+        // get projects first then assign to projects.
+        this.getProjects();
+        // dont worry for loading. we will add later
+    },
+
+    methods   : {
+        handleEditClick(data) {
+            this.selectedForEdit = data;
+
+            this.editProjectData.name = data.projectName;
+            this.editProjectData.domain = data.domain.url;
+
+            this.showEditProjectModal = true;
+        },
+
+        resetEditData() {
+            this.selectedForEdit = {};
+            this.editProjectData = {
+                state: true
+            }
+        },
+
+        getProjects() {
+            this.$store.dispatch('projects/getProjects', { vm: this })
+                .then(res => {
+
+                    this.projects = res.data.userProject;
+
+                    this.amazonProductsInfo = this.projects.map(project => {
+                        project['services'] = ['broken_link_check', 'guest_link_check'];
+                        return project;
+                    });
+
+                    console.log(this.projects);
+                })
+                .catch(err => {
+                    //handle error
+                })
+        },
+        // use add project api
+        // use update project api
+        // use start service apis
+    }
+}
 </script>

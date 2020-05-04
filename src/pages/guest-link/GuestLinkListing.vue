@@ -141,22 +141,6 @@
                 showModal: false,
                 guestLinksCount: '',
             }
-        },
-
-        mounted() {
-            //this.getGuestLinks();
-        },
-
-       /* methods: {
-            getGuestLinks() {
-                this.$store.dispatch('guest_links/getGuestLinks', {vm: this, project_id: this.$route.params.project_id})
-                    .then(res => {
-                        this.guestLinksInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
-            }
-        }*/
+        }
     }
 </script>

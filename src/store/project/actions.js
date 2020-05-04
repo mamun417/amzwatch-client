@@ -1,6 +1,6 @@
 export function getProjects(context, payload) {
     return new Promise((resolve, reject) => {
-        payload.vm.$post('/projects/'+payload.project_id)
+        payload.vm.$get('/projects')
             .then(res => {
                 resolve(res)
             })
