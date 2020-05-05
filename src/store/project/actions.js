@@ -9,3 +9,15 @@ export function getProjects(context, payload) {
             })
     })
 }
+
+export function addProject(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/projects', payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
