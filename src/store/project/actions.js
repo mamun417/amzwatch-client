@@ -21,3 +21,15 @@ export function addProject(context, payload) {
             })
     })
 }
+
+export function updateProject(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$patch(`/projects/${payload.project_id}`, payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}

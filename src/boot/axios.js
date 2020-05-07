@@ -78,5 +78,17 @@ export default function ({store, Vue, router}) {
         })
     }
 
+    Vue.prototype.$patch = function (path, payload) {
+        return new Promise((resolve, reject) => {
+            this.$http.patch(this.$api(path), payload)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
 
 }
