@@ -59,12 +59,12 @@
 
                 <q-card-actions align="right" class="text-primary">
                     <q-btn flat label="Cancel" v-close-popup/>
-                    <q-btn @click="addProductButtonClicked" flat label="Submit"/>
+                    <q-btn @click="addProjectButtonClicked" flat label="Submit"/>
                 </q-card-actions>
             </q-card>
         </q-dialog>
 
-        <q-dialog v-model="showEditProjectModal" @hide="resetEditData">
+        <q-dialog v-model="showEditProjectModal" @hide="resetEditData"  >
             <q-card style="min-width: 400px">
                 <q-card-section class="bg-primary text-white">
                     <div class="text-h6">Edit {{selectedForEdit.projectName}} Project</div>
@@ -72,8 +72,15 @@
 
                 <q-card-section class="">
                     <div class="q-px-sm q-mb-md">
-                        <q-input v-model="editProjectData.name" label="Project Name" class="q-mb-md" autofocus dense/>
-                        <q-input v-model="editProjectData.domain" label="Domain URL" dense/>
+                        <q-input v-model="editProjectData.project_name" label="Project Name" class="q-mb-md"
+                             autofocus dense
+                             :error-message="editProjectDataErrors.project_name" :error="!!editProjectDataErrors.project_name"
+                             @input="editProjectDataErrors.project_name = ''"
+                        />
+                        <q-input disable v-model="editProjectData.domain_url" label="Domain URL" dense
+                             :error-message="editProjectDataErrors.domain_url" :error="!!editProjectDataErrors.domain_url"
+                             @input="editProjectDataErrors.domain_url = ''"
+                        />
                     </div>
 
                     <q-toggle
@@ -87,7 +94,7 @@
 
                 <q-card-actions align="right" class="text-primary">
                     <q-btn flat label="Cancel" v-close-popup/>
-                    <q-btn flat label="Update" v-close-popup/>
+                    <q-btn flat label="Update" @click="updateProjectButtonClicked"/>
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -108,6 +115,7 @@ export default {
             selectedForEdit: {},
             addNewProjectData: {},
             addNewProjectDataErrors: {},
+            editProjectDataErrors: {},
             editProjectData: {
                 state: true
             },
@@ -126,12 +134,11 @@ export default {
         handleEditClick(data) {
             this.selectedForEdit = data;
 
-            this.editProjectData.name = data.projectName;
-            this.editProjectData.domain = data.domain.url;
+            this.editProjectData.project_name = data.projectName;
+            this.editProjectData.domain_url = data.domain.url;
 
             this.showEditProjectModal = true;
         },
-
         resetEditData() {
             this.selectedForEdit = {};
             this.editProjectData = {
@@ -153,7 +160,7 @@ export default {
                 })
         },
 
-        addProductButtonClicked() {
+        addProjectButtonClicked() {
             this.$store.dispatch('projects/addProject', {
                 vm: this,
                 inputs: this.addNewProjectData
@@ -169,10 +176,47 @@ export default {
                     this.showAddNewProjectModal = false;
                 })
                 .catch(err => {
-                    this.addNewProjectDataErrors = err.response.data.errors;
+                    if (!err.response.data.errors){
+                        this.$q.notify({
+                            color   : 'negative',
+                            message : err.response.data.message,
+                            position: 'top'
+                        })
+                    }else {
+                        this.addNewProjectDataErrors = err.response.data.errors;
+                    }
+                })
+        },
+
+        updateProjectButtonClicked() {
+            this.$store.dispatch('projects/updateProject', {
+                vm: this,
+                inputs: this.editProjectData,
+                project_id: this.selectedForEdit.id
+            })
+                .then(res => {
+                    this.$q.notify({
+                        color: 'positive',
+                        message: 'Project has been updated Successful',
+                        position: 'top'
+                    });
+
+                    this.getProjects();
+                    this.showEditProjectModal = false;
+                })
+                .catch(err => {
+                    if (!err.response.data.errors){
+                        this.$q.notify({
+                            color   : 'negative',
+                            message : err.response.data.message,
+                            position: 'top'
+                        })
+                    }else {
+                        this.editProjectDataErrors = err.response.data.errors;
+                    }
                 })
         }
-        // use update project api
+
         // use start service apis
     }
 }

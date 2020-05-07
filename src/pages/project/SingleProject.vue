@@ -169,32 +169,16 @@
                         }
                     }
                 },
-                guestPostInfo: [],
             }
         },
 
-        mounted() {
-            this.getGuestPostInfo();
-        },
+        mounted() {},
 
         methods: {
             modalOpenHandle(serviceType) {
                 if (serviceType === 'uptime_monitor_check') {
                     this.showUptimeMonitorActiveModal = true;
                 }
-            },
-
-            getGuestPostInfo() {
-                this.$store.dispatch('guest_links/getGuestLinks', {
-                    vm: this,
-                    project_id: this.$route.params.project_id
-                })
-                    .then(res => {
-                        this.guestPostInfo = res.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    });
             }
         }
     }
