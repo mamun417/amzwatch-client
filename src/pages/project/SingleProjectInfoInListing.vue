@@ -5,8 +5,8 @@
                 <div class="row items-center q-mb-xs">
                     <div class="q-mr-sm text-subtitle1">{{projectInfo.projectName}}</div>
 
-                    <q-badge color="positive">
-                        Active
+                    <q-badge :color="projectInfo.deactivatedAt ? 'warning' : 'positive'">
+                        {{ projectInfo.deactivatedAt ? 'Deactivated' : 'Active' }}
                     </q-badge>
                 </div>
             </div>

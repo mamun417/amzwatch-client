@@ -10,7 +10,7 @@
                     You have total {{ projects.length }} projects
                 </div>
 
-                <q-btn color="grey-3" @click="showAddNewProjectModal = true" flat>Add New</q-btn>
+                <q-btn color="grey-3" @click="showAddEditProjectModal = true" flat>Add New</q-btn>
             </q-card-section>
 
             <q-card-section v-if="!projects.length" class="text-center q-py-xl">
@@ -39,52 +39,28 @@
             </q-pagination>
         </div>
 
-        <q-dialog v-model="showAddNewProjectModal">
+        <q-dialog v-model="showAddEditProjectModal" @hide="resetAddEditFormData">
             <q-card style="min-width: 400px">
                 <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Add New Project</div>
+                    <div v-if="projectUpdateModal" class="text-h6">Edit {{selectedForEdit.projectName}} Project</div>
+                    <div v-else class="text-h6">Add New Project</div>
                 </q-card-section>
 
                 <q-card-section class="">
-                    <q-input v-model="addNewProjectData.project_name" label="Project Name" class="q-mb-md"
+                    <q-input v-model="addEditProjectData.project_name" label="Project Name" class="q-mb-md"
                         autofocus dense
-                        :error-message="addNewProjectDataErrors.project_name" :error="!!addNewProjectDataErrors.project_name"
-                        @input="addNewProjectDataErrors.project_name = ''"
+                        :error-message="addEditProjectDataErrors.project_name" :error="!!addEditProjectDataErrors.project_name"
+                        @input="addEditProjectDataErrors.project_name = ''"
                     />
-                    <q-input v-model="addNewProjectData.domain_url" label="Domain URL" dense
-                        :error-message="addNewProjectDataErrors.domain_url" :error="!!addNewProjectDataErrors.domain_url"
-                        @input="addNewProjectDataErrors.domain_url = ''"
+                    <q-input v-model="addEditProjectData.domain_url" label="Domain URL" dense
+                        :error-message="addEditProjectDataErrors.domain_url" :error="!!addEditProjectDataErrors.domain_url"
+                        @input="addEditProjectDataErrors.domain_url = ''"
+                        :disable="projectUpdateModal"
+                        :hint="projectUpdateModal ? 'Domain URL is unchangeable field' : ''"
                     />
-                </q-card-section>
 
-                <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="Cancel" v-close-popup/>
-                    <q-btn @click="addProjectButtonClicked" flat label="Submit"/>
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-
-        <q-dialog v-model="showEditProjectModal" @hide="resetEditData"  >
-            <q-card style="min-width: 400px">
-                <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Edit {{selectedForEdit.projectName}} Project</div>
-                </q-card-section>
-
-                <q-card-section class="">
-                    <div class="q-px-sm q-mb-md">
-                        <q-input v-model="editProjectData.project_name" label="Project Name" class="q-mb-md"
-                             autofocus dense
-                             :error-message="editProjectDataErrors.project_name" :error="!!editProjectDataErrors.project_name"
-                             @input="editProjectDataErrors.project_name = ''"
-                        />
-                        <q-input disable v-model="editProjectData.domain_url" label="Domain URL" dense
-                             :error-message="editProjectDataErrors.domain_url" :error="!!editProjectDataErrors.domain_url"
-                             @input="editProjectDataErrors.domain_url = ''"
-                        />
-                    </div>
-
-                    <q-toggle
-                        v-model="editProjectData.state"
+                    <q-toggle v-if="projectUpdateModal"
+                        v-model="addEditProjectData.active_status"
                         checked-icon="check"
                         color="primary"
                         label="Keep active your project"
@@ -94,7 +70,11 @@
 
                 <q-card-actions align="right" class="text-primary">
                     <q-btn flat label="Cancel" v-close-popup/>
-                    <q-btn flat label="Update" @click="updateProjectButtonClicked"/>
+                    <q-btn
+                        @click="projectUpdateModal ? updateProjectButtonClicked() : addProjectButtonClicked()"
+                        :label="projectUpdateModal ? 'Update' : 'Submit'"
+                        flat
+                    />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -109,18 +89,15 @@ export default {
     components: {SingleProjectInfoInListing},
     data() {
         return {
-            showAddNewProjectModal: false,
-            showEditProjectModal: false,
+            projects: [],
+            projectUpdateModal: false,
+            showAddEditProjectModal: false,
 
             selectedForEdit: {},
-            addNewProjectData: {},
-            addNewProjectDataErrors: {},
-            editProjectDataErrors: {},
-            editProjectData: {
-                state: true
+            addEditProjectData: {
+                active_status: true
             },
-            projects: [],
-
+            addEditProjectDataErrors: {}
         }
     },
 
@@ -130,20 +107,24 @@ export default {
         // dont worry for loading. we will add later
     },
 
-    methods   : {
+    methods: {
         handleEditClick(data) {
+            this.projectUpdateModal = true;
             this.selectedForEdit = data;
 
-            this.editProjectData.project_name = data.projectName;
-            this.editProjectData.domain_url = data.domain.url;
+            this.addEditProjectData.project_name = data.projectName;
+            this.addEditProjectData.domain_url = data.domain.url;
 
-            this.showEditProjectModal = true;
+            this.showAddEditProjectModal = true;
         },
-        resetEditData() {
+
+        resetAddEditFormData() {
+            this.projectUpdateModal = false;
             this.selectedForEdit = {};
-            this.editProjectData = {
-                state: true
-            }
+            this.addEditProjectData = {
+                active_status: true
+            };
+            this.addEditProjectDataErrors = {};
         },
 
         getProjects() {
@@ -163,7 +144,7 @@ export default {
         addProjectButtonClicked() {
             this.$store.dispatch('projects/addProject', {
                 vm: this,
-                inputs: this.addNewProjectData
+                inputs: this.addEditProjectData
             })
                 .then(res => {
                     this.$q.notify({
@@ -173,7 +154,7 @@ export default {
                     });
 
                     this.getProjects();
-                    this.showAddNewProjectModal = false;
+                    this.showAddEditProjectModal = false;
                 })
                 .catch(err => {
                     if (!err.response.data.errors){
@@ -183,7 +164,7 @@ export default {
                             position: 'top'
                         })
                     }else {
-                        this.addNewProjectDataErrors = err.response.data.errors;
+                        this.addEditProjectDataErrors = err.response.data.errors;
                     }
                 })
         },
@@ -191,7 +172,7 @@ export default {
         updateProjectButtonClicked() {
             this.$store.dispatch('projects/updateProject', {
                 vm: this,
-                inputs: this.editProjectData,
+                inputs: this.addEditProjectData,
                 project_id: this.selectedForEdit.id
             })
                 .then(res => {
@@ -202,7 +183,7 @@ export default {
                     });
 
                     this.getProjects();
-                    this.showEditProjectModal = false;
+                    this.showAddEditProjectModal = false;
                 })
                 .catch(err => {
                     if (!err.response.data.errors){
@@ -212,7 +193,7 @@ export default {
                             position: 'top'
                         })
                     }else {
-                        this.editProjectDataErrors = err.response.data.errors;
+                        this.addEditProjectDataErrors = err.response.data.errors;
                     }
                 })
         }
