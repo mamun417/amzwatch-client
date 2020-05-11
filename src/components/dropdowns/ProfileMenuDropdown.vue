@@ -10,7 +10,7 @@
         <q-icon name="arrow_drop_down" size="16px"/>
 
         <q-menu>
-            <q-list style="min-width: 230px">
+            <q-list class="q-py-md" style="min-width: 230px">
                 <q-item clickable>
                     <q-item-section class="col-auto">
                         <q-icon name="person"/>
@@ -24,7 +24,9 @@
                     <q-item-section>Setting</q-item-section>
                 </q-item>
             </q-list>
+
             <q-separator/>
+
             <div class="items-center column q-py-md">
                 <q-avatar color="primary" text-color="blue-grey-1" size="76px" round>Y</q-avatar>
                 <div class="text-subtitle2 q-mt-sm">John doe</div>

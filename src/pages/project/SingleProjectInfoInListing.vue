@@ -13,7 +13,9 @@
 
             <div class="col justify-center">
                 <div class="text-subtitle2 text-center">Domain: {{projectInfo.domain.url}}</div>
-                <div class="text-caption text-center">Created at: {{ projectInfo.createdAt }}</div>
+                <div
+                    class="text-center text-xs"
+                >Created at: {{ $timestampToDate(projectInfo.createdAt) }}</div>
             </div>
 
             <div class="col flex justify-end">
