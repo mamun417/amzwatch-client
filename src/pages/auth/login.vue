@@ -18,7 +18,8 @@
                 </q-input>
 
                 <q-input v-model="formData.password" label="Password" no-error-icon hide-bottom-space
-                         :error-message="formErrors.password" :error="!!formErrors.password" @input="formErrors.password = ''">
+                         :error-message="formErrors.password" :error="!!formErrors.password"
+                         @input="formErrors.password = ''">
                     <q-icon slot="append" name="lock"/>
                 </q-input>
             </q-card-section>
@@ -31,41 +32,44 @@
 </template>
 
 <script>
-export default {
-    name   : 'Login',
-    data() {
-        return {
-            formData  : {
-                email   : 'john@example.com',
-                password: '123'
-            },
-            formErrors: {}
-        }
-    },
-    methods: {
-        loginButtonClicked() {
-            this.$store.dispatch('auth/login', {vm: this, inputs: this.formData})
-                .then(res => {
-                    this.$q.notify({
-                        color   : 'positive',
-                        message : 'Login Successful',
-                        position: 'top'
-                    })
-
-                    this.$router.push('/')
+    export default {
+        name   : 'Login',
+        data() {
+            return {
+                formData  : {
+                    email   : 'john@example.com',
+                    password: '123'
+                },
+                formErrors: {}
+            }
+        },
+        methods: {
+            loginButtonClicked() {
+                this.$store.dispatch('auth/login', {
+                    vm    : this,
+                    inputs: this.formData
                 })
-                .catch(err => {
-                    if (!err.response.data.errors){
+                    .then(() => {
                         this.$q.notify({
-                            color   : 'negative',
-                            message : err.response.data.message,
+                            color   : 'positive',
+                            message : 'Login Successful',
                             position: 'top'
                         })
-                    }else {
-                        this.formErrors = err.response.data.errors
-                    }
-                });
+
+                        this.$router.push('/projects')
+                    })
+                    .catch(err => {
+                        if (!err.response.data.errors) {
+                            this.$q.notify({
+                                color   : 'negative',
+                                message : err.response.data.message,
+                                position: 'top'
+                            })
+                        } else {
+                            this.formErrors = err.response.data.errors
+                        }
+                    });
+            }
         }
     }
-}
 </script>

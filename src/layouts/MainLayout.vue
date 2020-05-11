@@ -1,53 +1,54 @@
 <template>
     <q-layout view="hhh lpR fff" class="bg-grey-3">
-        <template v-if="$route.path !== '/'">
-            <q-header elevated>
-                <q-toolbar>
-                    <q-btn
-                        flat
-                        dense
-                        round
-                        icon="menu"
-                        aria-label="Menu"
-                        @click="leftDrawerOpen = !leftDrawerOpen"
-                    />
+        <q-header class="" elevated>
+            <q-toolbar>
+                <q-btn
+                    v-if="$route.path !== '/'"
+                    flat
+                    dense
+                    round
+                    icon="menu"
+                    aria-label="Menu"
+                    @click="leftDrawerOpen = !leftDrawerOpen"
+                />
 
-                    <q-toolbar-title>
-                        AMZ Watch
-                    </q-toolbar-title>
-                </q-toolbar>
-            </q-header>
+                <q-toolbar-title>
+                    AMZ Watch
+                </q-toolbar-title>
 
-            <q-drawer
-                v-model="leftDrawerOpen"
-                content-class="bg-grey-3"
-                :mini="miniState"
-                @mouseover="miniState = false"
-                @mouseout="miniState = true"
-                show-if-above
-                bordered
-                elevated
-            >
-                <q-list>
-                    <drawer-links
-                        v-for="link in drawerLinks"
-                        :key="link.title"
-                        v-bind="link"
-                    />
-                </q-list>
-            </q-drawer>
-        </template>
+                <profile-menu-dropdown/>
+            </q-toolbar>
+        </q-header>
+
+        <q-drawer
+            v-if="$route.path !== '/'"
+            v-model="leftDrawerOpen"
+            content-class="bg-grey-3"
+            :mini="miniState"
+            @mouseover="miniState = false"
+            @mouseout="miniState = true"
+            show-if-above
+            bordered
+            elevated
+        >
+            <q-list>
+                <drawer-links
+                    v-for="link in drawerLinks"
+                    :key="link.title"
+                    v-bind="link"
+                />
+            </q-list>
+        </q-drawer>
 
         <q-page-container class="">
             <q-page class="">
-                <q-card class="flex q-mb-lg q-py-lg bg-primary text-white no-border-radius">
+                <q-card
+                    v-if="$route.path !== '/'"
+                    class="flex q-mb-lg q-py-lg bg-primary text-white no-border-radius"
+                >
                     <q-card-section>Home / {{$route.path.substr(1)}}</q-card-section>
 
                     <q-space/>
-
-                    <q-card-actions>
-                        <q-btn @click="$router.push('/auth/logout')" label="Logout" class="bg-white text-primary" no-caps/>
-                    </q-card-actions>
                 </q-card>
 
                 <router-view class="q-pa-md"/>
@@ -57,27 +58,29 @@
 </template>
 
 <script>
-import DrawerLinks from 'components/DrawerLinks'
+    import DrawerLinks from 'components/DrawerLinks'
+    import ProfileMenuDropdown from 'components/dropdowns/ProfileMenuDropdown'
 
-export default {
-    name: 'MainLayout',
+    export default {
+        name: 'MainLayout',
 
-    components: {
-        DrawerLinks
-    },
-    data() {
-        return {
-            leftDrawerOpen: false,
-            miniState: true,
-            drawerLinks: [
-                {
-                    title: 'Home',
-                    caption: 'Go to home',
-                    icon: 'home',
-                    link: '/'
-                }
-            ]
+        components: {
+            ProfileMenuDropdown,
+            DrawerLinks,
+        },
+        data() {
+            return {
+                leftDrawerOpen: false,
+                miniState     : true,
+                drawerLinks   : [
+                    {
+                        title  : 'Home',
+                        caption: 'Go to home',
+                        icon   : 'home',
+                        link   : '/'
+                    }
+                ]
+            }
         }
     }
-}
 </script>
