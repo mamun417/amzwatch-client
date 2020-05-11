@@ -22,6 +22,8 @@
                 <q-input class="col-grow" label="Search Projects" value="" dense/>
                 <q-select class="col-grow" label="Filter" value="all" :options="['all', 'active', 'inactive']" dense/>
             </q-card-section>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.projectListLoader"/>
         </q-card>
 
         <single-project-info-in-listing
@@ -43,7 +45,7 @@
         <q-dialog v-model="showAddEditProjectModal" @hide="resetAddEditFormData">
             <q-card style="min-width: 400px">
                 <q-card-section class="bg-primary text-white">
-                    <div v-if="projectUpdateModal" class="text-h6">Edit {{selectedForEdit.projectName}} Project</div>
+                    <div v-if="projectUpdateModal" class="text-h6">Edit {{selectedForEdit.project_name}} Project</div>
                     <div v-else class="text-h6">Add New Project</div>
                 </q-card-section>
 
@@ -85,7 +87,6 @@
 </template>
 
 <script>
-
     import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
     import {mapGetters} from 'vuex'
 
@@ -105,7 +106,7 @@
             }
         },
 
-        created() {
+        mounted() {
             // get projects first then assign to projects.
             this.getProjects();
             // dont worry for loading. we will add later
@@ -113,7 +114,8 @@
 
         computed: {
             ...mapGetters({
-                projectPaginationMeta: 'projects/paginationMeta'
+                projectPaginationMeta: 'projects/paginationMeta',
+                singleLoader         : 'ui/singleLoaderStatus'
             })
         },
 
@@ -122,7 +124,7 @@
                 this.projectUpdateModal = true;
                 this.selectedForEdit    = data;
 
-                this.addEditProjectData.project_name = data.projectName;
+                this.addEditProjectData.project_name = data.project_name;
                 this.addEditProjectData.domain_url   = data.domain.url;
 
                 this.showAddEditProjectModal = true;
@@ -138,6 +140,8 @@
             },
 
             getProjects() {
+                this.$singleLoaderTrue('projectListLoader');
+
                 this.$store.dispatch('projects/getProjects', {vm: this})
                     .then(res => {
                         this.projects           = res.data.userProject.data;
@@ -148,6 +152,8 @@
                             ];
                             return project;
                         });
+
+                        this.$singleLoaderFalse('projectListLoader')
                     })
                     .catch(err => {
                         //handle error

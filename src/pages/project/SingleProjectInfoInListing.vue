@@ -3,7 +3,7 @@
         <q-card-section class="bg-primary text-white row justify-between items-center">
             <div class="col">
                 <div class="row items-center q-mb-xs">
-                    <div class="q-mr-sm text-subtitle1">{{projectInfo.projectName}}</div>
+                    <div class="q-mr-sm text-subtitle1">{{projectInfo.project_name}}</div>
 
                     <q-badge :color="projectInfo.deactivatedAt ? 'warning' : 'positive'">
                         {{ projectInfo.deactivatedAt ? 'Deactivated' : 'Active' }}
