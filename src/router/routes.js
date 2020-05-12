@@ -31,17 +31,35 @@ const routes = [
             {
                 path     : '/projects/1/uptime-monitor-check',
                 component: () => import('pages/uptime-monitor/UptimeMonitor')
+            },
+            
+            {
+                path     : '/profile',
+                component: () => import('layouts/ProfileLayout.vue'),
+                meta     : {requiresAuth: true},
+                children : [
+                    {
+                        path     : '',
+                        component: () => import('pages/profile/Profile.vue')
+                    },
+                ]
             }
         ]
     },
-
+    
     {
         path     : '/auth',
         component: () => import('layouts/AuthLayout'),
         children : [
-            {path: 'login', component: () => import('pages/auth/login')},
-            {path: 'register', component: () => import('pages/auth/register')},
-            {path: 'logout', component: () => import('pages/auth/Logout')}
+            {path        : 'login',
+                component: () => import('pages/auth/login')
+            },
+            {path        : 'register',
+                component: () => import('pages/auth/register')
+            },
+            {path        : 'logout',
+                component: () => import('pages/auth/Logout')
+            }
         ]
     }
 ]

@@ -11,7 +11,7 @@
 
         <q-menu>
             <q-list class="q-py-md" style="min-width: 230px">
-                <q-item clickable>
+                <q-item to="/profile" clickable>
                     <q-item-section class="col-auto">
                         <q-icon name="person"/>
                     </q-item-section>

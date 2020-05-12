@@ -1,0 +1,160 @@
+<template>
+    <div class="row justify-center q-mt-xl">
+        <q-card style="max-width: 650px" class="col q-pa-xl q-mt-xl">
+            <q-card-actions class="row justify-center">
+                <q-avatar
+                    color="primary"
+                    text-color="blue-grey-1"
+                    icon="person"
+                    size="128px"
+                    class="absolute"
+                    style="transform: translateY(-50%); top: 0"
+                    round>
+                </q-avatar>
+
+                <q-btn
+                    v-if="!profileEditSelected"
+                    size="sm"
+                    icon="edit"
+                    text-color="primary"
+                    class="absolute"
+                    style="right: 0; top: 0; transform: translate3d(50%, -50%, 0)"
+                    @click="profileEditSelected = true"
+                    round
+                />
+            </q-card-actions>
+
+            <q-card-section v-if="!profileEditSelected" class="q-mt-lg">
+                <div class="text-center text-subtitle1 text-weight-bold text-primary">John Doe</div>
+                <div class="text-center text-md">john@example.com</div>
+
+                <div class="text-center q-mt-md">Lorem Ipsum Lorem Ipsum Lorem IpsumLorem IpsumLorem Ipsum. Lorem Ipsum
+                    Lorem Ipsum Lorem Ipsum
+                </div>
+            </q-card-section>
+
+            <q-card-section v-else class="q-mt-lg">
+                <div class="q-mb-xl">
+                    <div class="row">
+                        <q-input
+                            v-model="formData.first_name" label="First Name" class="col q-mb-sm q-mr-md"
+                            no-error-icon hide-bottom-space
+                            :error-message="formErrors.first_name" :error="!!formErrors.first_name"
+                            @input="formErrors.first_name = ''">
+                            <q-icon name="perm_identity" slot="append"/>
+                        </q-input>
+
+                        <q-input
+                            v-model="formData.last_name" label="Last Name" class="col q-mb-sm" no-error-icon
+                            hide-bottom-space
+                            :error-message="formErrors.last_name" :error="!!formErrors.last_name"
+                            @input="formErrors.last_name = ''">
+                            <q-icon name="perm_identity" slot="append"/>
+                        </q-input>
+                    </div>
+
+                    <q-input v-model="formData.address" label="Address" class="q-mb-sm">
+                        <q-icon name="home" slot="append"/>
+                    </q-input>
+
+                    <q-input
+                        v-model="formData.email" label="Email" class="q-mb-sm" no-error-icon hide-bottom-space
+                        :error-message="formErrors.email" :error="!!formErrors.email"
+                        @input="formErrors.email = ''">
+                        <q-icon name="email" slot="append"/>
+                    </q-input>
+
+                    <q-input
+                        v-model="formData.about_me"
+                        type="textarea" rows="3"
+                        label="About yourself" class="q-mb-sm"
+                        hide-bottom-space
+                    />
+
+                    <div class="row items-baseline q-mt-xl text-weight-medium">
+                        <div class="">For change password</div>
+                        <q-btn color="primary" @click="passwordChangeModal = true" flat>Click here</q-btn>
+                    </div>
+                </div>
+
+                <div class="row justify-center">
+                    <q-btn class="q-mr-md" color="primary">Update</q-btn>
+                    <q-btn @click="profileEditSelected = false">Cancel</q-btn>
+                </div>
+            </q-card-section>
+        </q-card>
+
+        <q-dialog v-model="passwordChangeModal" @hide="currentPasswordCheckSection = true">
+            <q-card style="overflow: unset; min-width: 400px">
+                <q-card-section class="bg-primary text-weight-bold text-white text-subtitle1">
+                    {{currentPasswordCheckSection ? 'Check current password' : 'Update new password'}}
+                </q-card-section>
+
+                <q-card-section class="q-pa-xl">
+                    <template v-if="currentPasswordCheckSection">
+                        <div
+                            class="text-subtitle2 q-mb-md"
+                        >
+                            Note* Before change your password please confirm your current password first
+                        </div>
+                        <q-input
+                            v-model="currentPassword"
+                            label="Current Password"
+                            type="password"
+                            class="q-mb-xl"
+                        >
+                            <q-icon name="vpn_key" slot="append"/>
+                        </q-input>
+
+                        <div class="text-center">
+                            <q-btn color="primary" @click="checkCurrentPassword">Check</q-btn>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="q-mb-xl">
+                            <q-input v-model="updatePassFormData.password" type="password" label="New Password"
+                                     class="q-mb-sm" no-error-icon
+                                     hide-bottom-space
+                                     :error-message="formErrors.password" :error="!!formErrors.password"
+                                     @input="formErrors.password = ''">
+                                <q-icon name="lock" slot="append"/>
+                            </q-input>
+                            <q-input v-model="updatePassFormData.confirm_password" type="password"
+                                     label="Confirm New Password"
+                                     class="q-mb-sm">
+                                <q-icon name="lock" slot="append"/>
+                            </q-input>
+                        </div>
+
+                        <div class="text-center">
+                            <q-btn color="primary" no-caps>Update Password</q-btn>
+                        </div>
+                    </template>
+                </q-card-section>
+            </q-card>
+
+        </q-dialog>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                profileEditSelected        : true,
+                passwordChangeModal        : true,
+                currentPasswordCheckSection: false,
+                formData                   : {},
+                formErrors                 : {},
+                currentPassword            : '',
+                updatePassFormData         : {}
+            }
+        },
+        methods: {
+            checkCurrentPassword() {
+                // check current pass then set to false
+                this.currentPasswordCheckSection = false
+            }
+        }
+    }
+</script>
