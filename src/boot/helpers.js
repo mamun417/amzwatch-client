@@ -9,7 +9,7 @@ export default function ({store, app, Vue}) {
         store.dispatch('ui/setSingleLoaderToFalse', name);
     }
     
-    Vue.prototype.$timestampToDate = function (timestamp, format="dddd, MMMM Do YYYY, h:mm:ss a") {
-        return moment(timestamp).format(format)
+    Vue.prototype.$timestampToDate = function (timestamp, format = "dddd, MMMM Do YYYY, h:mm:ss a") {
+        return moment(parseInt(timestamp) / 1000).format(format)
     }
 }

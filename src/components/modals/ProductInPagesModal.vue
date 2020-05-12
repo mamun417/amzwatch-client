@@ -13,17 +13,15 @@
 
                 <q-item
                     v-for="(link, index) in productInPages"
-                    class="q-mb-sm shadow-3"
+                    class="q-mb-sm shadow-1 text-weight-medium"
                     clickable
                 >
-                    <q-item-section>{{link.pageUrl}}</q-item-section>
-                    <q-item-section class="text-right">{{ link.lastUpdated }}</q-item-section>
+                    <q-item-section>{{link.page.url}}</q-item-section>
+                    <q-item-section class="text-right text-sm">
+                        {{ $timestampToDate(product.product.updated_at.last_scraped_at, "Do MM YYYY, h:mm:ss a") }}
+                    </q-item-section>
                 </q-item>
             </q-list>
-
-            <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Cancel" v-close-popup/>
-            </q-card-actions>
         </q-card>
     </q-dialog>
 </template>
@@ -31,12 +29,12 @@
 <script>
     export default {
         props: {
-            active: {
-                type: Boolean,
+            active : {
+                type   : Boolean,
                 default: false
             },
             product: {
-                type: Object,
+                type   : Object,
                 default: () => ({})
             }
         },
@@ -53,16 +51,15 @@
 
         methods: {
             getProductInPages() {
-
                 this.productInPages = [];
 
                 this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
-                    vm: this,
-                    id: this.product.id, //amazonproduct id
-                    inputs: {affiliate_id: this.product.affiliateId}
+                    vm          : this,
+                    product_id  : this.product.product_id, //amazonproduct id
+                    affiliate_id: this.product.affiliate_id
                 })
                     .then(res => {
-                        this.productInPages = res.data;
+                        this.productInPages = res.data.productsInPages.data;
                     })
                     .catch(err => {
                         //handle error

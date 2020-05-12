@@ -2,21 +2,21 @@ import axios from 'axios'
 
 export default function ({store, Vue, router}) {
     axios.defaults.withCredentials = true;
-    Vue.prototype.$http = axios
-
+    Vue.prototype.$http            = axios
+    
     let apiBase = process.env.API_ENDPOINT;
-
+    
     Vue.prototype.$apiBase = apiBase;
 
 // handle before req happen
     axios.interceptors.request.use(
         req => {
             const token = localStorage.getItem('token');
-
+            
             if (token) {
                 req.headers['Authorization'] = 'Bearer ' + token
             }
-
+            
             return req
         },
         err => {
@@ -34,11 +34,11 @@ export default function ({store, Vue, router}) {
                 axios.get(apiBase + '/refresh')
                     .then(res => {
                         let token = res.data.bearerToken;
-
+                        
                         store.dispatch('auth/updateToken', token)
-
+                        
                         axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
-
+                        
                         return axios(err.config)
                     })
                     .catch(err => {
@@ -49,14 +49,14 @@ export default function ({store, Vue, router}) {
             }
         }
     )
-
+    
     Vue.prototype.$api = function (apiPath) {
         return this.$apiBase + apiPath;
     }
-
-    Vue.prototype.$get = function (path) {
+    
+    Vue.prototype.$get = function (path, queryParams) {
         return new Promise((resolve, reject) => {
-            this.$http.get(this.$api(path))
+            this.$http.get(this.$api(path), {params: queryParams})
                 .then(res => {
                     resolve(res)
                 })
@@ -65,7 +65,7 @@ export default function ({store, Vue, router}) {
                 })
         })
     }
-
+    
     Vue.prototype.$post = function (path, payload) {
         return new Promise((resolve, reject) => {
             this.$http.post(this.$api(path), payload)
@@ -77,7 +77,7 @@ export default function ({store, Vue, router}) {
                 })
         })
     }
-
+    
     Vue.prototype.$patch = function (path, payload) {
         return new Promise((resolve, reject) => {
             this.$http.patch(this.$api(path), payload)
@@ -89,6 +89,6 @@ export default function ({store, Vue, router}) {
                 })
         })
     }
-
-
+    
+    
 }

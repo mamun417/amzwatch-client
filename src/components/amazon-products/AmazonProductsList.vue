@@ -19,59 +19,71 @@
                 slot="header"
                 class="row full-width justify-between text-subtitle2 items-center"
             >
-                <q-item-section class="col">img</q-item-section>
-                <q-item-section class="col">{{product.productName}}</q-item-section>
+                <q-item-section class="col">
+                    <q-avatar
+                        size="64px"
+                        square
+                    >
+                        <img :src="product.product.meta.metas.product_image">
+                    </q-avatar>
+                </q-item-section>
+                <q-item-section class="col">{{product.product.meta.metas.product_name}}</q-item-section>
                 <q-item-section class="col inline-block text-right">
                     <q-badge
-                        :color="product.status === '404' ? 'warning' : 'positive'"
+                        :color="product.status === 200 ? 'positive' : 'warning'"
                     >
-                        {{product.status}} - {{product.status === '404' ? 'unavailable' : 'available'}}
+                        {{product.status === 200 ? 'available' : 'unavailable'}}
                     </q-badge>
                 </q-item-section>
             </q-item>
 
             <q-card v-if="showLinksCountAfterExpand" class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                 <q-card-section class="flex justify-between items-center">
-                    <div>Last updated at: {{product.lastUpdated}}</div>
+                    <div>Last updated at: {{$timestampToDate(product.product.updated_at.last_scraped_at)}}</div>
                     <q-btn color="positive" size="sm" no-caps
                            unelevated @click="showProductInPagesModal(product)">
-                        This product has in: {{ product.inPages }} pages
+                        This product has in: {{ product.productsInPagesCount }} pages
                     </q-btn>
                 </q-card-section>
             </q-card>
 
             <q-card v-else class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                 <q-card-section>
-                    <div class="">Last checked this product: {{product.lastUpdated}}
-                    </div>
+                    Last checked this product: {{$timestampToDate(product.product.updated_at.last_scraped_at)}}
                 </q-card-section>
                 <q-card-section>
                     <div class="flex q-mb-sm">
                         <div class="q-mr-sm">This product has in:</div>
-                        <q-badge>{{ product.productInPagesLinks ? product.productInPagesLinks.length : '' }} Links</q-badge>
+                        <q-badge>{{ product.productsInPagesCount }} Links
+                        </q-badge>
                     </div>
-                    <q-list bordered dense>
-                        <q-item class="text-primary text-subtitle2 text-bold">
+                    <q-list dense>
+                        <q-item class="text-primary text-subtitle2 text-bold shadow-1">
                             <q-item-section>Link</q-item-section>
                             <q-item-section class="text-right">Last checked</q-item-section>
                         </q-item>
                         <q-item
-                            v-for="(link, index) in product.productInPagesLinks ? product.productInPagesLinks.slice(0, 1) : []"
-                            class=""
+                            v-for="(link, index) in product.productInPagesLinks"
+                            class="shadow-1"
                             clickable
                         >
-                            <q-item-section>{{link.pageUrl}}</q-item-section>
-                            <q-item-section class="text-right">{{ link.lastUpdated }}</q-item-section>
+                            <q-item-section>
+                                {{link.page.url}}
+                            </q-item-section>
+                            <q-item-section class="text-right col-auto">
+                                {{ $timestampToDate(product.product.updated_at.last_scraped_at) }}
+                            </q-item-section>
                         </q-item>
                     </q-list>
                 </q-card-section>
-                <div v-if="product.productInPagesLinks ? product.productInPagesLinks.length > 1 : ''" align="right">
+                <div v-if="product.productsInPagesCount > 1" class="text-center">
                     <q-btn
                         color="primary"
                         size="sm"
                         label="Show more"
-                        no-caps
                         class="q-mr-md"
+                        flat
+                        no-caps
                         @click="showProductInPagesModal(product)"
                     />
                 </div>
@@ -93,23 +105,23 @@
 
     export default {
         components: {ProductInPagesModal},
-        name: "AmazonProductsList",
-        props: {
+        name      : "AmazonProductsList",
+        props     : {
             showLinksCountAfterExpand: {
                 type: Boolean
             },
-            getAmazonProductsCount: {
-                type: Boolean,
+            getAmazonProductsCount   : {
+                type   : Boolean,
                 default: false
             }
         },
 
         data() {
             return {
-                amazonProductsInfo: [],
+                amazonProductsInfo      : [],
                 showProductsInPagesModal: {
                     showModal: false,
-                    product: {},
+                    product  : {},
                 },
             }
         },
@@ -121,15 +133,13 @@
         methods: {
             getAmazonProductsInfo() {
                 this.$store.dispatch('amazon_products_links/getAmazonProducts', {
-                    vm: this,
+                    vm        : this,
                     project_id: this.$route.params.project_id
                 })
                     .then(res => {
-                        this.amazonProductsInfo = res.data;
+                        this.amazonProductsInfo = res.data.projects.data;
 
-                        if (this.getAmazonProductsCount){
-                            this.$emit('getAmazonProductsCount', res.data.length);
-                        }
+                        this.$emit('getAmazonProductsCount', res.data.projects.pagination_meta.total);
                     })
                     .catch(err => {
                         //handle error
@@ -138,17 +148,17 @@
 
             showProductLinksInfo(product) {
                 this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
-                    vm: this,
-                    id: product.id, //amazonproduct id
-                    inputs: {affiliate_id: product.affiliateId, only_total: this.showLinksCountAfterExpand}
+                    vm          : this,
+                    product_id  : product.product_id, //amazonproduct id
+                    affiliate_id: product.affiliate_id
                 })
                     .then(res => {
                         this.amazonProductsInfo = this.amazonProductsInfo.map(amazonProduct => {
                             if (product.id === amazonProduct.id) {
-                                if (this.showLinksCountAfterExpand){
-                                    amazonProduct['inPages'] = res.data.count;
-                                }else {
-                                    amazonProduct['productInPagesLinks'] = res.data;
+                                amazonProduct['productsInPagesCount'] = res.data.productsInPages.pagination_meta.total;
+
+                                if (!this.showLinksCountAfterExpand) {
+                                    amazonProduct['productInPagesLinks'] = res.data.productsInPages.data;
                                 }
                             }
 
@@ -160,9 +170,9 @@
                     });
             },
 
-            showProductInPagesModal(product){
+            showProductInPagesModal(product) {
                 this.showProductsInPagesModal.showModal = !this.showProductsInPagesModal.showModal;
-                this.showProductsInPagesModal.product = product;
+                this.showProductsInPagesModal.product   = product;
             },
         }
     }

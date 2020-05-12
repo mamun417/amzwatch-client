@@ -1,6 +1,6 @@
 export function getAmazonProducts(context, payload) {
     return new Promise((resolve, reject) => {
-        payload.vm.$get('/projects/'+payload.project_id+'/amazon-products')
+        payload.vm.$get('/projects/' + payload.project_id + '/amazon-products')
             .then(res => {
                 resolve(res)
             })
@@ -12,7 +12,9 @@ export function getAmazonProducts(context, payload) {
 
 export function getAmazonProductInPages(context, payload) {
     return new Promise((resolve, reject) => {
-        payload.vm.$post('/amazon-products/'+payload.id, payload.inputs) //amazonproduct id
+        payload.vm.$get('/amazon-products/' + payload.product_id, {
+            affiliate_id: payload.affiliate_id
+        }) //amazonproduct id
             .then(res => {
                 resolve(res)
             })
