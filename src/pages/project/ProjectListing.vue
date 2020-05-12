@@ -7,7 +7,7 @@
                 <div class="text-subtitle1">Projects</div>
 
                 <div v-if="projects.length" class="text-caption">
-                    You have total {{ projects.length }} projects
+                    You have total {{ projectPaginationMeta.total }} projects
                 </div>
 
                 <q-btn color="grey-3" @click="showAddEditProjectModal = true" flat>Add New</q-btn>
@@ -15,7 +15,7 @@
 
             <q-card-section v-if="!projects.length" class="text-center q-py-xl">
                 <div class="q-mb-lg text-subtitle2">No projects found</div>
-                <q-btn @click="showAddNewProjectModal = true" color="primary">Add One</q-btn>
+                <q-btn @click="showAddEditProjectModal = true" color="primary">Add One</q-btn>
             </q-card-section>
 
             <q-card-section v-else class="row">
@@ -192,7 +192,7 @@
                 this.$store.dispatch('projects/updateProject', {
                     vm        : this,
                     inputs    : this.addEditProjectData,
-                    project_id: this.selectedForEdit.id
+                    project_id: this.selectedForEdit._id
                 })
                     .then(res => {
                         this.$q.notify({

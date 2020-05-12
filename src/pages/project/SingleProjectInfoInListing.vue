@@ -5,8 +5,8 @@
                 <div class="row items-center q-mb-xs">
                     <div class="q-mr-sm text-subtitle1">{{projectInfo.project_name}}</div>
 
-                    <q-badge :color="projectInfo.deactivatedAt ? 'warning' : 'positive'">
-                        {{ projectInfo.deactivatedAt ? 'Deactivated' : 'Active' }}
+                    <q-badge :color="projectInfo.deactivated_at ? 'warning' : 'positive'">
+                        {{ projectInfo.deactivated_at ? 'Deactivated' : 'Active' }}
                     </q-badge>
                 </div>
             </div>
@@ -15,11 +15,11 @@
                 <div class="text-subtitle2 text-center">Domain: {{projectInfo.domain.url}}</div>
                 <div
                     class="text-center text-xs"
-                >Created at: {{ $timestampToDate(projectInfo.createdAt) }}</div>
+                >Created at: {{ $timestampToDate(projectInfo.created_at) }}</div>
             </div>
 
             <div class="col flex justify-end">
-                <q-btn flat icon="visibility" :to="'/projects/'+projectInfo.id" dense></q-btn>
+                <q-btn flat icon="visibility" :to="'/projects/'+projectInfo._id" dense></q-btn>
                 <q-btn flat icon="edit" @click="$emit('projectEdit', projectInfo)" dense></q-btn>
             </div>
         </q-card-section>
@@ -48,7 +48,7 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('broken_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo.id+'/broken-links-check'" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/broken-links-check'" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md"
@@ -79,7 +79,7 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('guest_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo.id+'/guest-links-check'" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/guest-links-check'" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md"
@@ -110,7 +110,7 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('amazon_product_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo.id+'/amazon-products-check'" flat
+                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/amazon-products-check'" flat
                                dense></q-btn>
                     </template>
 
