@@ -7,31 +7,32 @@
         </q-item>
 
         <q-expansion-item
-            v-for="(guest, index) in guestLinksInfo" :key="index"
+            v-for="(guestPostInfo, index) in guestPostsInfo" :key="index"
             group="guestPost"
             icon=""
             header-class=""
             expand-icon-class="hidden"
-            class="shadow-3 q-mb-sm">
+            class="shadow-1 q-mb-sm">
 
             <q-item
                 slot="header"
                 class="row full-width justify-between text-subtitle2 items-center">
-                <q-item-section class="col">{{guest.url}}</q-item-section>
-                <q-item-section class="col">
-                    {{guest.remoteUrl}}
-                </q-item-section>
+                <q-item-section class="col">{{ guestPostInfo.guest_post_url }}</q-item-section>
+                <q-item-section class="col text-center">{{ guestPostInfo.holding_url }}</q-item-section>
                 <q-item-section class="col inline-block text-right">
                     <q-badge
-                        :color="guest.status === '404' ? 'warning' : 'positive'">
-                        {{guest.status}} - {{guest.status === '404' ? 'unavailable' : 'available'}}
+                        :color="guestPostInfo.link_infos.exists !== '1' ? 'warning' : 'positive'"
+                    >
+                        {{ guestPostInfo.link_infos.exists !== '1' ? 'unavailable' : 'available' }}
                     </q-badge>
                 </q-item-section>
             </q-item>
 
             <q-card>
                 <q-card-section>
-                    <div class="text-caption text-bold">Last updated at: {{guest.lastUpdated}}</div>
+                    <div class="text-caption text-bold">
+                        Last updated at: {{ $timestampToDate(guestPostInfo.updated_at.link_last_checked_at) }}
+                    </div>
                 </q-card-section>
             </q-card>
         </q-expansion-item>
@@ -40,16 +41,16 @@
 
 <script>
     export default {
-        name: "GuestLinksList",
+        name : "GuestLinksList",
         props: {
-            getGuestLinksCount: {
-                type: Boolean,
+            getGuestPostsCount: {
+                type   : Boolean,
                 default: false
             }
         },
         data() {
             return {
-                guestLinksInfo: []
+                guestPostsInfo: []
             }
         },
 
@@ -59,16 +60,14 @@
 
         methods: {
             getGuestLinks() {
-                this.$store.dispatch('guest_links/getGuestLinks', {
-                    vm: this,
+                this.$store.dispatch('guest_links/getGuestPosts', {
+                    vm        : this,
                     project_id: this.$route.params.project_id
                 })
                     .then(res => {
-                        this.guestLinksInfo = res.data;
+                        this.guestPostsInfo = res.data.linksInGuestPosts.data;
 
-                        if (this.getGuestLinksCount){
-                            this.$emit('getGuestLinksCount', res.data.length);
-                        }
+                        this.$emit('getGuestLinksCount', res.data.linksInGuestPosts.pagination_meta.total);
                     })
                     .catch(err => {
                         //handle error

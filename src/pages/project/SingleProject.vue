@@ -63,9 +63,9 @@
 
             <q-card-section v-if="service.expansionStatus && service.active">
 
-                <broken-links-list v-if="index === 'broken_link_check'" />
+                <broken-links-list v-if="index === 'broken_link_check'"/>
 
-                <guest-links-list v-if="index === 'guest_post_check'"/>
+                <guest-post-list v-if="index === 'guest_post_check'"/>
 
                 <amazon-products-list
                     v-if="index === 'amazon_product_check'"
@@ -130,42 +130,48 @@
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
     import AmazonProductsList from "components/amazon-products/AmazonProductsList";
     import BrokenLinksList from "components/broken-links/BrokenLinksList";
-    import GuestLinksList from "components/guest-links/GuestLinksList";
+    import GuestPostList from "components/guest-posts/GuestPostList";
 
     export default {
-        components: {GuestLinksList, UptimeCheckActivateDeactivateModal, QCChart, AmazonProductsList, BrokenLinksList},
+        components: {
+            GuestPostList,
+            UptimeCheckActivateDeactivateModal,
+            QCChart,
+            AmazonProductsList,
+            BrokenLinksList
+        },
         data() {
             return {
-                showModal: false,
+                showModal                   : false,
                 showUptimeMonitorActiveModal: false,
 
                 projectInfo: {
-                    name: 'Test project for all',
-                    domain: 'https//exonhost.com',
+                    name    : 'Test project for all',
+                    domain  : 'https//exonhost.com',
                     services: {
                         amazon_product_check: {
-                            icon: 'local_mall',
+                            icon           : 'local_mall',
                             expansionStatus: true,
-                            active: true,
-                            to: '/projects/' + this.$route.params.project_id + '/amazon-products-check'
+                            active         : true,
+                            to             : '/projects/' + this.$route.params.project_id + '/amazon-products-check'
                         },
-                        guest_post_check: {
-                            icon: 'record_voice_over',
+                        guest_post_check    : {
+                            icon           : 'record_voice_over',
                             expansionStatus: true,
-                            active: true,
-                            to: '/projects/' + this.$route.params.project_id + '/guest-links-check'
+                            active         : true,
+                            to             : '/projects/' + this.$route.params.project_id + '/guest-links-check'
                         },
-                        broken_link_check: {
-                            icon: 'link_off',
+                        broken_link_check   : {
+                            icon           : 'link_off',
                             expansionStatus: true,
-                            active: true,
-                            to: '/projects/' + this.$route.params.project_id + '/broken-links-check'
+                            active         : true,
+                            to             : '/projects/' + this.$route.params.project_id + '/broken-links-check'
                         },
                         uptime_monitor_check: {
-                            icon: 'trending_up',
+                            icon           : 'trending_up',
                             expansionStatus: true,
-                            active: true,
-                            to: '/projects/1/uptime-monitor-check'
+                            active         : true,
+                            to             : '/projects/1/uptime-monitor-check'
                         }
                     }
                 },

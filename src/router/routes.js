@@ -26,7 +26,7 @@ const routes = [
             },
             {
                 path     : '/projects/:project_id/guest-links-check',
-                component: () => import('pages/guest-link/GuestLinkListing')
+                component: () => import('pages/guest-post/GuestPostListing')
             },
             {
                 path     : '/projects/1/uptime-monitor-check',

@@ -5,7 +5,7 @@ import auth from './auth'
 
 import broken_links from './broken-links'
 import amazon_products_links from './amazon-product'
-import guest_links from './guest-links'
+import guest_links from './guest-posts'
 import projects from './project'
 
 import ui from './ui'
