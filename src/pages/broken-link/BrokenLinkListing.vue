@@ -136,7 +136,7 @@
         components: {BrokenLinksList, QCChart},
         data() {
             return {
-                showChart: true,
+                showChart: false,
                 showLinks: true,
                 showModal: false,
                 brokenLinksCount: '',

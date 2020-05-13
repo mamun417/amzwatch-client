@@ -8,23 +8,21 @@
 
         <q-expansion-item
             v-for="(link, index) in brokenLinkInfo" :key="index"
-            group="brokenLink"
-            icon=""
-            header-class=""
-            expand-icon-class="hidden"
-            class="shadow-3 q-mb-sm">
+            group="brokenLink" icon="" header-class=""
+            expand-icon-class="hidden" class="shadow-3 q-mb-sm"
+        >
             <q-item
                 slot="header"
-                class="row full-width justify-between text-subtitle2 items-center">
-                <q-item-section class="col">img</q-item-section>
+                class="row full-width justify-between text-subtitle2 items-center"
+            >
+                <q-item-section class="col">{{ link.url }}</q-item-section>
                 <q-item-section class="col text-center inline-block">
-                    <q-badge
-                        :color="link.status === '404' ? 'warning' : 'positive'">
-                        {{link.status}} - {{link.status === '404' ? 'unavailable' : 'available'}}
+                    <q-badge :color="link.status !== 200 ? 'warning' : 'positive'">
+                        {{ link.status !== 200 ? 'unavailable' : 'available' }}
                     </q-badge>
                 </q-item-section>
                 <q-item-section class="col text-right">
-                    {{link.lastUpdated}}
+                    {{$timestampToDate(link.updated_at.last_scraped_at)}}
                 </q-item-section>
             </q-item>
         </q-expansion-item>
@@ -33,10 +31,10 @@
 
 <script>
     export default {
-        name: "BrokenLinksList",
+        name : "BrokenLinksList",
         props: {
             getBrokenLinksCount: {
-                type: Boolean,
+                type   : Boolean,
                 default: false
             }
         },
@@ -53,15 +51,13 @@
         methods: {
             getBrokenLinkInfo() {
                 this.$store.dispatch('broken_links/getBrokenLinks', {
-                    vm: this,
+                    vm        : this,
                     project_id: this.$route.params.project_id
                 })
                     .then(res => {
-                        this.brokenLinkInfo = res.data;
+                        this.brokenLinkInfo = res.data.brokenLinks.data;
 
-                        if (this.getBrokenLinksCount){
-                            this.$emit('getBrokenLinksCount', res.data.length);
-                        }
+                        this.$emit('getBrokenLinksCount', res.data.brokenLinks.pagination_meta.total);
                     })
                     .catch(err => {
                         //handle error
