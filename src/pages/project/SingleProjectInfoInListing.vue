@@ -4,9 +4,8 @@
             <div class="col">
                 <div class="row items-center q-mb-xs">
                     <div class="q-mr-sm text-subtitle1">{{projectInfo.project_name}}</div>
-
-                    <q-badge :color="projectInfo.deactivated_at ? 'warning' : 'positive'">
-                        {{ projectInfo.deactivated_at ? 'Deactivated' : 'Active' }}
+                    <q-badge :color="!!projectInfo.deactivated_at ? 'warning' : 'positive'">
+                        {{ !!projectInfo.deactivated_at ? 'Deactivated' : 'Active' }}
                     </q-badge>
                 </div>
             </div>

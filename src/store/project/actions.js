@@ -5,7 +5,7 @@ export function getProjects(context, payload) {
         
         payload.vm.$get(urlPath)
             .then(res => {
-                context.commit('updatePaginationMeta', res.data.userProject.pagination_meta);
+                context.commit('updatePaginationMeta', res.data.userProjects.pagination_meta);
                 resolve(res)
             })
             .catch(err => {
