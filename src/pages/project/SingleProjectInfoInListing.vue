@@ -3,10 +3,12 @@
         <q-card-section class="bg-primary text-white row justify-between items-center">
             <div class="col">
                 <div class="row items-center q-mb-xs">
-                    <div class="q-mr-sm text-subtitle1">{{projectInfo.project_name}}</div>
-                    <q-badge :color="!!projectInfo.deactivated_at ? 'warning' : 'positive'">
-                        {{ !!projectInfo.deactivated_at ? 'Deactivated' : 'Active' }}
-                    </q-badge>
+                    <div class="q-mr-sm text-h6">{{projectInfo.project_name}}</div>
+                    <div class="col-auto">
+                        <q-badge :color="!!projectInfo.deactivated_at ? 'warning' : 'positive'">
+                            {{ !!projectInfo.deactivated_at ? 'Deactivated' : 'Active' }}
+                        </q-badge>
+                    </div>
                 </div>
             </div>
 
@@ -14,7 +16,8 @@
                 <div class="text-subtitle2 text-center">Domain: {{projectInfo.domain.url}}</div>
                 <div
                     class="text-center text-xs"
-                >Created at: {{ $timestampToDate(projectInfo.created_at) }}</div>
+                >Created at: {{ $timestampToDate(projectInfo.created_at) }}
+                </div>
             </div>
 
             <div class="col flex justify-end">
@@ -47,7 +50,8 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('broken_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/broken-links-check'" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility"
+                               :to="'/projects/'+projectInfo._id+'/broken-links-check'" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md"
@@ -78,7 +82,8 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('guest_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/guest-links-check'" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/guest-links-check'"
+                               flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md"
@@ -109,7 +114,8 @@
                 <div class="col text-right items-center">
                     <template v-if="projectInfo.services.includes('amazon_product_link_check')">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo._id+'/amazon-products-check'" flat
+                        <q-btn color="primary" icon="visibility"
+                               :to="'/projects/'+projectInfo._id+'/amazon-products-check'" flat
                                dense></q-btn>
                     </template>
 
@@ -233,41 +239,41 @@
 </template>
 
 <script>
-import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+    import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
 
-export default {
-    name      : 'SingleProjectInfoInListing',
-    components: {UptimeCheckActivateDeactivateModal},
-    props     : {
-        projectInfo: {
-            type   : Object,
-            default: () => ({})
-        }
-    },
-    data() {
-        return {
-            showBrokenLinksActiveModal  : false,
-            showAmazonActiveModal       : false,
-            showGuestLinkActiveModal    : false,
-            showUptimeMonitorActiveModal: false,
+    export default {
+        name      : 'SingleProjectInfoInListing',
+        components: {UptimeCheckActivateDeactivateModal},
+        props     : {
+            projectInfo: {
+                type   : Object,
+                default: () => ({})
+            }
+        },
+        data() {
+            return {
+                showBrokenLinksActiveModal  : false,
+                showAmazonActiveModal       : false,
+                showGuestLinkActiveModal    : false,
+                showUptimeMonitorActiveModal: false,
 
-            amazonRefId: '',
+                amazonRefId: '',
 
-            guestLinksForActive: [
-                {
+                guestLinksForActive: [
+                    {
+                        guestUrl : '',
+                        hostedUrl: ''
+                    }
+                ]
+            }
+        },
+        methods   : {
+            pushToGuestLinksForActive() {
+                this.guestLinksForActive.push({
                     guestUrl : '',
                     hostedUrl: ''
-                }
-            ]
-        }
-    },
-    methods   : {
-        pushToGuestLinksForActive() {
-            this.guestLinksForActive.push({
-                guestUrl : '',
-                hostedUrl: ''
-            })
+                })
+            }
         }
     }
-}
 </script>

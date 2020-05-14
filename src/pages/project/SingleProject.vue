@@ -10,8 +10,8 @@
                 </div>
 
                 <div class="col text-center">
-                    <q-badge color="positive" class="text-subtitle2">
-                        Active
+                    <q-badge :color="!!projectInfo.deactivated_at ? 'warning' : 'positive'">
+                        {{ !!projectInfo.deactivated_at ? 'Deactivated' : 'Active' }}
                     </q-badge>
                 </div>
 
@@ -24,7 +24,8 @@
         <q-card
             v-for="(service, index) in projectInfo.domain_use_for"
             :key="index"
-            class="q-mb-xl">
+            class="q-mb-xl"
+        >
             <q-card-section class="bg-primary row items-center text-white text-subtitle2">
                 <div class="col flex items-center">
                     <q-icon :name="servicesInfo[index].icon" class="q-mr-sm"/>
@@ -91,7 +92,12 @@
             </q-card-section>
         </q-card>
 
-        <!--        <add-or-edit-project-modal :show="showProjectEditModal" :edit-data="selectedForEdit" update-modal/>-->
+        <add-or-edit-project-modal
+            :show.sync="showProjectEditModal"
+            :edit-data="selectedForEdit"
+            @projectUpdated="handleProjectUpdated"
+            update-modal
+        />
 
         <uptime-check-activate-deactivate-modal :show.sync="showUptimeMonitorActiveModal" :active="true"/>
 
@@ -118,7 +124,9 @@
         data() {
             return {
                 showProjectEditModal        : false,
-                selectedForEdit             : {},
+                selectedForEdit             : {
+                    domain: {}
+                },
                 showUptimeMonitorActiveModal: false,
 
                 projectInfo: {
@@ -175,7 +183,13 @@
             },
             handleProjectEditModal() {
                 this.showProjectEditModal = !this.showProjectEditModal;
+                this.selectedForEdit      = this.projectInfo;
             },
+            handleProjectUpdated(data) {
+                this.$set(this.projectInfo, 'project_name', data.project_name);
+                this.$set(this.projectInfo, 'deactivated_at', data.deactivated_at);
+            },
+
             modalOpenHandle(serviceType) {
                 if (serviceType === 'uptime_monitor_check') {
                     this.showUptimeMonitorActiveModal = true;
