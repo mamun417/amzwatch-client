@@ -137,9 +137,9 @@
                     project_id: this.$route.params.project_id
                 })
                     .then(res => {
-                        this.amazonProductsInfo = res.data.projects.data;
+                        this.amazonProductsInfo = res.data.amazonProducts.data;
 
-                        this.$emit('getAmazonProductsCount', res.data.projects.pagination_meta.total);
+                        this.$emit('getAmazonProductsCount', res.data.amazonProducts.pagination_meta.total);
                     })
                     .catch(err => {
                         //handle error

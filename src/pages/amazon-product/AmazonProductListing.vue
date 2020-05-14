@@ -6,18 +6,22 @@
             >
                 <div class="col">
                     <div class="text-h6">Check Amazon Products</div>
-                    <div class="text-caption">Project: Test project</div>
-                    <div class="text-caption">Domain: exonhost.com</div>
+                    <div class="text-caption">Project: {{projectInfo.project_name}}</div>
+                    <div class="text-caption">Domain: {{projectInfo.domain.url}}</div>
                 </div>
 
                 <div class="col text-center">
-                    <q-badge color="positive" class="text-subtitle2">
-                        Active
+                    <q-badge :color="serviceIsActive ? 'positive' : 'warning'" class="text-subtitle2">
+                        {{serviceIsActive ? 'Active' : 'Inactive'}}
                     </q-badge>
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="settings" @click="showModal = !showModal" flat dense/>
+                    <q-btn
+                        icon="settings"
+                        @click="showServiceActivateDeactivateModal = !showServiceActivateDeactivateModal"
+                        flat dense
+                    />
                 </div>
             </q-card-section>
         </q-card>
@@ -33,25 +37,15 @@
                     <div class="row items-center">
                         <div v-if="showChart" class="col row q-mr-md">
                             <q-select
-                                color="white"
-                                label="Choose Month"
-                                label-color="white"
-                                input-class="white"
-                                class="col q-mr-md"
-                                bg-color="primary"
-                                hide-bottom-space
-                                dense
+                                color="white" label="Choose Month" label-color="white"
+                                input-class="white" class="col q-mr-md" bg-color="primary"
+                                hide-bottom-space dense
                                 value=""
                             />
                             <q-select
-                                color="white"
-                                label="By Year"
-                                label-color="white"
-                                input-class="white"
-                                class="col"
-                                style="max-width: 120px"
-                                hide-bottom-space
-                                dense
+                                color="white" label="By Year" label-color="white"
+                                input-class="white" class="col" style="max-width: 120px"
+                                hide-bottom-space dense
                                 value=""
                             />
                         </div>
@@ -96,6 +90,7 @@
 
             <amazon-products-list
                 v-if="showLinks"
+                ref="amazon_products_list_viewer"
                 :showLinksCountAfterExpand="false"
                 :getAmazonProductsCount="true"
                 @getAmazonProductsCount="amazonProductsCount = $event"
@@ -103,20 +98,11 @@
 
         </q-card>
 
-        <q-dialog v-model="showModal">
-            <q-card style="min-width: 400px">
-                <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Deactivate this service?</div>
-                </q-card-section>
-
-                <q-card-section class="text-center q-pa-xl">
-                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
-                        class="text-positive">Active</span></div>
-
-                    <q-btn color="warning" label="Deactivate"/>
-                </q-card-section>
-            </q-card>
-        </q-dialog>
+        <amazon-products-check-service-activate-deactivate-modal
+            :show.sync="showServiceActivateDeactivateModal"
+            :project-info="projectInfo"
+            @serviceUpdated="handleAmazonProductsCheckServiceUpdate"
+        />
 
     </section>
 </template>
@@ -125,20 +111,71 @@
     import QCChart from "components/charts/QCChart";
     import ProductInPagesModal from "components/modals/ProductInPagesModal";
     import AmazonProductsList from "components/amazon-products/AmazonProductsList";
+    import AmazonProductsCheckServiceActivateDeactivateModal
+        from "components/modals/AmazonProductsCheckServiceActivateDeactivateModal";
 
     export default {
-        components: {QCChart, ProductInPagesModal, AmazonProductsList},
+        components: {
+            AmazonProductsCheckServiceActivateDeactivateModal,
+            QCChart,
+            ProductInPagesModal,
+            AmazonProductsList
+        },
         data() {
             return {
-                showChart: true,
-                showLinks: true,
-                showModal: false,
-                amazonProductsCount: ''
+                showChart                         : false,
+                showLinks                         : true,
+                showServiceActivateDeactivateModal: false,
+                amazonProductsCount               : '',
+                projectInfo                       : {
+                    domain        : {},
+                    domain_use_for: {}
+                }
             }
         },
 
-        mounted() {},
+        mounted() {
+            this.checkProject();
+        },
 
-        methods: {}
+        computed: {
+            serviceIsActive() {
+                if (!this.projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service')) return false
+
+                return this.projectInfo.domain_use_for.amazon_products_check_service.status === 'active'
+            }
+        },
+
+        methods: {
+            checkProject() {
+                // later get it from store n check first for id check then do these cz we need projectInfo
+                // for now keep api call
+                this.$store.dispatch('projects/getProject', {
+                    vm: this,
+                    id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.projectInfo = res.data.project
+                    })
+                    .catch(err => {
+                        if (err.response.status === 404) {
+                            this.$router.push('/projects')
+                        }
+                    })
+            },
+
+            handleAmazonProductsCheckServiceUpdate(project) {
+                let updatedService = project.domain_use_for.amazon_products_check_service;
+
+                if (!this.projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service')) {
+                    this.$set(this.projectInfo.domain_use_for, 'amazon_products_check_service', {})
+                }
+
+                this.$set(this.projectInfo.domain_use_for.amazon_products_check_service, 'affiliate_ids', updatedService.affiliate_ids)
+                this.$set(this.projectInfo.domain_use_for.amazon_products_check_service, 'status', updatedService.status)
+
+                this.$refs.amazon_products_list_viewer.getAmazonProductsInfo();
+            }
+        }
     }
 </script>

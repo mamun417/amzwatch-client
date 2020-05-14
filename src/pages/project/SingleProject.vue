@@ -33,13 +33,13 @@
                 </div>
 
                 <div>
-                    <q-badge :color="service.active === 'true' ? 'positive' : 'warning'">
-                        {{service.active === 'true' ? 'Active' : 'Service is inactive'}}
+                    <q-badge :color="service.status === 'active' ? 'positive' : 'warning'">
+                        {{service.status === 'active' ? 'Active' : 'Service is inactive'}}
                     </q-badge>
                 </div>
 
                 <div class="col text-right">
-                    <template v-if="service.active === 'true'">
+                    <template v-if="service.status === 'active'">
                         <q-btn
                             icon="visibility"
                             :to="servicesInfo[index].to"
@@ -62,14 +62,14 @@
                 </div>
             </q-card-section>
 
-            <q-card-section v-if="servicesInfo[index].expansionStatus && service.active === 'true'">
+            <q-card-section v-if="servicesInfo[index].expansionStatus && service.status === 'active'">
 
                 <broken-links-list v-if="index === 'broken_link_check_service'"/>
 
                 <guest-post-list v-if="index === 'guest_post_check_service'"/>
 
                 <amazon-products-list
-                    v-if="index === 'amazon_product_check_service'"
+                    v-if="index === 'amazon_products_check_service'"
                     :showLinksCountAfterExpand="true"
                 />
 
@@ -134,7 +134,7 @@
                 },
 
                 servicesInfo: {
-                    amazon_product_check_service: {
+                    amazon_products_check_service: {
                         icon           : 'local_mall',
                         expansionStatus: true,
                         active         : true,
@@ -175,11 +175,11 @@
                     .then(res => {
                         this.projectInfo = res.data.project
                     })
-                // .catch(err => {
-                //     if (err.response.status === 404) {
-                //         // this.$router.push('/projects')
-                //     }
-                // })
+                .catch(err => {
+                    if (err.response.status === 404) {
+                        this.$router.push('/projects')
+                    }
+                })
             },
             handleProjectEditModal() {
                 this.showProjectEditModal = !this.showProjectEditModal;
