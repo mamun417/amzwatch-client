@@ -5,8 +5,8 @@
                 class="bg-primary text-white row justify-between items-center"
             >
                 <div class="col">
-                    <div class="text-h6">{{projectInfo.name}}</div>
-                    <div class="text-subtitle2">{{projectInfo.domain}}</div>
+                    <div class="text-h6">{{projectInfo.project_name}}</div>
+                    <div class="text-subtitle2">{{projectInfo.domain.url}}</div>
                 </div>
 
                 <div class="col text-center">
@@ -16,32 +16,32 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="edit" @click="showModal = !showModal" flat dense/>
+                    <q-btn icon="edit" @click="handleProjectEditModal" flat dense/>
                 </div>
             </q-card-section>
         </q-card>
 
         <q-card
-            v-for="(service, index) in projectInfo.services"
+            v-for="(service, index) in projectInfo.domain_use_for"
             :key="index"
             class="q-mb-xl">
             <q-card-section class="bg-primary row items-center text-white text-subtitle2">
                 <div class="col flex items-center">
-                    <q-icon :name="service.icon" class="q-mr-sm"/>
-                    <div>{{index}}</div>
+                    <q-icon :name="servicesInfo[index].icon" class="q-mr-sm"/>
+                    <div>{{$_.upperFirst($_.lowerCase(index))}}</div>
                 </div>
 
                 <div>
-                    <q-badge :color="service.active ? 'positive' : 'warning'">
-                        {{service.active ? 'Active' : 'Service is inactive'}}
+                    <q-badge :color="service.active === 'true' ? 'positive' : 'warning'">
+                        {{service.active === 'true' ? 'Active' : 'Service is inactive'}}
                     </q-badge>
                 </div>
 
                 <div class="col text-right">
-                    <template v-if="service.active">
+                    <template v-if="service.active === 'true'">
                         <q-btn
                             icon="visibility"
-                            :to="service.to"
+                            :to="servicesInfo[index].to"
                             dense flat
                         />
                         <q-btn
@@ -50,29 +50,29 @@
                             dense flat
                         />
                         <q-btn
-                            @click="service.expansionStatus = !service.expansionStatus"
-                            :icon="service.expansionStatus ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+                            @click="servicesInfo[index].expansionStatus = !servicesInfo[index].expansionStatus"
+                            :icon="servicesInfo[index].expansionStatus ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
                             dense flat
                         />
                     </template>
 
-                    <q-btn v-else label="Start service" dense flat/>
+                    <q-btn v-else label="Start Service" dense flat no-caps/>
                     <!--call modals-->
                 </div>
             </q-card-section>
 
-            <q-card-section v-if="service.expansionStatus && service.active">
+            <q-card-section v-if="servicesInfo[index].expansionStatus && service.active === 'true'">
 
-                <broken-links-list v-if="index === 'broken_link_check'"/>
+                <broken-links-list v-if="index === 'broken_link_check_service'"/>
 
-                <guest-post-list v-if="index === 'guest_post_check'"/>
+                <guest-post-list v-if="index === 'guest_post_check_service'"/>
 
                 <amazon-products-list
-                    v-if="index === 'amazon_product_check'"
+                    v-if="index === 'amazon_product_check_service'"
                     :showLinksCountAfterExpand="true"
                 />
 
-                <div v-if="index === 'uptime_monitor_check'">
+                <div v-if="index === 'uptime_monitor_check_service'">
                     <q-c-chart class="q-mb-lg"/>
 
                     <div class="q-px-sm flex justify-between items-center text-bold text-subtitle2">
@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div v-if="index !== 'uptime_monitor_check'" class="q-pa-lg flex flex-center">
+                <div v-if="index !== 'uptime_monitor_check_service'" class="q-pa-lg flex flex-center">
                     <q-pagination
                         :value="3"
                         :max="5"
@@ -91,34 +91,7 @@
             </q-card-section>
         </q-card>
 
-        <q-dialog v-model="showModal">
-            <q-card style="min-width: 400px">
-                <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Update project info</div>
-                </q-card-section>
-
-                <q-card-section class="">
-                    <q-input label="Project Name" class="q-mb-md q-mx-sm" autofocus dense/>
-                    <q-input label="Domain URL" class="q-mb-md  q-mx-sm" dense/>
-                    <q-checkbox keep-color label="Active" class="text-weight-medium" :value="true" color="orange"/>
-                </q-card-section>
-
-                <q-card-section>
-                    <q-banner class="bg-grey-3" dense>
-                        <q-icon name="error" color="warning" slot="avatar" size="xs"/>
-
-                        <div class="text-caption text-weight-medium">
-                            If you update domain url your previous domain related data will be lost
-                        </div>
-                    </q-banner>
-                </q-card-section>
-
-                <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="Cancel" v-close-popup/>
-                    <q-btn flat label="Update" v-close-popup/>
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
+        <!--        <add-or-edit-project-modal :show="showProjectEditModal" :edit-data="selectedForEdit" update-modal/>-->
 
         <uptime-check-activate-deactivate-modal :show.sync="showUptimeMonitorActiveModal" :active="true"/>
 
@@ -131,9 +104,11 @@
     import AmazonProductsList from "components/amazon-products/AmazonProductsList";
     import BrokenLinksList from "components/broken-links/BrokenLinksList";
     import GuestPostList from "components/guest-posts/GuestPostList";
+    import AddOrEditProjectModal from "components/modals/AddOrEditProjectModal";
 
     export default {
         components: {
+            AddOrEditProjectModal,
             GuestPostList,
             UptimeCheckActivateDeactivateModal,
             QCChart,
@@ -142,45 +117,65 @@
         },
         data() {
             return {
-                showModal                   : false,
+                showProjectEditModal        : false,
+                selectedForEdit             : {},
                 showUptimeMonitorActiveModal: false,
 
                 projectInfo: {
-                    name    : 'Test project for all',
-                    domain  : 'https//exonhost.com',
-                    services: {
-                        amazon_product_check: {
-                            icon           : 'local_mall',
-                            expansionStatus: true,
-                            active         : true,
-                            to             : '/projects/' + this.$route.params.project_id + '/amazon-products-check'
-                        },
-                        guest_post_check    : {
-                            icon           : 'record_voice_over',
-                            expansionStatus: true,
-                            active         : true,
-                            to             : '/projects/' + this.$route.params.project_id + '/guest-links-check'
-                        },
-                        broken_link_check   : {
-                            icon           : 'link_off',
-                            expansionStatus: true,
-                            active         : true,
-                            to             : '/projects/' + this.$route.params.project_id + '/broken-links-check'
-                        },
-                        uptime_monitor_check: {
-                            icon           : 'trending_up',
-                            expansionStatus: true,
-                            active         : true,
-                            to             : '/projects/1/uptime-monitor-check'
-                        }
-                    }
+                    domain: {}
                 },
+
+                servicesInfo: {
+                    amazon_product_check_service: {
+                        icon           : 'local_mall',
+                        expansionStatus: true,
+                        active         : true,
+                        to             : '/projects/' + this.$route.params.project_id + '/amazon-products-check'
+                    },
+                    guest_post_check_service    : {
+                        icon           : 'record_voice_over',
+                        expansionStatus: true,
+                        active         : true,
+                        to             : '/projects/' + this.$route.params.project_id + '/guest-links-check'
+                    },
+                    broken_link_check_service   : {
+                        icon           : 'link_off',
+                        expansionStatus: true,
+                        active         : true,
+                        to             : '/projects/' + this.$route.params.project_id + '/broken-links-check'
+                    },
+                    uptime_monitor_check_service: {
+                        icon           : 'trending_up',
+                        expansionStatus: true,
+                        active         : true,
+                        to             : '/projects/1/uptime-monitor-check'
+                    }
+                }
             }
         },
 
-        mounted() {},
+        mounted() {
+            this.getProject();
+        },
 
         methods: {
+            getProject() {
+                this.$store.dispatch('projects/getProject', {
+                    vm: this,
+                    id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.projectInfo = res.data.project
+                    })
+                // .catch(err => {
+                //     if (err.response.status === 404) {
+                //         // this.$router.push('/projects')
+                //     }
+                // })
+            },
+            handleProjectEditModal() {
+                this.showProjectEditModal = !this.showProjectEditModal;
+            },
             modalOpenHandle(serviceType) {
                 if (serviceType === 'uptime_monitor_check') {
                     this.showUptimeMonitorActiveModal = true;

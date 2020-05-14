@@ -14,6 +14,21 @@ export function getProjects(context, payload) {
     })
 }
 
+export function getProject(context, payload) {
+    return new Promise((resolve, reject) => {
+        // it will updated later for filter etc
+        let urlPath = `/projects/${payload.id}`;
+        
+        payload.vm.$get(urlPath)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
 export function addProject(context, payload) {
     return new Promise((resolve, reject) => {
         payload.vm.$post('/projects', payload.inputs)

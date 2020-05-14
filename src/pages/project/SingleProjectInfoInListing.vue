@@ -18,7 +18,7 @@
             </div>
 
             <div class="col flex justify-end">
-                <q-btn flat icon="visibility" :to="'/projects/'+projectInfo._id" dense></q-btn>
+                <q-btn flat icon="visibility" :to="'/projects/'+projectInfo.id" dense></q-btn>
                 <q-btn flat icon="edit" @click="$emit('projectEdit', projectInfo)" dense></q-btn>
             </div>
         </q-card-section>
