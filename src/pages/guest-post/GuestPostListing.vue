@@ -86,7 +86,7 @@
 
                 <guest-post-list
                     :getguestPostsCount="true"
-                    @get$guestPostsCount="guestPostsCount = $event"
+                    @getGuestLinksCount="guestPostsCount = $event"
                 />
 
                 <div class="q-pa-lg flex flex-center">

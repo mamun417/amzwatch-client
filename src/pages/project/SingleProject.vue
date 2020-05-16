@@ -89,7 +89,7 @@
                     >
                     </q-pagination>
                 </div>
-            </q-card-section>
+            </q-card-section v-if="servicesInfo[index].expansionStatus && service.status === 'active'">
         </q-card>
 
         <add-or-edit-project-modal
