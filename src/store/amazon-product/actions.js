@@ -1,6 +1,8 @@
 export function getAmazonProducts(context, payload) {
     return new Promise((resolve, reject) => {
-        payload.vm.$get('/projects/' + payload.project_id + '/amazon-products')
+        let urlPath = '/projects/' + payload.project_id + '/amazon-products?page=' + context.state.paginationMeta.current_page;
+
+        payload.vm.$get(urlPath)
             .then(res => {
                 resolve(res)
             })
@@ -33,5 +35,12 @@ export function updateAmazonProductCheckService(context, payload) {
             .catch(err => {
                 reject(err)
             })
+    })
+}
+
+export function updateAmazonProductsCurrentPage(context, payload) {
+    return new Promise((resolve, reject) => {
+        context.commit('updateCurrentPagePaginationMeta', payload);
+        resolve(true)
     })
 }
