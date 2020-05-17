@@ -13,7 +13,7 @@ export function getBrokenLinks(context, payload) {
     })
 }
 
-export function updateProjectsCurrentPage(context, payload) {
+export function updateBrokenLinksCurrentPage(context, payload) {
     return new Promise((resolve, reject) => {
         context.commit('updateCurrentPagePaginationMeta', payload);
         resolve(true)
