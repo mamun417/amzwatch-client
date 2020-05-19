@@ -12,6 +12,12 @@ export function updateToken(state, token) {
     state.token = token;
 }
 
+export function updateProfile(state, {user}) {
+    localStorage.setItem('user', JSON.stringify(user));
+
+    state.user = user;
+}
+
 export function authOut(state) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
