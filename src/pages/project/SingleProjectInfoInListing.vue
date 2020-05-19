@@ -98,24 +98,27 @@
                 </div>
 
                 <div class="col flex items-center justify-center">
-                    <q-badge v-if="!projectInfo.services.includes('amazon_product_link_check')" color="warning">
+                    <q-badge
+                        v-if="!projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service') || projectInfo.domain_use_for.amazon_products_check_service.status !== 'active'"
+                        color="warning"
+                    >
                         <q-icon name="error" class="q-mr-xs"/>
                         You are not using this service
                     </q-badge>
 
                     <template v-else>
-                        <q-badge color="warning">
-                            <q-icon name="error" class="q-mr-xs"/>
-                            02 issues
+                        <q-badge color="positive">
+                            <q-icon name="check" class="q-mr-xs"/>
+                            You are using this service
                         </q-badge>
                     </template>
                 </div>
 
                 <div class="col text-right items-center">
-                    <template v-if="projectInfo.services.includes('amazon_product_link_check')">
+                    <template v-if="projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service') && projectInfo.domain_use_for.amazon_products_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
                         <q-btn color="primary" icon="visibility"
-                               :to="'/projects/'+projectInfo._id+'/amazon-products-check'" flat
+                               :to="'/projects/'+projectInfo.id+'/amazon-products-check'" flat
                                dense></q-btn>
                     </template>
 
@@ -172,28 +175,11 @@
             </q-card>
         </q-dialog>
 
-        <q-dialog v-model="showAmazonActiveModal">
-            <q-card style="min-width: 400px">
-                <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Activate Amazon Product Checker Service</div>
-                </q-card-section>
-
-                <q-card-section class="text-center q-pa-xl">
-                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
-                        class="text-warning">Deactivated</span></div>
-
-                    <q-input v-model="amazonRefId" label="Amazon ref id" class="q-mb-lg"
-                             placeholder="Ex. kjaskkkj" standout="bg-primary text-white"/>
-
-                    <div class="flex items-center text-caption q-mb-md">
-                        <q-icon name="warning" color="warning" class="q-mr-xs"/>
-                        <div>Note: Before activate insert your amazon ref id</div>
-                    </div>
-
-                    <q-btn color="positive" label="Activate"/>
-                </q-card-section>
-            </q-card>
-        </q-dialog>
+        <amazon-products-check-service-activate-deactivate-modal
+            :show.sync="showAmazonActiveModal"
+            :project-info="projectInfo"
+            @serviceUpdated="$emit('serviceUpdated')"
+        />
 
         <q-dialog v-model="showGuestLinkActiveModal">
             <q-card style="min-width: 400px">
@@ -240,10 +226,14 @@
 
 <script>
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+    import AmazonProductsCheckServiceActivateDeactivateModal
+        from "components/modals/AmazonProductsCheckServiceActivateDeactivateModal";
 
     export default {
         name      : 'SingleProjectInfoInListing',
-        components: {UptimeCheckActivateDeactivateModal},
+        components: {
+            AmazonProductsCheckServiceActivateDeactivateModal,
+            UptimeCheckActivateDeactivateModal},
         props     : {
             projectInfo: {
                 type   : Object,

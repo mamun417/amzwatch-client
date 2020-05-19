@@ -29,8 +29,9 @@
         <single-project-info-in-listing
             v-for="(project, index) in projects"
             :key="index"
-            :project-info="project"
+            :project-info.sync="project"
             @projectEdit="handleEditProjectClick"
+            @serviceUpdated="getProjects()"
         />
 
         <div class="q-pa-lg flex flex-center">
