@@ -25,12 +25,11 @@
             </q-card-actions>
 
             <q-card-section v-if="!profileEditSelected" class="q-mt-lg">
-                <div class="text-center text-subtitle1 text-weight-bold text-primary">John Doe</div>
-                <div class="text-center text-md">john@example.com</div>
+                <div class="text-center text-subtitle1 text-weight-bold text-primary">{{ formData.first_name + ' ' + formData.last_name }}</div>
+                <div class="text-center text-md">{{ formData.email }}</div>
+                <div class="text-center text-md">{{ formData.address }}</div>
 
-                <div class="text-center q-mt-md">Lorem Ipsum Lorem Ipsum Lorem IpsumLorem IpsumLorem Ipsum. Lorem Ipsum
-                    Lorem Ipsum Lorem Ipsum
-                </div>
+                <div class="text-center q-mt-md">{{ formData.about_me }}</div>
             </q-card-section>
 
             <q-card-section v-else class="q-mt-lg">
@@ -78,7 +77,7 @@
                 </div>
 
                 <div class="row justify-center">
-                    <q-btn class="q-mr-md" color="primary">Update</q-btn>
+                    <q-btn @click="updateProfileButtonClicked" class="q-mr-md" color="primary">Update</q-btn>
                     <q-btn @click="profileEditSelected = false">Cancel</q-btn>
                 </div>
             </q-card-section>
@@ -138,11 +137,13 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         data() {
             return {
-                profileEditSelected        : true,
-                passwordChangeModal        : true,
+                profileEditSelected        : false,
+                passwordChangeModal        : false,
                 currentPasswordCheckSection: false,
                 formData                   : {},
                 formErrors                 : {},
@@ -150,7 +151,43 @@
                 updatePassFormData         : {}
             }
         },
+
+        computed: {
+            ...mapGetters({
+                userInfo: 'auth/user'
+            })
+        },
+
+        mounted() {
+           this.setUserProfile();
+        },
+
         methods: {
+            setUserProfile(){
+                this.$set(this.formData, 'first_name', this.userInfo.meta.firstName);
+                this.$set(this.formData, 'last_name', this.userInfo.meta.lastName);
+                this.$set(this.formData, 'address', this.userInfo.meta.address);
+                this.$set(this.formData, 'email', this.userInfo.email);
+                this.$set(this.formData, 'about_me', this.userInfo.meta.about_me);
+            },
+
+            updateProfileButtonClicked() {
+                this.$store.dispatch('auth/updateProfile', {
+                    vm        : this,
+                    inputs    : this.formData,
+                })
+                    .then(res => {
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Profile has been updated Successful',
+                            position: 'top'
+                        });
+                    })
+                    .catch(err => {
+                        this.formErrors = err.response.data.errors;
+                    })
+            },
+
             checkCurrentPassword() {
                 // check current pass then set to false
                 this.currentPasswordCheckSection = false

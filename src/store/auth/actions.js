@@ -32,6 +32,21 @@ export function register(context, payload) {
     })
 }
 
+export function updateProfile(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/update-profile', payload.inputs)
+            .then(res => {
+                let info = res.data
+                context.commit('updateProfile', {user: info.user});
+
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
 export function logout(context) {
     return new Promise((resolve, reject) => {
         context.commit('authOut');
