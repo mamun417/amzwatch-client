@@ -78,6 +78,12 @@
                         caption: 'Go to home',
                         icon   : 'home',
                         link   : '/'
+                    },
+                    {
+                        title  : 'Projects',
+                        caption: 'Go to projects',
+                        icon   : 'assessment',
+                        link   : '/projects'
                     }
                 ]
             }

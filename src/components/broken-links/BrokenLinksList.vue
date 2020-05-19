@@ -17,8 +17,8 @@
             >
                 <q-item-section class="col">{{ link.url }}</q-item-section>
                 <q-item-section class="col text-center inline-block">
-                    <q-badge :color="link.status !== 200 ? 'warning' : 'positive'">
-                        {{ link.status !== 200 ? 'unavailable' : 'available' }}
+                    <q-badge :color="link.meta.page_status !== 200 ? 'warning' : 'positive'">
+                        {{ link.meta.page_status !== 200 ? 'unavailable' : 'available' }}
                     </q-badge>
                 </q-item-section>
                 <q-item-section class="col text-right">
@@ -32,12 +32,6 @@
 <script>
     export default {
         name : "BrokenLinksList",
-        props: {
-            getBrokenLinksCount: {
-                type   : Boolean,
-                default: false
-            }
-        },
         data() {
             return {
                 brokenLinkInfo: []
@@ -57,7 +51,7 @@
                     .then(res => {
                         this.brokenLinkInfo = res.data.brokenLinks.data;
 
-                        this.$emit('getBrokenLinksCount', res.data.brokenLinks.pagination_meta.total);
+                        this.$emit('linksCountUpdated', res.data.brokenLinks.pagination_meta.total);
                     })
                     .catch(err => {
                         //handle error

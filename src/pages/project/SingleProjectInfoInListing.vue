@@ -34,28 +34,31 @@
                 </div>
 
                 <div class="col flex items-center justify-center">
-                    <q-badge v-if="!projectInfo.services.includes('broken_link_check')" color="warning">
+                    <q-badge
+                        v-if="!projectInfo.domain_use_for.hasOwnProperty('broken_links_check_service') || projectInfo.domain_use_for.broken_links_check_service.status !== 'active'"
+                        color="warning"
+                    >
                         <q-icon name="error" class="q-mr-xs"/>
                         You are not using this service
                     </q-badge>
 
                     <template v-else>
-                        <q-badge color="warning">
-                            <q-icon name="error" class="q-mr-xs"/>
-                            22 issues
+                        <q-badge color="positive">
+                            <q-icon name="check" class="q-mr-xs"/>
+                            You are using this service
                         </q-badge>
                     </template>
                 </div>
 
                 <div class="col text-right items-center">
-                    <template v-if="projectInfo.services.includes('broken_link_check')">
+                    <template v-if="projectInfo.domain_use_for.hasOwnProperty('broken_links_check_service') && projectInfo.domain_use_for.broken_links_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
                         <q-btn color="primary" icon="visibility"
-                               :to="'/projects/'+projectInfo._id+'/broken-links-check'" flat dense></q-btn>
+                               :to="'/projects/'+projectInfo.id+'/broken-links-check'" flat dense></q-btn>
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md"
-                           @click="showBrokenLinksActiveModal = !showBrokenLinksActiveModal" flat dense/>
+                           @click="showBrokenLinksActivateModal = !showBrokenLinksActivateModal" flat dense/>
                 </div>
             </div>
 
@@ -123,7 +126,7 @@
                     </template>
 
                     <q-btn v-else label="Start" color="primary" size="md"
-                           @click="showAmazonActiveModal = !showAmazonActiveModal" flat dense/>
+                           @click="showAmazonActivateModal = !showAmazonActivateModal" flat dense/>
                 </div>
             </div>
 
@@ -160,23 +163,14 @@
             </div>
         </q-card-section>
 
-        <q-dialog v-model="showBrokenLinksActiveModal">
-            <q-card style="min-width: 400px">
-                <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Activate Broken Link Checker Service</div>
-                </q-card-section>
-
-                <q-card-section class="text-center q-pa-xl">
-                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
-                        class="text-warning">Deactivated</span></div>
-
-                    <q-btn color="positive" label="Activate"/>
-                </q-card-section>
-            </q-card>
-        </q-dialog>
+        <broken-links-check-service-activate-deactivate-modal
+            :show.sync="showBrokenLinksActivateModal"
+            :project-info="projectInfo"
+            @serviceUpdated="$emit('serviceUpdated')"
+        />
 
         <amazon-products-check-service-activate-deactivate-modal
-            :show.sync="showAmazonActiveModal"
+            :show.sync="showAmazonActivateModal"
             :project-info="projectInfo"
             @serviceUpdated="$emit('serviceUpdated')"
         />
@@ -228,10 +222,13 @@
     import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
     import AmazonProductsCheckServiceActivateDeactivateModal
         from "components/modals/AmazonProductsCheckServiceActivateDeactivateModal";
+    import BrokenLinksCheckServiceActivateDeactivateModal
+        from "components/modals/BrokenLinksCheckServiceActivateDeactivateModal";
 
     export default {
         name      : 'SingleProjectInfoInListing',
         components: {
+            BrokenLinksCheckServiceActivateDeactivateModal,
             AmazonProductsCheckServiceActivateDeactivateModal,
             UptimeCheckActivateDeactivateModal},
         props     : {
@@ -242,8 +239,8 @@
         },
         data() {
             return {
-                showBrokenLinksActiveModal  : false,
-                showAmazonActiveModal       : false,
+                showBrokenLinksActivateModal  : false,
+                showAmazonActivateModal       : false,
                 showGuestLinkActiveModal    : false,
                 showUptimeMonitorActiveModal: false,
 

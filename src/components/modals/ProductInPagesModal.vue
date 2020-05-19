@@ -14,6 +14,7 @@
                 <q-item
                     v-for="(link, index) in productInPages"
                     class="q-mb-sm shadow-1 text-weight-medium"
+                    :key="index"
                     clickable
                 >
                     <q-item-section>{{link.page.url}}</q-item-section>

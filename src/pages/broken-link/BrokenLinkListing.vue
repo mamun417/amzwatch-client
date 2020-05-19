@@ -11,8 +11,8 @@
                 </div>
 
                 <div class="col text-center">
-                    <q-badge color="positive" class="text-subtitle2">
-                        Active
+                    <q-badge :color="serviceIsActive ? 'positive' : 'warning'" class="text-subtitle2">
+                        {{serviceIsActive ? 'Active' : 'Inactive'}}
                     </q-badge>
                 </div>
 
@@ -97,8 +97,8 @@
             <q-card-section v-if="showLinks">
 
                 <broken-links-list
-                    :getBrokenLinksCount="true"
-                    @getBrokenLinksCount="brokenLinksCount = $event"
+                    ref="broken_links_list_viewer"
+                    @linksCountUpdated="brokenLinksCount = $event"
                 />
 
                 <div class="q-pa-lg flex flex-center">
@@ -111,35 +111,79 @@
             </q-card-section>
         </q-card>
 
-        <q-dialog v-model="showModal">
-            <q-card style="min-width: 400px">
-                <q-card-section class="bg-primary text-white">
-                    <div class="text-h6">Deactivate this service?</div>
-                </q-card-section>
-
-                <q-card-section class="text-center q-pa-xl">
-                    <div class="text-subtitle1 text-bold q-mb-lg">This service is currently: <span
-                        class="text-positive">Active</span></div>
-
-                    <q-btn color="warning" label="Deactivate"/>
-                </q-card-section>
-            </q-card>
-        </q-dialog>
+        <broken-links-check-service-activate-deactivate-modal
+            :show.sync="showModal"
+            :project-info="projectInfo"
+            @serviceUpdated="handleBrokenLinksCheckServiceUpdate"
+        />
     </section>
 </template>
 
 <script>
     import QCChart from "components/charts/QCChart";
     import BrokenLinksList from "components/broken-links/BrokenLinksList";
+    import BrokenLinksCheckServiceActivateDeactivateModal
+        from "components/modals/BrokenLinksCheckServiceActivateDeactivateModal";
 
     export default {
-        components: {BrokenLinksList, QCChart},
+        components: {
+            BrokenLinksCheckServiceActivateDeactivateModal,
+            BrokenLinksList,
+            QCChart
+        },
         data() {
             return {
                 showChart: false,
                 showLinks: true,
                 showModal: false,
                 brokenLinksCount: '',
+                projectInfo                       : {
+                    domain        : {},
+                    domain_use_for: {}
+                }
+            }
+        },
+
+        mounted() {
+            this.checkProject();
+        },
+
+        computed: {
+            serviceIsActive() {
+                if (!this.projectInfo.domain_use_for.hasOwnProperty('broken_links_check_service')) return false
+
+                return this.projectInfo.domain_use_for.broken_links_check_service.status === 'active'
+            }
+        },
+
+        methods: {
+            checkProject() {
+                // later get it from store n check first for id check then do these cz we need projectInfo
+                // for now keep api call
+                this.$store.dispatch('projects/getProject', {
+                    vm: this,
+                    id: this.$route.params.project_id
+                })
+                    .then(res => {
+                        this.projectInfo = res.data.project
+                    })
+                    .catch(err => {
+                        if (err.response.status === 404) {
+                            this.$router.push('/projects')
+                        }
+                    })
+            },
+
+            handleBrokenLinksCheckServiceUpdate(project) {
+                let updatedService = project.domain_use_for.broken_links_check_service;
+
+                if (!this.projectInfo.domain_use_for.hasOwnProperty('broken_links_check_service')) {
+                    this.$set(this.projectInfo.domain_use_for, 'broken_links_check_service', {})
+                }
+
+                this.$set(this.projectInfo.domain_use_for.broken_links_check_service, 'status', updatedService.status)
+
+                this.$refs.broken_links_list_viewer.getBrokenLinkInfo();
             }
         }
     }

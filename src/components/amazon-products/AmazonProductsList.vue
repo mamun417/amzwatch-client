@@ -65,6 +65,7 @@
                         <q-item
                             v-for="(link, index) in product.productInPagesLinks"
                             class="shadow-1"
+                            :key="index"
                             clickable
                         >
                             <q-item-section>

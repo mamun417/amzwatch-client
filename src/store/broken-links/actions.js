@@ -13,6 +13,18 @@ export function getBrokenLinks(context, payload) {
     })
 }
 
+export function updateBrokenLinksCheckService(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$patch('/projects/' + payload.project_id + '/broken-links', payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
 export function updateBrokenLinksCurrentPage(context, payload) {
     return new Promise((resolve, reject) => {
         context.commit('updateCurrentPagePaginationMeta', payload);
