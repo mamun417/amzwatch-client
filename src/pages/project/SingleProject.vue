@@ -64,9 +64,9 @@
 
             <q-card-section v-if="servicesInfo[index].expansionStatus && service.status === 'active'">
 
-                <broken-links-list v-if="index === 'broken_link_check_service'"/>
+                <broken-links-list v-if="index === 'broken_links_check_service'"/>
 
-                <guest-post-list v-if="index === 'guest_post_check_service'"/>
+                <guest-post-list v-if="index === 'guest_posts_check_service'"/>
 
                 <amazon-products-list
                     v-if="index === 'amazon_products_check_service'"
@@ -89,7 +89,7 @@
                     >
                     </q-pagination>
                 </div>
-            </q-card-section v-if="servicesInfo[index].expansionStatus && service.status === 'active'">
+            </q-card-section>
         </q-card>
 
         <add-or-edit-project-modal
@@ -140,19 +140,19 @@
                         active         : true,
                         to             : '/projects/' + this.$route.params.project_id + '/amazon-products-check'
                     },
-                    guest_post_check_service    : {
+                    guest_posts_check_service    : {
                         icon           : 'record_voice_over',
                         expansionStatus: true,
                         active         : true,
                         to             : '/projects/' + this.$route.params.project_id + '/guest-links-check'
                     },
-                    broken_link_check_service   : {
+                    broken_links_check_service   : {
                         icon           : 'link_off',
                         expansionStatus: true,
                         active         : true,
                         to             : '/projects/' + this.$route.params.project_id + '/broken-links-check'
                     },
-                    uptime_monitor_check_service: {
+                    uptime_monitor_check_service : {
                         icon           : 'trending_up',
                         expansionStatus: true,
                         active         : true,
@@ -175,11 +175,11 @@
                     .then(res => {
                         this.projectInfo = res.data.project
                     })
-                .catch(err => {
-                    if (err.response.status === 404) {
-                        this.$router.push('/projects')
-                    }
-                })
+                    .catch(err => {
+                        if (err.response.status === 404) {
+                            this.$router.push('/projects')
+                        }
+                    })
             },
             handleProjectEditModal() {
                 this.showProjectEditModal = !this.showProjectEditModal;
