@@ -6,8 +6,8 @@
             >
                 <div class="col">
                     <div class="text-h6">Check Broken Links</div>
-                    <div class="text-caption">Project: Test project</div>
-                    <div class="text-caption">Domain: exonhost.com</div>
+                    <div class="text-caption">Project: {{projectInfo.project_name}}</div>
+                    <div class="text-caption">Domain: {{projectInfo.domain.url}}</div>
                 </div>
 
                 <div class="col text-center">
@@ -133,11 +133,11 @@
         },
         data() {
             return {
-                showChart: false,
-                showLinks: true,
-                showModal: false,
+                showChart       : false,
+                showLinks       : true,
+                showModal       : false,
                 brokenLinksCount: '',
-                projectInfo                       : {
+                projectInfo     : {
                     domain        : {},
                     domain_use_for: {}
                 }
