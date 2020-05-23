@@ -43,6 +43,18 @@ const routes = [
                         component: () => import('pages/profile/Profile.vue')
                     },
                 ]
+            },
+
+            {
+                path     : '/subscription',
+                component: () => import('layouts/SubscriptionLayout.vue'),
+                meta     : {requiresAuth: true},
+                children : [
+                    {
+                        path     : '',
+                        component: () => import('pages/subscription/Subscription.vue')
+                    },
+                ]
             }
         ]
     },
