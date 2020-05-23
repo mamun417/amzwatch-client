@@ -149,28 +149,73 @@
 
             <div class="row justify-between items-center q-py-sm">
                 <div class="col text-subtitle2 flex items-center q-mr-xs">
-                    <q-icon name="trending_up" class="q-mr-xs"/>
-                    <div>Uptime monitor checker</div>
+                    <q-icon name="speed" class="q-mr-xs"/>
+                    <div>Page speed checker</div>
                 </div>
 
                 <div class="col flex items-center justify-center">
-                    <q-badge v-if="!projectInfo.services.includes('amazon_product_link_check')" color="warning">
+                    <q-badge
+                        v-if="!projectInfo.domain_use_for.hasOwnProperty('page_speed_check_service') || projectInfo.domain_use_for.page_speed_check_service.status !== 'active'"
+                        color="warning"
+                    >
                         <q-icon name="error" class="q-mr-xs"/>
                         You are not using this service
                     </q-badge>
 
                     <template v-else>
-                        <q-badge color="warning">
-                            <q-icon name="error" class="q-mr-xs"/>
-                            Server is down
+                        <q-badge color="positive">
+                            <q-icon name="check" class="q-mr-xs"/>
+                            You are using this service
                         </q-badge>
                     </template>
                 </div>
 
                 <div class="col text-right items-center">
-                    <template v-if="projectInfo.services.includes('uptime_monitor_check')">
+                    <template
+                        v-if="projectInfo.domain_use_for.hasOwnProperty('page_speed_check_service') && projectInfo.domain_use_for.page_speed_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" to="/projects/1/uptime-monitor-check" flat
+                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo.id+'/page-speed-check'"
+                               flat
+                               dense></q-btn>
+                    </template>
+
+                    <q-btn
+                        v-else label="Start" color="primary" size="md"
+                        @click="showPageSpeedActiveModal = !showPageSpeedActiveModal"
+                        flat dense
+                    />
+                </div>
+            </div>
+
+            <div class="row justify-between items-center q-py-sm">
+                <div class="col text-subtitle2 flex items-center q-mr-xs">
+                    <q-icon name="network_check" class="q-mr-xs"/>
+                    <div>Uptime monitor checker</div>
+                </div>
+
+                <div class="col flex items-center justify-center">
+                    <q-badge
+                        v-if="!projectInfo.domain_use_for.hasOwnProperty('domain_uptime_check_service') || projectInfo.domain_use_for.domain_uptime_check_service.status !== 'active'"
+                        color="warning"
+                    >
+                        <q-icon name="error" class="q-mr-xs"/>
+                        You are not using this service
+                    </q-badge>
+
+                    <template v-else>
+                        <q-badge color="positive">
+                            <q-icon name="check" class="q-mr-xs"/>
+                            You are using this service
+                        </q-badge>
+                    </template>
+                </div>
+
+                <div class="col text-right items-center">
+                    <template
+                        v-if="projectInfo.domain_use_for.hasOwnProperty('domain_uptime_check_service') && projectInfo.domain_use_for.domain_uptime_check_service.status === 'active'">
+                        <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
+                        <q-btn color="primary" icon="visibility"
+                               :to="'/projects/'+projectInfo.id+'/domain-uptime-check'" flat
                                dense></q-btn>
                     </template>
 
@@ -201,29 +246,30 @@
             @serviceUpdated="$emit('serviceUpdated')"
         />
 
-        <UptimeCheckActivateDeactivateModal
+        <domain-uptime-check-activate-deactivate-modal
             :show.sync="showUptimeMonitorActiveModal"
-            :active="projectInfo.services.includes('uptime_monitor_check')"
+            :project-info="projectInfo"
+            @serviceUpdated="$emit('serviceUpdated')"
         />
     </q-card>
 </template>
 
 <script>
-    import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
     import AmazonProductsCheckServiceActivateDeactivateModal
         from "components/modals/AmazonProductsCheckServiceActivateDeactivateModal";
     import BrokenLinksCheckServiceActivateDeactivateModal
         from "components/modals/BrokenLinksCheckServiceActivateDeactivateModal";
     import GuestPostsCheckServiceActivateDeactivateModal
         from "components/modals/GuestPostsCheckServiceActivateDeactivateModal";
+    import DomainUptimeCheckActivateDeactivateModal from "components/modals/DomainUptimeCheckActivateDeactivateModal";
 
     export default {
         name      : 'SingleProjectInfoInListing',
         components: {
+            DomainUptimeCheckActivateDeactivateModal,
             GuestPostsCheckServiceActivateDeactivateModal,
             BrokenLinksCheckServiceActivateDeactivateModal,
             AmazonProductsCheckServiceActivateDeactivateModal,
-            UptimeCheckActivateDeactivateModal
         },
         props     : {
             projectInfo: {
@@ -236,6 +282,7 @@
                 showBrokenLinksActivateModal: false,
                 showAmazonActivateModal     : false,
                 showGuestPostsActiveModal   : false,
+                showPageSpeedActiveModal    : false,
                 showUptimeMonitorActiveModal: false
             }
         }

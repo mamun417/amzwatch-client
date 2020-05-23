@@ -68,7 +68,8 @@
             </q-card-section>
 
             <q-card-section v-show="showChart">
-                <q-c-chart/>
+                <div class="text-center text-subtitle2">Coming soon!!</div>
+<!--                <q-c-chart/>-->
             </q-card-section>
         </q-card>
 

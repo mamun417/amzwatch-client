@@ -106,7 +106,7 @@
 
 <script>
     import QCChart from "components/charts/QCChart";
-    import UptimeCheckActivateDeactivateModal from "components/modals/UptimeCheckActivateDeactivateModal";
+    import UptimeCheckActivateDeactivateModal from "components/modals/DomainUptimeCheckActivateDeactivateModal";
     import AmazonProductsList from "components/amazon-products/AmazonProductsList";
     import BrokenLinksList from "components/broken-links/BrokenLinksList";
     import GuestPostList from "components/guest-posts/GuestPostList";

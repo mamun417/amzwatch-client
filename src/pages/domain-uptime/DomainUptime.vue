@@ -5,7 +5,7 @@
                 class="bg-primary text-white row justify-between items-center"
             >
                 <div class="col">
-                    <div class="text-h6">Check Amazon Products</div>
+                    <div class="text-h6">Check Domain Uptime</div>
                     <div class="text-caption">Project: {{projectInfo.project_name}}</div>
                     <div class="text-caption">Domain: {{projectInfo.domain.url}}</div>
                 </div>
@@ -17,11 +17,7 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn
-                        icon="settings"
-                        @click="showServiceActivateDeactivateModal = !showServiceActivateDeactivateModal"
-                        flat dense
-                    />
+                    <q-btn icon="settings" @click="showServiceActivateDeactivateModal = !showServiceActivateDeactivateModal" flat dense/>
                 </div>
             </q-card-section>
         </q-card>
@@ -37,16 +33,24 @@
                     <div class="row items-center">
                         <div v-if="showChart" class="col row q-mr-md">
                             <q-select
-                                color="white" label="Choose Month" label-color="white"
-                                input-class="white" class="col q-mr-md" bg-color="primary"
-                                hide-bottom-space dense
-                                value=""
+                                color="white"
+                                label="Choose Month"
+                                label-color="white"
+                                input-class="white"
+                                class="col q-mr-md"
+                                bg-color="primary"
+                                hide-bottom-space
+                                dense
                             />
                             <q-select
-                                color="white" label="By Year" label-color="white"
-                                input-class="white" class="col" style="max-width: 120px"
-                                hide-bottom-space dense
-                                value=""
+                                color="white"
+                                label="By Year"
+                                label-color="white"
+                                input-class="white"
+                                class="col"
+                                style="max-width: 120px"
+                                hide-bottom-space
+                                dense
                             />
                         </div>
 
@@ -70,13 +74,13 @@
         <q-card class="q-mb-xl">
             <q-card-section class="bg-primary row items-center text-white text-subtitle2">
                 <div class="col flex items-center">
-                    <q-icon name="link_off" class="q-mr-sm"/>
-                    <div>Products</div>
+                    <q-icon name="trending_up" class="q-mr-sm"/>
+                    <div>Uptime Monitor</div>
                 </div>
 
                 <div>
                     <q-badge color="positive">
-                        Total: {{ amazonProductsCount }} Products
+                        Site is Running
                     </q-badge>
                 </div>
 
@@ -88,39 +92,24 @@
                     />
                 </div>
             </q-card-section>
-
-            <amazon-products-list
-                v-if="showLinks"
-                ref="amazon_products_list_viewer"
-                :showLinksCountAfterExpand="false"
-                :getAmazonProductsCount="true"
-                @getAmazonProductsCount="amazonProductsCount = $event"
-            />
-
         </q-card>
 
-        <amazon-products-check-service-activate-deactivate-modal
+        <domain-uptime-check-activate-deactivate-modal
             :show.sync="showServiceActivateDeactivateModal"
             :project-info="projectInfo"
-            @serviceUpdated="handleAmazonProductsCheckServiceUpdate"
+            @serviceUpdated="handleServiceUpdate"
         />
-
     </section>
 </template>
 
 <script>
     import QCChart from "components/charts/QCChart";
-    import ProductInPagesModal from "components/modals/ProductInPagesModal";
-    import AmazonProductsList from "components/amazon-products/AmazonProductsList";
-    import AmazonProductsCheckServiceActivateDeactivateModal
-        from "components/modals/AmazonProductsCheckServiceActivateDeactivateModal";
+    import DomainUptimeCheckActivateDeactivateModal from "components/modals/DomainUptimeCheckActivateDeactivateModal";
 
     export default {
         components: {
-            AmazonProductsCheckServiceActivateDeactivateModal,
-            QCChart,
-            ProductInPagesModal,
-            AmazonProductsList
+            DomainUptimeCheckActivateDeactivateModal,
+            QCChart
         },
         data() {
             return {
@@ -141,9 +130,9 @@
 
         computed: {
             serviceIsActive() {
-                if (!this.projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service')) return false
+                if (!this.projectInfo.domain_use_for.hasOwnProperty('domain_uptime_check_service')) return false
 
-                return this.projectInfo.domain_use_for.amazon_products_check_service.status === 'active'
+                return this.projectInfo.domain_use_for.domain_uptime_check_service.status === 'active'
             }
         },
 
@@ -165,17 +154,16 @@
                     })
             },
 
-            handleAmazonProductsCheckServiceUpdate(project) {
-                let updatedService = project.domain_use_for.amazon_products_check_service;
+            handleServiceUpdate(project) {
+                let updatedService = project.domain_use_for.domain_uptime_check_service;
 
-                if (!this.projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service')) {
-                    this.$set(this.projectInfo.domain_use_for, 'amazon_products_check_service', {})
+                if (!this.projectInfo.domain_use_for.hasOwnProperty('domain_uptime_check_service')) {
+                    this.$set(this.projectInfo.domain_use_for, 'domain_uptime_check_service', {})
                 }
 
-                this.$set(this.projectInfo.domain_use_for.amazon_products_check_service, 'affiliate_ids', updatedService.affiliate_ids)
-                this.$set(this.projectInfo.domain_use_for.amazon_products_check_service, 'status', updatedService.status)
-
-                this.$refs.amazon_products_list_viewer.getAmazonProductsInfo();
+                this.$set(this.projectInfo.domain_use_for.domain_uptime_check_service, 'check_types', updatedService.check_types)
+                this.$set(this.projectInfo.domain_use_for.domain_uptime_check_service, 'time_range', updatedService.time_range)
+                this.$set(this.projectInfo.domain_use_for.domain_uptime_check_service, 'status', updatedService.status)
             }
         }
     }

@@ -7,6 +7,7 @@ import broken_links from './broken-links'
 import amazon_products_links from './amazon-product'
 import guest_links from './guest-posts'
 import projects from './project'
+import domain_uptime from './domain-uptime'
 
 import ui from './ui'
 
@@ -30,6 +31,7 @@ export default function (/* { ssrContext } */) {
             amazon_products_links,
             guest_links,
             projects,
+            domain_uptime,
             
             ui
         },
