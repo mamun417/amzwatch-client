@@ -78,7 +78,7 @@
 
                 <div class="row justify-center">
                     <q-btn @click="updateProfileButtonClicked" class="q-mr-md" color="primary">Update</q-btn>
-                    <q-btn @click="profileEditSelected = false">Cancel</q-btn>
+                    <q-btn @click="cancelProfileButtonClicked">Cancel</q-btn>
                 </div>
             </q-card-section>
         </q-card>
@@ -159,13 +159,13 @@
         },
 
         mounted() {
-           this.setUserProfile();
+            this.setUserProfile();
         },
 
         methods: {
             setUserProfile(){
-                this.$set(this.formData, 'first_name', this.userInfo.meta.firstName);
-                this.$set(this.formData, 'last_name', this.userInfo.meta.lastName);
+                this.$set(this.formData, 'first_name', this.userInfo.meta.first_name);
+                this.$set(this.formData, 'last_name', this.userInfo.meta.last_name);
                 this.$set(this.formData, 'address', this.userInfo.meta.address);
                 this.$set(this.formData, 'email', this.userInfo.email);
                 this.$set(this.formData, 'about_me', this.userInfo.meta.about_me);
@@ -188,10 +188,16 @@
                     })
             },
 
+            cancelProfileButtonClicked() {
+                this.setUserProfile();
+                this.formErrors = {};
+                this.profileEditSelected = false
+            },
+
             checkCurrentPassword() {
                 // check current pass then set to false
                 this.currentPasswordCheckSection = false
             }
-        }
+        },
     }
 </script>
