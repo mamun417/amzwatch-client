@@ -7,6 +7,7 @@ import broken_links from './broken-links'
 import amazon_products_links from './amazon-product'
 import guest_links from './guest-posts'
 import projects from './project'
+import pages_speed from './pages-speed'
 import domain_uptime from './domain-uptime'
 
 import ui from './ui'
@@ -26,16 +27,17 @@ export default function (/* { ssrContext } */) {
     return new Vuex.Store({
         modules: {
             auth,
-            
+
             broken_links,
             amazon_products_links,
             guest_links,
             projects,
+            pages_speed,
             domain_uptime,
-            
+
             ui
         },
-        
+
         // enable strict mode (adds overhead!)
         // for dev mode only
         strict: process.env.DEV

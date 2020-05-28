@@ -155,7 +155,7 @@
 
                 <div class="col flex items-center justify-center">
                     <q-badge
-                        v-if="!projectInfo.domain_use_for.hasOwnProperty('page_speed_check_service') || projectInfo.domain_use_for.page_speed_check_service.status !== 'active'"
+                        v-if="!projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service') || projectInfo.domain_use_for.pages_speed_check_service.status !== 'active'"
                         color="warning"
                     >
                         <q-icon name="error" class="q-mr-xs"/>
@@ -172,16 +172,16 @@
 
                 <div class="col text-right items-center">
                     <template
-                        v-if="projectInfo.domain_use_for.hasOwnProperty('page_speed_check_service') && projectInfo.domain_use_for.page_speed_check_service.status === 'active'">
+                        v-if="projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service') && projectInfo.domain_use_for.pages_speed_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
-                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo.id+'/page-speed-check'"
+                        <q-btn color="primary" icon="visibility" :to="'/projects/'+projectInfo.id+'/pages-speed-check'"
                                flat
                                dense></q-btn>
                     </template>
 
                     <q-btn
                         v-else label="Start" color="primary" size="md"
-                        @click="showPageSpeedActiveModal = !showPageSpeedActiveModal"
+                        @click="showPagesSpeedActiveModal = !showPagesSpeedActiveModal"
                         flat dense
                     />
                 </div>
@@ -246,6 +246,12 @@
             @serviceUpdated="$emit('serviceUpdated')"
         />
 
+        <pages-speed-check-service-activate-deactivate-modal
+            :show.sync="showPagesSpeedActiveModal"
+            :project-info="projectInfo"
+            @serviceUpdated="$emit('serviceUpdated')"
+        />
+
         <domain-uptime-check-activate-deactivate-modal
             :show.sync="showUptimeMonitorActiveModal"
             :project-info="projectInfo"
@@ -262,10 +268,13 @@
     import GuestPostsCheckServiceActivateDeactivateModal
         from "components/modals/GuestPostsCheckServiceActivateDeactivateModal";
     import DomainUptimeCheckActivateDeactivateModal from "components/modals/DomainUptimeCheckActivateDeactivateModal";
+    import PagesSpeedCheckServiceActivateDeactivateModal
+        from "components/modals/PagesSpeedCheckServiceActivateDeactivateModal";
 
     export default {
         name      : 'SingleProjectInfoInListing',
         components: {
+            PagesSpeedCheckServiceActivateDeactivateModal,
             DomainUptimeCheckActivateDeactivateModal,
             GuestPostsCheckServiceActivateDeactivateModal,
             BrokenLinksCheckServiceActivateDeactivateModal,
@@ -282,7 +291,7 @@
                 showBrokenLinksActivateModal: false,
                 showAmazonActivateModal     : false,
                 showGuestPostsActiveModal   : false,
-                showPageSpeedActiveModal    : false,
+                showPagesSpeedActiveModal   : false,
                 showUptimeMonitorActiveModal: false
             }
         }
