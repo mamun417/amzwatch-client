@@ -31,7 +31,7 @@
 
 <script>
     export default {
-        name : "BrokenLinksList",
+        name: "BrokenLinksList",
         data() {
             return {
                 brokenLinkInfo: []
@@ -50,6 +50,12 @@
                 })
                     .then(res => {
                         this.brokenLinkInfo = res.data.brokenLinks.data;
+
+                        this.brokenLinkInfo.map(link => {
+                            if (!link.hasOwnProperty('meta')) {
+                                this.$set(link, 'meta', {})
+                            }
+                        })
 
                         this.$emit('linksCountUpdated', res.data.brokenLinks.pagination_meta.total);
                     })
