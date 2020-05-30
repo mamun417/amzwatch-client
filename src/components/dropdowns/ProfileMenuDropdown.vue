@@ -29,8 +29,8 @@
 
             <div class="items-center column q-py-md">
                 <q-avatar color="primary" text-color="blue-grey-1" size="76px" round>Y</q-avatar>
-                <div class="text-subtitle2 q-mt-sm">John doe</div>
-                <div class="text-caption">john@example.com</div>
+                <div class="text-subtitle2 q-mt-sm">{{ userInfo.meta.first_name + ' ' + userInfo.meta.last_name }}</div>
+                <div class="text-caption">{{ userInfo.email }}</div>
 
                 <q-btn
                     class="q-mt-md q-mx-md"
@@ -43,3 +43,15 @@
         </q-menu>
     </q-btn>
 </template>
+
+<script>
+    import {mapGetters} from 'vuex'
+
+    export default {
+        computed: {
+            ...mapGetters({
+                userInfo: 'auth/user'
+            })
+        }
+    }
+</script>

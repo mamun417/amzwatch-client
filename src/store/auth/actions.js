@@ -47,6 +47,30 @@ export function updateProfile(context, payload) {
     })
 }
 
+export function checkCurrentPassword(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/check-password', payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
+export function updatePassword(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/change-password', payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
 export function logout(context) {
     return new Promise((resolve, reject) => {
         context.commit('authOut');

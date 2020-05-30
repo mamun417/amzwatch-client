@@ -98,6 +98,8 @@
                         </div>
                         <q-input
                             v-model="currentPassword"
+                            :error-message="formErrors.current_password" :error="!!formErrors.current_password"
+                            @input="formErrors.current_password = ''"
                             label="Current Password"
                             type="password"
                             class="q-mb-xl"
@@ -126,7 +128,7 @@
                         </div>
 
                         <div class="text-center">
-                            <q-btn color="primary" no-caps>Update Password</q-btn>
+                            <q-btn color="primary" no-caps @click="updatePasswordButtonClicked">Update Password</q-btn>
                         </div>
                     </template>
                 </q-card-section>
@@ -144,7 +146,7 @@
             return {
                 profileEditSelected        : false,
                 passwordChangeModal        : false,
-                currentPasswordCheckSection: false,
+                currentPasswordCheckSection: true,
                 formData                   : {},
                 formErrors                 : {},
                 currentPassword            : '',
@@ -196,8 +198,44 @@
 
             checkCurrentPassword() {
                 // check current pass then set to false
-                this.currentPasswordCheckSection = false
-            }
+                this.$store.dispatch('auth/checkCurrentPassword', {
+                    vm        : this,
+                    inputs    : { current_password: this.currentPassword },
+                })
+                    .then(res => {
+                        this.currentPasswordCheckSection = false;
+                        this.currentPassword = '';
+                    })
+                    .catch(err => {
+                        if (!err.response.data.errors) {
+                            this.$q.notify({
+                                color   : 'negative',
+                                message : err.response.data.message,
+                                position: 'top'
+                            })
+                        } else {
+                            this.formErrors = err.response.data.errors
+                        }
+                    });
+            },
+
+            updatePasswordButtonClicked() {
+                this.$store.dispatch('auth/updatePassword', {
+                    vm        : this,
+                    inputs    : this.updatePassFormData,
+                })
+                    .then(res => {
+                        this.passwordChangeModal = false;
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Password has been changed Successful',
+                            position: 'top'
+                        });
+                    })
+                    .catch(err => {
+                        this.formErrors = err.response.data.errors;
+                    })
+            },
         },
     }
 </script>
