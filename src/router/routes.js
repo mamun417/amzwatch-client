@@ -29,6 +29,10 @@ const routes = [
                 component: () => import('pages/guest-post/GuestPostListing')
             },
             {
+                path     : '/projects/:project_id/pages-speed-check',
+                component: () => import('pages/page-speed/PagesSpeedListing')
+            },
+            {
                 path     : '/projects/:project_id/domain-uptime-check',
                 component: () => import('pages/domain-uptime/DomainUptime')
             },
