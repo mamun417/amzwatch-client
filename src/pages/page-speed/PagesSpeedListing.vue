@@ -90,6 +90,9 @@
             </q-card-section>
 
             <page-speed-list
+                v-if="showLinks"
+                ref="page_speed_list_viewer"
+                @getPagesSpeedCount="pagesSpeedCount = $event"
             />
         </q-card>
     </section>
