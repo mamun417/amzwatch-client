@@ -96,19 +96,10 @@
             </q-card-section>
 
             <q-card-section v-if="showLinks">
-
                 <broken-links-list
                     ref="broken_links_list_viewer"
                     @linksCountUpdated="brokenLinksCount = $event"
                 />
-
-                <div class="q-pa-lg flex flex-center">
-                    <q-pagination
-                        :value="3"
-                        :max="5"
-                    >
-                    </q-pagination>
-                </div>
             </q-card-section>
         </q-card>
 
