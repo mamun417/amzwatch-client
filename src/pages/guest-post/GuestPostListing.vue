@@ -84,16 +84,11 @@
             </q-card-section>
 
             <q-card-section v-if="showLinks">
-
                 <guest-post-list
                     ref="guest_posts_list_viewer"
                     :getguestPostsCount="true"
                     @getGuestLinksCount="guestPostsCount = $event"
                 />
-
-                <div class="q-pa-lg flex flex-center">
-                    <q-pagination :value="3" :max="5"/>
-                </div>
             </q-card-section>
         </q-card>
 
