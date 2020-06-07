@@ -4,6 +4,7 @@ export function getPagesSpeed(context, payload) {
 
         payload.vm.$get(urlPath)
             .then(res => {
+                context.commit('updatePaginationMeta', res.data.pageSpeedResults.pagination_meta);
                 resolve(res)
             })
             .catch(err => {
@@ -21,5 +22,13 @@ export function updatePagesSpeedCheckService(context, payload) {
             .catch(err => {
                 reject(err)
             })
+    })
+}
+
+
+export function updatePageSpeedListCurrentPage(context, payload) {
+    return new Promise((resolve, reject) => {
+        context.commit('updateCurrentPagePaginationMeta', payload);
+        resolve(true)
     })
 }

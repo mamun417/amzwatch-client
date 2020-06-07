@@ -101,7 +101,7 @@
 
         </q-list>
 
-        <div class="q-pa-lg flex flex-center">
+        <div v-if="amazonProductsPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
             <q-pagination
                 :value="amazonProductsPaginationMeta.current_page"
                 :max="amazonProductsPaginationMeta.last_page"
