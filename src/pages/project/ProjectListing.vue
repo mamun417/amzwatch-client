@@ -34,7 +34,7 @@
             @serviceUpdated="getProjects()"
         />
 
-        <div class="q-pa-lg flex flex-center">
+        <div v-if="projectPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
             <q-pagination
                 :value="projectPaginationMeta.current_page"
                 :max="projectPaginationMeta.last_page"

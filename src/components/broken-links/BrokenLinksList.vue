@@ -29,7 +29,7 @@
             </q-expansion-item>
         </q-list>
 
-        <div class="q-pa-lg flex flex-center">
+        <div v-if="brokenLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
             <q-pagination
                 :value="brokenLinksPaginationMeta.current_page"
                 :max="brokenLinksPaginationMeta.last_page"

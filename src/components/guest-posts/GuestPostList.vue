@@ -38,7 +38,8 @@
                 </q-card>
             </q-expansion-item>
         </q-list>
-        <div class="q-pa-lg flex flex-center">
+
+        <div v-if="guestLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
             <q-pagination
                 :value="guestLinksPaginationMeta.current_page"
                 :max="guestLinksPaginationMeta.last_page"
