@@ -73,22 +73,24 @@
                     :showLinksCountAfterExpand="true"
                 />
 
-                <div v-if="index === 'uptime_monitor_check_service'">
-                    <q-c-chart class="q-mb-lg"/>
+                <page-speed-list
+                    v-if="index === 'pages_speed_check_service'"
+                />
 
-                    <div class="q-px-sm flex justify-between items-center text-bold text-subtitle2">
-                        <div>Last Monitored: 20 20 20</div>
-                        <q-badge label="running" color="positive"/>
-                    </div>
+                <div v-if="index === 'domain_uptime_check_service'">
+                    <!--                    <q-c-chart class="q-mb-lg"/>-->
+
+                    <domain-uptime-details
+                    />
                 </div>
 
-                <div v-if="index !== 'uptime_monitor_check_service'" class="q-pa-lg flex flex-center">
-                    <q-pagination
-                        :value="3"
-                        :max="5"
-                    >
-                    </q-pagination>
-                </div>
+                <!--                <div v-if="index !== 'uptime_monitor_check_service'" class="q-pt-lg flex flex-center">-->
+                <!--                    <q-pagination-->
+                <!--                        :value="3"-->
+                <!--                        :max="5"-->
+                <!--                    >-->
+                <!--                    </q-pagination>-->
+                <!--                </div>-->
             </q-card-section>
         </q-card>
 
@@ -111,15 +113,19 @@
     import BrokenLinksList from "components/broken-links/BrokenLinksList";
     import GuestPostList from "components/guest-posts/GuestPostList";
     import AddOrEditProjectModal from "components/modals/AddOrEditProjectModal";
+    import PageSpeedList from "components/page-speed/PageSpeedList";
+    import DomainUptimeDetails from "components/domain-uptime/DomainUptimeDetails";
 
     export default {
         components: {
+            PageSpeedList,
             AddOrEditProjectModal,
             GuestPostList,
             UptimeCheckActivateDeactivateModal,
             QCChart,
             AmazonProductsList,
-            BrokenLinksList
+            BrokenLinksList,
+            DomainUptimeDetails
         },
         data() {
             return {
@@ -152,11 +158,17 @@
                         active         : true,
                         to             : '/projects/' + this.$route.params.project_id + '/broken-links-check'
                     },
-                    uptime_monitor_check_service : {
+                    pages_speed_check_service    : {
                         icon           : 'trending_up',
                         expansionStatus: true,
                         active         : true,
-                        to             : '/projects/1/uptime-monitor-check'
+                        to             : '/projects/' + this.$route.params.project_id + '/pages-speed-check'
+                    },
+                    domain_uptime_check_service  : {
+                        icon           : 'trending_up',
+                        expansionStatus: true,
+                        active         : true,
+                        to             : '/projects/' + this.$route.params.project_id + '/domain-uptime-check'
                     }
                 }
             }

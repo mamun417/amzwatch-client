@@ -17,7 +17,10 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="settings" @click="showServiceActivateDeactivateModal = !showServiceActivateDeactivateModal" flat dense/>
+                    <q-btn
+                        icon="settings"
+                        @click="showServiceActivateDeactivateModal = !showServiceActivateDeactivateModal" flat
+                        dense/>
                 </div>
             </q-card-section>
         </q-card>
@@ -92,6 +95,11 @@
                     />
                 </div>
             </q-card-section>
+
+            <q-card-section>
+                <domain-uptime-details
+                />
+            </q-card-section>
         </q-card>
 
         <domain-uptime-check-activate-deactivate-modal
@@ -104,10 +112,12 @@
 
 <script>
     import QCChart from "components/charts/QCChart";
+    import DomainUptimeDetails from "components/domain-uptime/DomainUptimeDetails";
     import DomainUptimeCheckActivateDeactivateModal from "components/modals/DomainUptimeCheckActivateDeactivateModal";
 
     export default {
         components: {
+            DomainUptimeDetails,
             DomainUptimeCheckActivateDeactivateModal,
             QCChart
         },
