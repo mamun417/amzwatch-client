@@ -34,18 +34,59 @@
                 </div>
 
                 <div class="col text-right">
-                    <template
-                        v-if="getCheckTypesHasLastDate(checkType)"
-                    >
-                        <span>Last checked</span>
-                        <span class="q-ml-sm">{{$timestampToDate(details.uptime_checker[checkType].last_checked_at)}}</span>
+                    <template v-if="getCheckTypesHasLastDate(checkType)">
+                        <template v-if="getCheckTypesHasLastDate(checkType)">
+                            <span>Last checked</span>
+                            <span
+                                class="q-ml-sm"
+                            >{{$timestampToDate(details.uptime_checker[checkType].last_checked_at)}}</span>
+                        </template>
+                        <div v-else>Pending</div>
                     </template>
-                    <div v-else>Pending</div>
                 </div>
             </q-card-section>
 
-            <q-card-section>
+            <q-card-section v-if="getCheckTypesActiveState(checkType)">
+                <template v-if="getCheckTypesActiveState(checkType)">
+                    <div
+                        class="shadow-1 q-mx-auto q-my-md"
+                        style="max-width: 400px"
+                    >
+                        <q-list class="text-center text-md text-weight-medium" dense separator>
+                            <q-item>
+                                <q-item-section
+                                    class="text-primary text-subtitle2 q-my-sm"
+                                >Result
+                                </q-item-section>
+                            </q-item>
 
+                            <q-item
+                                clickable
+                            >
+                                <q-item-section>Packet Size</q-item-section>
+                                <q-item-section>32 byte</q-item-section>
+                            </q-item>
+                            <q-item
+                                clickable
+                            >
+                                <q-item-section>Checked</q-item-section>
+                                <q-item-section>4 times</q-item-section>
+                            </q-item>
+
+                            <q-item
+                                v-for="(item, index) in pingResultsShow"
+                                clickable
+                            >
+                                <q-item-section>{{item.title}}</q-item-section>
+                                <q-item-section>
+                                    {{details.meta.uptime_check.ping.result[item.key]}}
+                                    {{['min', 'max', 'avg'].includes(item.key) ? ' ms' : ''}}
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </div>
+                </template>
+                <div v-else class="text-subtitle2 text-center">Pending</div>
             </q-card-section>
         </q-card>
     </div>
@@ -61,7 +102,33 @@
     export default {
         data() {
             return {
-                details: {}
+                details        : {},
+                pingResultsShow: [
+                    {
+                        key  : 'alive',
+                        title: 'Alive'
+                    },
+                    {
+                        key  : 'packetLoss',
+                        title: 'Packet Loss'
+                    },
+                    {
+                        key  : 'times',
+                        title: 'Times'
+                    },
+                    {
+                        key  : 'min',
+                        title: 'Min time'
+                    },
+                    {
+                        key  : 'max',
+                        title: 'Max time'
+                    },
+                    {
+                        key  : 'avg',
+                        title: 'Avg time'
+                    },
+                ]
             }
         },
 
