@@ -3,7 +3,7 @@
         <q-header class="" elevated>
             <q-toolbar>
                 <q-btn
-                    v-if="$route.path !== '/'"
+
                     flat
                     dense
                     round
@@ -21,7 +21,7 @@
         </q-header>
 
         <q-drawer
-            v-if="$route.path !== '/'"
+
             v-model="leftDrawerOpen"
             content-class="bg-grey-3"
             :mini="miniState"
