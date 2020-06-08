@@ -83,7 +83,7 @@
             </q-card-section>
         </q-card>
 
-        <q-dialog v-model="passwordChangeModal" @hide="currentPasswordCheckSection = true">
+        <q-dialog v-model="passwordChangeModal" @hide="hidePasswordChangeForm">
             <q-card style="overflow: unset; min-width: 400px">
                 <q-card-section class="bg-primary text-weight-bold text-white text-subtitle1">
                     {{currentPasswordCheckSection ? 'Check current password' : 'Update new password'}}
@@ -103,6 +103,7 @@
                             label="Current Password"
                             type="password"
                             class="q-mb-xl"
+                            autofocus
                         >
                             <q-icon name="vpn_key" slot="append"/>
                         </q-input>
@@ -117,7 +118,8 @@
                                      class="q-mb-sm" no-error-icon
                                      hide-bottom-space
                                      :error-message="formErrors.password" :error="!!formErrors.password"
-                                     @input="formErrors.password = ''">
+                                     @input="formErrors.password = ''"
+                                     autofocus>
                                 <q-icon name="lock" slot="append"/>
                             </q-input>
                             <q-input v-model="updatePassFormData.confirm_password" type="password"
@@ -233,9 +235,23 @@
                         });
                     })
                     .catch(err => {
-                        this.formErrors = err.response.data.errors;
+                        if (!err.response.data.errors) {
+                            this.$q.notify({
+                                color   : 'negative',
+                                message : err.response.data.message,
+                                position: 'top'
+                            })
+                        } else {
+                            this.formErrors = err.response.data.errors
+                        }
                     })
             },
+
+            hidePasswordChangeForm(){
+                this.currentPasswordCheckSection = true;
+                this.updatePassFormData = {};
+                this.formErrors = {};
+            }
         },
     }
 </script>

@@ -34,7 +34,7 @@ export function register(context, payload) {
 
 export function updateProfile(context, payload) {
     return new Promise((resolve, reject) => {
-        payload.vm.$post('/update-profile', payload.inputs)
+        payload.vm.$patch('/update-profile', payload.inputs)
             .then(res => {
                 let info = res.data
                 context.commit('updateProfile', {user: info.user});
@@ -61,7 +61,7 @@ export function checkCurrentPassword(context, payload) {
 
 export function updatePassword(context, payload) {
     return new Promise((resolve, reject) => {
-        payload.vm.$post('/change-password', payload.inputs)
+        payload.vm.$patch('/change-password', payload.inputs)
             .then(res => {
                 resolve(res)
             })
