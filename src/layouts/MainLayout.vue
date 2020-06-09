@@ -3,7 +3,6 @@
         <q-header class="" elevated>
             <q-toolbar>
                 <q-btn
-
                     flat
                     dense
                     round
@@ -16,12 +15,12 @@
                     AMZ Watch
                 </q-toolbar-title>
 
+                <notification/>
                 <profile-menu-dropdown/>
             </q-toolbar>
         </q-header>
 
         <q-drawer
-
             v-model="leftDrawerOpen"
             content-class="bg-grey-3"
             :mini="miniState"
@@ -60,11 +59,13 @@
 <script>
     import DrawerLinks from 'components/DrawerLinks'
     import ProfileMenuDropdown from 'components/dropdowns/ProfileMenuDropdown'
+    import Notification from "components/notification/Notification";
 
     export default {
         name: 'MainLayout',
 
         components: {
+            Notification,
             ProfileMenuDropdown,
             DrawerLinks,
         },
