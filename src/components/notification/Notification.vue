@@ -11,10 +11,10 @@
         </q-avatar>
 
         <q-menu>
-            <q-list bordered class="rounded-borders q-pb-lg" style="max-width: 350px">
+            <q-list id="itemSection" bordered class="rounded-borders q-pb-lg scroll" style="max-width: 350px;height: 300px">
                 <q-item-label header>Notifications</q-item-label>
 
-                <div v-for="n in 6">
+                <div v-for="n in items">
                     <q-item clickable v-ripple>
                         <q-item-section avatar>
                             <q-avatar>
@@ -36,6 +36,7 @@
                     </q-item>
                     <q-separator inset="item"/>
                 </div>
+                <q-scroll-observer @scroll="loadNewItems" />
             </q-list>
 
             <q-inner-loading color="primary" :showing="loading"/>
@@ -50,7 +51,18 @@
     export default {
         data() {
             return {
-                loading: false
+                loading: false,
+                index: 0,
+                items: [
+                    '1','2','3',
+                    '4','6','7',
+                    '8','9','10',
+                ],
+                newItems: [
+                    '11','12','13',
+                    '14','16','17',
+                    '18','19','20',
+                ]
             }
         },
 
@@ -58,6 +70,19 @@
             ...mapGetters({
                 userInfo: 'auth/user'
             })
+        },
+
+        methods: {
+            loadNewItems(info){
+
+                this.test = info;
+
+                if(info.position > 200) {
+                    this.items.push(1);
+                    this.index++;
+                    console.log('load data');
+                }
+            }
         },
     }
 </script>
