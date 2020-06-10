@@ -1,14 +1,5 @@
 <template>
     <div>
-       <!-- Coming Soon!!-->
-        <div class="q-pa-md bg-amber">
-            <div  @scroll="loadNewItems" id="itemSection" class="scroll" style="height: 150px">
-                <p v-for="n in items">
-                    {{ n }}
-                </p>
-                <q-scroll-observer @scroll="loadNewItems" />
-            </div>
-        </div>
         <div class="q-pa-md row items-start q-gutter-md">
             <q-card class="my-card" v-for="item in 8" :key="item">
                 <q-item clickable>
@@ -38,42 +29,10 @@ export default {
 
     data() {
         return {
-            index: 0,
-            items: [
-                '1','2','3',
-                '4','6','7',
-                '8','9','10',
-            ],
-            newItems: [
-                '11','12','13',
-                '14','16','17',
-                '18','19','20',
-            ]
         }
     },
 
     methods: {
-        loadNewItems(info){
-
-            //console.log(info);
-
-            let container = document.getElementById('itemSection');
-            let scrollTop = container.scrollTop,
-                clientHeight = container.clientHeight,
-                scrollHeight = container.scrollHeight;
-
-            if(scrollTop > 90) {
-                this.items.push(this.newItems[this.index]);
-                this.index++;
-                console.log('load data');
-            }
-
-            /*if(scrollTop+90 >= scrollHeight-clientHeight) {
-                this.items.push(this.newItems[this.index]);
-                this.index++;
-                console.log('load data');
-            }*/
-        }
     },
 
     created() {
