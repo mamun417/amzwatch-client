@@ -4,7 +4,7 @@ export default function ({store, Vue, router}) {
     axios.defaults.withCredentials = true;
     Vue.prototype.$http            = axios
     
-    let apiBase = process.env.API_ENDPOINT;
+    let apiBase = process.env.PROD ? process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT;
     
     Vue.prototype.$apiBase = apiBase;
 
