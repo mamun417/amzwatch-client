@@ -9,6 +9,7 @@ import guest_links from './guest-posts'
 import projects from './project'
 import pages_speed from './pages-speed'
 import domain_uptime from './domain-uptime'
+import notifications from './notifications'
 
 import ui from './ui'
 
@@ -34,6 +35,7 @@ export default function (/* { ssrContext } */) {
             projects,
             pages_speed,
             domain_uptime,
+            notifications,
 
             ui
         },

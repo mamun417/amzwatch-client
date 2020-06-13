@@ -102,12 +102,11 @@
         </q-list>
 
         <div v-if="amazonProductsPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
-            <q-pagination
-                :value="amazonProductsPaginationMeta.current_page"
-                :max="amazonProductsPaginationMeta.last_page"
-                @input="amazonProductsPaginationHandle"
-            >
-            </q-pagination>
+            <pagination
+                :current_page="amazonProductsPaginationMeta.current_page"
+                :last_page="amazonProductsPaginationMeta.last_page"
+                @handlePagination="amazonProductsPaginationHandle"
+            />
         </div>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.amazonProductsLoader"/>
@@ -118,9 +117,10 @@
 <script>
     import ProductInPagesModal from "components/modals/ProductInPagesModal";
     import {mapGetters} from "vuex";
+    import Pagination from "components/pagination/Pagination";
 
     export default {
-        components: {ProductInPagesModal},
+        components: {ProductInPagesModal, Pagination},
         name      : "AmazonProductsList",
         props     : {
             showLinksCountAfterExpand: {
