@@ -49,6 +49,7 @@
             <q-card-section v-if="getCheckTypesActiveState(checkType)">
                 <template v-if="getCheckTypesActiveState(checkType)">
                     <div
+                        v-if="checkType === 'ping'"
                         class="shadow-1 q-mx-auto q-my-md"
                         style="max-width: 400px"
                     >

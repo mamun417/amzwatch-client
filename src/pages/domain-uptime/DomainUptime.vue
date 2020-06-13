@@ -82,9 +82,9 @@
                 </div>
 
                 <div>
-                    <q-badge color="positive">
-                        Site is Running
-                    </q-badge>
+<!--                    <q-badge color="positive">-->
+<!--                        Site is Running-->
+<!--                    </q-badge>-->
                 </div>
 
                 <div class="col text-right">
