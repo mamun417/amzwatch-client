@@ -9,7 +9,7 @@
         icon-last="skip_next"
         icon-prev="fast_rewind"
         icon-next="fast_forward"
-        :max-pages="10"
+        :max-pages="15"
         :boundary-numbers="true"
     >
     </q-pagination>

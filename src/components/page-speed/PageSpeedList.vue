@@ -226,7 +226,7 @@
         name      : "PageSpeedList",
         props     : {},
 
-        data() {pagination
+        data() {
             return {
                 pagesSpeedInfo: [],
                 auditsNaming  : {
