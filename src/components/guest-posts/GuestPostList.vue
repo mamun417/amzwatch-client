@@ -40,12 +40,11 @@
         </q-list>
 
         <div v-if="guestLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
-            <q-pagination
-                :value="guestLinksPaginationMeta.current_page"
-                :max="guestLinksPaginationMeta.last_page"
-                @input="guestLinksPaginationHandle"
-            >
-            </q-pagination>
+            <pagination
+                :current_page="guestLinksPaginationMeta.current_page"
+                :last_page="guestLinksPaginationMeta.last_page"
+                @handlePagination="guestLinksPaginationHandle"
+            />
         </div>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.guestLinksListLoader"/>
@@ -56,9 +55,11 @@
 
 <script>
     import {mapGetters} from 'vuex'
+    import Pagination from "components/pagination/Pagination";
 
     export default {
         name: "GuestLinksList",
+        components: {Pagination},
         props: {
             getGuestPostsCount: {
                 type: Boolean,

@@ -30,12 +30,11 @@
         </q-list>
 
         <div v-if="brokenLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
-            <q-pagination
-                :value="brokenLinksPaginationMeta.current_page"
-                :max="brokenLinksPaginationMeta.last_page"
-                @input="brokenLinksPaginationHandle"
-            >
-            </q-pagination>
+            <pagination
+                :current_page="brokenLinksPaginationMeta.current_page"
+                :last_page="brokenLinksPaginationMeta.last_page"
+                @handlePagination="brokenLinksPaginationHandle"
+            />
         </div>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinksPaginationHandle"/>
@@ -45,9 +44,11 @@
 
 <script>
     import {mapGetters} from 'vuex'
+    import Pagination from "components/pagination/Pagination";
 
     export default {
         name: "BrokenLinksList",
+        components: {Pagination},
         data() {
             return {
                 brokenLinkInfo: []

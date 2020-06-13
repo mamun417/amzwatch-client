@@ -205,12 +205,11 @@
         </q-list>
 
         <div v-if="pageSpeedListPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
-            <q-pagination
-                :value="pageSpeedListPaginationMeta.current_page"
-                :max="pageSpeedListPaginationMeta.last_page"
-                @input="pageSpeedListPaginationHandle"
-            >
-            </q-pagination>
+            <pagination
+                :current_page="pageSpeedListPaginationMeta.current_page"
+                :last_page="pageSpeedListPaginationMeta.last_page"
+                @handlePagination="pageSpeedListPaginationHandle"
+            />
         </div>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.pageSpeedListListLoader"/>
@@ -220,13 +219,14 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import Pagination from "components/pagination/Pagination";
 
     export default {
-        components: {},
+        components: {Pagination},
         name      : "PageSpeedList",
         props     : {},
 
-        data() {
+        data() {pagination
             return {
                 pagesSpeedInfo: [],
                 auditsNaming  : {
