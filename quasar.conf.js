@@ -8,7 +8,8 @@ module.exports = function (ctx) {
         // https://quasar.dev/quasar-cli/cli-documentation/boot-files
         boot: [
             'i18n',
-            'axios'
+            'axios',
+            'helpers'
         ],
 
         // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -33,7 +34,7 @@ module.exports = function (ctx) {
         // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
         framework: {
             iconSet: 'material-icons', // Quasar icon set
-            lang: 'en-us', // Quasar language pack
+            lang   : 'en-us', // Quasar language pack
 
             // Possible values for "all":
             // * 'auto' - Auto-import needed Quasar components & directives
@@ -48,7 +49,7 @@ module.exports = function (ctx) {
             directives: [],
 
             // Quasar plugins
-            plugins: []
+            plugins: ['Notify']
         },
 
         // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -67,6 +68,10 @@ module.exports = function (ctx) {
             // preloadChunks: false,
             // extractCSS: false,
 
+            env: { // so on dev we'll have
+                API_ENDPOINT: JSON.stringify('http://localhost:1337')
+            },
+
             // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
             extendWebpack(cfg) {
             }
@@ -75,8 +80,8 @@ module.exports = function (ctx) {
         // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
         devServer: {
             https: false,
-            port: 8080,
-            open: true // opens browser window automatically
+            port : 8080,
+            open : false // opens browser window automatically
         },
 
         // animations: 'all', // --- includes all animations
@@ -91,40 +96,40 @@ module.exports = function (ctx) {
         // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
         pwa: {
             workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
-            workboxOptions: {}, // only for GenerateSW
-            manifest: {
-                name: 'AMZ Watch',
-                short_name: 'AMZ Watch',
-                description: 'AMZ Watch',
-                display: 'standalone',
-                orientation: 'portrait',
+            workboxOptions   : {}, // only for GenerateSW
+            manifest         : {
+                name            : 'AMZ Watch',
+                short_name      : 'AMZ Watch',
+                description     : 'AMZ Watch',
+                display         : 'standalone',
+                orientation     : 'portrait',
                 background_color: '#ffffff',
-                theme_color: '#027be3',
-                icons: [
+                theme_color     : '#027be3',
+                icons           : [
                     {
-                        src: 'statics/icons/icon-128x128.png',
+                        src  : 'statics/icons/icon-128x128.png',
                         sizes: '128x128',
-                        type: 'image/png'
+                        type : 'image/png'
                     },
                     {
-                        src: 'statics/icons/icon-192x192.png',
+                        src  : 'statics/icons/icon-192x192.png',
                         sizes: '192x192',
-                        type: 'image/png'
+                        type : 'image/png'
                     },
                     {
-                        src: 'statics/icons/icon-256x256.png',
+                        src  : 'statics/icons/icon-256x256.png',
                         sizes: '256x256',
-                        type: 'image/png'
+                        type : 'image/png'
                     },
                     {
-                        src: 'statics/icons/icon-384x384.png',
+                        src  : 'statics/icons/icon-384x384.png',
                         sizes: '384x384',
-                        type: 'image/png'
+                        type : 'image/png'
                     },
                     {
-                        src: 'statics/icons/icon-512x512.png',
+                        src  : 'statics/icons/icon-512x512.png',
                         sizes: '512x512',
-                        type: 'image/png'
+                        type : 'image/png'
                     }
                 ]
             }

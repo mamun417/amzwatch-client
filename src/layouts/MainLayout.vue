@@ -1,6 +1,6 @@
 <template>
-    <q-layout view="lHh Lpr lFf">
-        <q-header elevated>
+    <q-layout view="hhh lpR fff" class="bg-grey-3">
+        <q-header class="" elevated>
             <q-toolbar>
                 <q-btn
                     flat
@@ -15,59 +15,79 @@
                     AMZ Watch
                 </q-toolbar-title>
 
-                <div>AMZ Watch 0.0.1</div>
+                <notification/>
+                <profile-menu-dropdown/>
             </q-toolbar>
         </q-header>
 
         <q-drawer
             v-model="leftDrawerOpen"
+            content-class="bg-grey-3"
+            :mini="miniState"
+            @mouseover="miniState = false"
+            @mouseout="miniState = true"
             show-if-above
             bordered
-            content-class="bg-grey-1"
+            elevated
         >
             <q-list>
-                <q-item-label
-                    header
-                    class="text-grey-8"
-                >
-                    Essential Links
-                </q-item-label>
-                <EssentialLink
-                    v-for="link in essentialLinks"
+                <drawer-links
+                    v-for="link in drawerLinks"
                     :key="link.title"
                     v-bind="link"
                 />
             </q-list>
         </q-drawer>
 
-        <q-page-container>
-            <router-view/>
+        <q-page-container class="">
+            <q-page class="">
+                <q-card
+                    v-if="$route.path !== '/'"
+                    class="flex q-mb-lg q-py-lg bg-primary text-white no-border-radius"
+                >
+                    <q-card-section>Home / {{$route.path.substr(1)}}</q-card-section>
+
+                    <q-space/>
+                </q-card>
+
+                <router-view class="q-pa-md"/>
+            </q-page>
         </q-page-container>
     </q-layout>
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink'
+    import DrawerLinks from 'components/DrawerLinks'
+    import ProfileMenuDropdown from 'components/dropdowns/ProfileMenuDropdown'
+    import Notification from "components/notification/Notification";
 
-export default {
-    name: 'MainLayout',
+    export default {
+        name: 'MainLayout',
 
-    components: {
-        EssentialLink
-    },
-
-    data() {
-        return {
-            leftDrawerOpen: false,
-            essentialLinks: [
-                {
-                    title: 'Home',
-                    caption: 'Go to home',
-                    icon: 'home',
-                    link: '/'
-                }
-            ]
+        components: {
+            Notification,
+            ProfileMenuDropdown,
+            DrawerLinks,
+        },
+        data() {
+            return {
+                leftDrawerOpen: false,
+                miniState     : true,
+                drawerLinks   : [
+                    {
+                        title  : 'Home',
+                        caption: 'Go to home',
+                        icon   : 'home',
+                        link   : '/'
+                    },
+                    {
+                        title  : 'Projects',
+                        caption: 'Go to projects',
+                        icon   : 'assessment',
+                        link   : '/projects'
+                    }
+                ]
+            }
         }
     }
-}
 </script>

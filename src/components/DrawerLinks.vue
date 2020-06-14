@@ -1,8 +1,8 @@
 <template>
     <q-item
         clickable
-        tag="a"
-        :href="link"
+        tag="router-link"
+        :to="link"
     >
         <q-item-section
             v-if="icon"
@@ -22,23 +22,19 @@
 
 <script>
 export default {
-    name: 'EssentialLink',
+    name: 'DrawerLinks',
     props: {
         title: {
             type: String,
-            required: true
         },
-
         caption: {
             type: String,
             default: ''
         },
-
         link: {
             type: String,
             default: '#'
         },
-
         icon: {
             type: String,
             default: ''
