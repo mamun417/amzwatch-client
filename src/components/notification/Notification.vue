@@ -88,30 +88,7 @@
 
             getNotificationsInfo() {
 
-                this.$singleLoaderTrue('notificationsLoader');
 
-                this.$store.dispatch('notifications/getNotifications', {
-                    vm        : this,
-                    project_id: '5ead4d47600dd13b97f31f3d'
-                })
-                    .then(res => {
-
-                        if (res.data.brokenLinks.data[0] !== undefined) {
-
-                            this.brokenLinkInfo.push(res.data.brokenLinks.data[0]);
-
-                            this.brokenLinkInfo.map(link => {
-                                if (!link.hasOwnProperty('meta')) {
-                                    this.$set(link, 'meta', {})
-                                }
-                            })
-                        }
-
-                        this.$singleLoaderFalse('notificationsLoader');
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
             },
 
             notificationsPaginationHandle(page) {

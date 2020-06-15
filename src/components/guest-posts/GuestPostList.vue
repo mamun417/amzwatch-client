@@ -22,14 +22,14 @@
                     <q-item-section class="col text-center">{{ guestPostInfo.holding_url }}</q-item-section>
                     <q-item-section class="col inline-block text-right">
                         <q-badge
-                            :color="guestPostInfo.link_infos.exists !== '1' ? 'warning' : 'positive'"
+                            :color="calculateLinkExist(guestPostInfo) !== 'exist' ? 'warning' : 'positive'"
                         >
-                            {{ guestPostInfo.link_infos.exists !== '1' ? 'unavailable' : 'available' }}
+                            {{ calculateLinkExist(guestPostInfo) }}
                         </q-badge>
                     </q-item-section>
                 </q-item>
 
-                <q-card>
+                <q-card v-if="calculateLinkExist(guestPostInfo) !== 'pending'">
                     <q-card-section>
                         <div class="text-caption text-bold">
                             Last updated at: {{ $timestampToDate(guestPostInfo.updated_at.link_last_checked_at) }}
@@ -84,6 +84,15 @@
         },
 
         methods: {
+            calculateLinkExist(guestPostObj) {
+                if (guestPostObj.hasOwnProperty('link_infos')) {
+                    if (guestPostObj.link_infos.hasOwnProperty('exists')) {
+                        return guestPostObj.link_infos.exists !== '1' ? 'not exist' : 'exist'
+                    }
+                }
+
+                return 'pending'
+            },
             getGuestLinks() {
 
                 this.$singleLoaderTrue('guestLinksListLoader');
