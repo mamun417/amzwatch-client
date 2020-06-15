@@ -18,12 +18,14 @@
                 >
                     <q-item-section class="col">{{ link.url }}</q-item-section>
                     <q-item-section class="col text-center inline-block">
-                        <q-badge :color="link.meta.page_status !== 200 ? 'warning' : 'positive'">
-                            {{ link.meta.page_status !== 200 ? 'unavailable' : 'available' }}
+                        <q-badge :color="calculateLinkStatus(link) !== 'available' ? 'warning' : 'positive'">
+                            {{ calculateLinkStatus(link) }}
                         </q-badge>
                     </q-item-section>
                     <q-item-section class="col text-right">
-                        {{$timestampToDate(link.updated_at.last_scraped_at)}}
+                        <template v-if="calculateLinkStatus(link) !== 'pending'">
+                            {{$timestampToDate(link.updated_at.last_scraped_at)}}
+                        </template>
                     </q-item-section>
                 </q-item>
             </q-expansion-item>
@@ -47,7 +49,7 @@
     import Pagination from "components/pagination/Pagination";
 
     export default {
-        name: "BrokenLinksList",
+        name      : "BrokenLinksList",
         components: {Pagination},
         data() {
             return {
@@ -62,11 +64,24 @@
         computed: {
             ...mapGetters({
                 brokenLinksPaginationMeta: 'broken_links/paginationMeta',
-                singleLoader         : 'ui/singleLoaderStatus'
+                singleLoader             : 'ui/singleLoaderStatus'
             })
         },
 
         methods: {
+            calculateLinkStatus(linkObj) {
+                if (linkObj.hasOwnProperty('meta')) {
+                    if (linkObj.meta.hasOwnProperty('page_status') && linkObj.meta.page_status) {
+                        let status = linkObj.meta.page_status.toString()
+
+                        return [
+                            '2',
+                            '3'
+                        ].includes(status[0]) ? 'available' : 'unavailable';
+                    }
+                }
+                return 'pending'
+            },
             getBrokenLinkInfo() {
 
                 this.$singleLoaderTrue('brokenLinksListLoader');
