@@ -37,7 +37,7 @@
             />
         </div>
 
-        <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinksPaginationHandle"/>
+        <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinksListLoader"/>
 
     </div>
 </template>
@@ -51,12 +51,21 @@
         components: {Pagination},
         data() {
             return {
-                brokenLinkInfo: []
+                brokenLinkInfo: [],
+                interval: null
             }
         },
 
         mounted() {
             this.getBrokenLinkInfo();
+
+            this.interval = setInterval(() => {
+                this.getBrokenLinkInfo();
+            }, 8000)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         computed: {

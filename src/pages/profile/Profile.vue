@@ -80,6 +80,9 @@
                     <q-btn @click="updateProfileButtonClicked" class="q-mr-md" color="primary">Update</q-btn>
                     <q-btn @click="cancelProfileButtonClicked">Cancel</q-btn>
                 </div>
+
+                <q-inner-loading color="primary" :showing="!!singleLoader.updateProfileLoader"/>
+
             </q-card-section>
         </q-card>
 
@@ -133,6 +136,9 @@
                             <q-btn color="primary" no-caps @click="updatePasswordButtonClicked">Update Password</q-btn>
                         </div>
                     </template>
+
+                    <q-inner-loading color="primary" :showing="!!singleLoader.changePasswordLoader"/>
+
                 </q-card-section>
             </q-card>
 
@@ -158,7 +164,8 @@
 
         computed: {
             ...mapGetters({
-                userInfo: 'auth/user'
+                userInfo: 'auth/user',
+                singleLoader : 'ui/singleLoaderStatus'
             })
         },
 
@@ -176,11 +183,18 @@
             },
 
             updateProfileButtonClicked() {
+
+                this.$singleLoaderTrue('updateProfileLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('auth/updateProfile', {
                     vm        : this,
                     inputs    : this.formData,
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('updateProfileLoader');
+                        this.$forceUpdate();
+
                         this.$q.notify({
                             color   : 'positive',
                             message : 'Profile has been updated Successful',
@@ -188,6 +202,9 @@
                         });
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('updateProfileLoader');
+                        this.$forceUpdate();
+
                         this.formErrors = err.response.data.errors;
                     })
             },
@@ -199,16 +216,24 @@
             },
 
             checkCurrentPassword() {
-                // check current pass then set to false
+                this.$singleLoaderTrue('changePasswordLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('auth/checkCurrentPassword', {
                     vm        : this,
                     inputs    : { current_password: this.currentPassword },
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('changePasswordLoader');
+                        this.$forceUpdate();
+
                         this.currentPasswordCheckSection = false;
                         this.currentPassword = '';
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('changePasswordLoader');
+                        this.$forceUpdate();
+
                         if (!err.response.data.errors) {
                             this.$q.notify({
                                 color   : 'negative',
@@ -222,11 +247,17 @@
             },
 
             updatePasswordButtonClicked() {
+                this.$singleLoaderTrue('changePasswordLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('auth/updatePassword', {
                     vm        : this,
                     inputs    : this.updatePassFormData,
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('changePasswordLoader');
+                        this.$forceUpdate();
+
                         this.passwordChangeModal = false;
                         this.$q.notify({
                             color   : 'positive',
@@ -235,6 +266,9 @@
                         });
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('changePasswordLoader');
+                        this.$forceUpdate();
+
                         if (!err.response.data.errors) {
                             this.$q.notify({
                                 color   : 'negative',
