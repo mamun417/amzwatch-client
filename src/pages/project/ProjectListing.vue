@@ -49,6 +49,7 @@
             :edit-data="selectedForEdit"
             @projectAdded="getProjects"
             @projectUpdated="handleProjectUpdated"
+            @modalClosed="selectedForEdit = {}"
         />
     </section>
 </template>

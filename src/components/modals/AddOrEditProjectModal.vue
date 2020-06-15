@@ -2,7 +2,7 @@
     <q-dialog
         :value="show"
         @input="$emit('update:show', $event)"
-        @hide="resetAddEditFormData"
+        @hide="modalCloseHandle"
     >
         <q-card style="min-width: 400px">
             <q-card-section class="bg-primary text-white">
@@ -47,11 +47,16 @@
                     flat
                 />
             </q-card-actions>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.addOrEditProjectLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         components: {},
         props     : {
@@ -75,18 +80,36 @@
             }
         },
 
+        computed: {
+            ...mapGetters({
+                singleLoader : 'ui/singleLoaderStatus'
+            })
+        },
+
         methods: {
+            modalCloseHandle() {
+                this.resetAddEditFormData();
+                this.$emit('modalClosed');
+            },
+
             resetAddEditFormData() {
-                this.selectedForEdit          = {};
+                this.addEditProjectData       = {};
                 this.addEditProjectDataErrors = {};
             },
 
             addProjectButtonClicked() {
+
+                this.$singleLoaderTrue('addOrEditProjectLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('projects/addProject', {
                     vm    : this,
                     inputs: this.addEditProjectData
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('addOrEditProjectLoader');
+                        this.$forceUpdate();
+
                         this.$q.notify({
                             color   : 'positive',
                             message : 'Project has been added Successful',
@@ -94,9 +117,12 @@
                         });
 
                         this.$emit('projectAdded', res.data.project);
-                        this.$emit('update:show', false)
+                        this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('addOrEditProjectLoader');
+                        this.$forceUpdate();
+
                         if (!err.response.data.errors) {
                             this.$q.notify({
                                 color   : 'negative',
@@ -110,12 +136,19 @@
             },
 
             updateProjectButtonClicked() {
+
+                this.$singleLoaderTrue('addOrEditProjectLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('projects/updateProject', {
                     vm        : this,
                     inputs    : this.addEditProjectData,
                     project_id: this.addEditProjectData.id
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('addOrEditProjectLoader');
+                        this.$forceUpdate();
+
                         this.$q.notify({
                             color   : 'positive',
                             message : 'Project has been updated Successful',
@@ -123,9 +156,12 @@
                         });
 
                         this.$emit('projectUpdated', res.data.project)
-                        this.$emit('update:show', false)
+                        this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('addOrEditProjectLoader');
+                        this.$forceUpdate();
+
                         if (!err.response.data.errors) {
                             this.$q.notify({
                                 color   : 'negative',
@@ -141,6 +177,9 @@
         watch  : {
             editData: {
                 handler() {
+
+                    if (Object.keys(this.editData).length === 0) return;
+
                     this.tempAddEditProjectData = this.$_.cloneDeep(this.editData);
 
                     if (this.updateModal) {

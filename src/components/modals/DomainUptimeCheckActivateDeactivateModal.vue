@@ -58,14 +58,19 @@
                 <q-btn
                     label="Update" class="q-mr-md"
                     @click="serviceActivateDeactivateHandle"
-                    flat v-close-popup
+                    flat
                 />
             </q-card-actions>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.domainUptimeModalLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         props   : {
             show       : {
@@ -99,11 +104,18 @@
         computed: {
             uptimeTimeLabelMaker() {
                 return this.timeRangeInfo[this.uptimeInfo.timeRange]
-            }
+            },
+            ...mapGetters({
+                singleLoader : 'ui/singleLoaderStatus'
+            })
         },
 
         methods: {
             serviceActivateDeactivateHandle() {
+
+                this.$singleLoaderTrue('domainUptimeModalLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('domain_uptime/updateDomainUptimeCheckService', {
                     vm        : this,
                     project_id: this.projectInfo.id,
@@ -114,10 +126,21 @@
                     }
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('domainUptimeModalLoader');
+                        this.$forceUpdate();
+
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Uptime monitor checker service has been updated Successful',
+                            position: 'top'
+                        });
+
                         this.$emit('serviceUpdated', res.data.project);
                         this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('domainUptimeModalLoader');
+                        this.$forceUpdate();
                         //handle error
                     });
             }

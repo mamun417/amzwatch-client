@@ -62,10 +62,15 @@
                 </q-btn>
             </q-card-actions>
         </q-card>
+
+        <q-inner-loading color="primary" :showing="!!singleLoader.registerLoader"/>
+
     </q-page>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     name: 'Register',
 
@@ -84,20 +89,36 @@ export default {
         }
     },
 
+    computed: {
+        ...mapGetters({
+            singleLoader : 'ui/singleLoaderStatus'
+        })
+    },
+
     methods: {
         registerButtonClicked() {
+
+            this.$singleLoaderTrue('registerLoader');
+            this.$forceUpdate();
+
             this.$store.dispatch('auth/register', {vm: this, inputs: this.formData})
                 .then(res => {
+                    this.$singleLoaderFalse('registerLoader');
+                    this.$forceUpdate();
+
                     this.$q.notify({
                         color   : 'positive',
                         message : 'Registration Successful',
                         position: 'top'
                     })
 
-                    this.$router.push('/')
+                    this.$router.push('/');
                 })
                 .catch(err => {
-                    this.formErrors = err.response.data.errors
+                    this.$singleLoaderFalse('registerLoader');
+                    this.$forceUpdate();
+
+                    this.formErrors = err.response.data.errors;
                 })
         }
     }
