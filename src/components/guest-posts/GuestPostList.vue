@@ -74,6 +74,14 @@
 
         mounted() {
             this.getGuestLinks();
+
+            this.interval = setInterval(() => {
+                this.getGuestLinks();
+            }, this.$interValTime)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         computed: {

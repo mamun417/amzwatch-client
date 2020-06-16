@@ -114,7 +114,6 @@
             serviceActivateDeactivateHandle() {
 
                 this.$singleLoaderTrue('domainUptimeModalLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('domain_uptime/updateDomainUptimeCheckService', {
                     vm        : this,
@@ -127,7 +126,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('domainUptimeModalLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -140,7 +138,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('domainUptimeModalLoader');
-                        this.$forceUpdate();
                         //handle error
                     });
             }

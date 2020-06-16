@@ -97,14 +97,19 @@
                     label="Update" class="q-mr-md"
                     :disable="guestDomainInvalid || !guestDomain"
                     @click="serviceActivateDeactivateHandle"
-                    flat v-close-popup
+                    flat
                 />
             </q-card-actions>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.guestLinkCheckerUpdateLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         props   : {
             show       : {
@@ -135,7 +140,10 @@
             guestDomainInvalid() {
                 return !this.guestDomainInputFocused
                     && (!this.guestDomain || !this.guestDomain.includes('://'))
-            }
+            },
+            ...mapGetters({
+                singleLoader : 'ui/singleLoaderStatus'
+            })
         },
         methods : {
             pushToGuestLinksForUpdate() {
@@ -148,6 +156,9 @@
             },
 
             serviceActivateDeactivateHandle() {
+
+                this.$singleLoaderTrue('guestLinkCheckerUpdateLoader');
+
                 let guestLinks = []
 
                 this.guestLinksForUpdate.map((obj, key) => {
@@ -166,10 +177,19 @@
                     }
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('guestLinkCheckerUpdateLoader');
+
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Guest link checker service has been updated Successful',
+                            position: 'top'
+                        });
+
                         this.$emit('serviceUpdated', res.data.project);
                         this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('guestLinkCheckerUpdateLoader');
                         //handle error
                     });
             }

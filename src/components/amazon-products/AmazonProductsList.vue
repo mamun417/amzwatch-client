@@ -101,7 +101,7 @@
 
         </q-list>
 
-        <div v-if="amazonProductsPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="amazonProductsPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="amazonProductsPaginationMeta.current_page"
                 :last_page="amazonProductsPaginationMeta.last_page"
@@ -144,6 +144,14 @@
 
         mounted() {
             this.getAmazonProductsInfo();
+
+            this.interval = setInterval(() => {
+                this.getAmazonProductsInfo();
+            }, this.$interValTime)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         computed: {

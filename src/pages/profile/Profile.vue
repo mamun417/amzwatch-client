@@ -185,7 +185,6 @@
             updateProfileButtonClicked() {
 
                 this.$singleLoaderTrue('updateProfileLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('auth/updateProfile', {
                     vm        : this,
@@ -193,7 +192,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('updateProfileLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -203,7 +201,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('updateProfileLoader');
-                        this.$forceUpdate();
 
                         this.formErrors = err.response.data.errors;
                     })
@@ -217,7 +214,6 @@
 
             checkCurrentPassword() {
                 this.$singleLoaderTrue('changePasswordLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('auth/checkCurrentPassword', {
                     vm        : this,
@@ -225,14 +221,12 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('changePasswordLoader');
-                        this.$forceUpdate();
 
                         this.currentPasswordCheckSection = false;
                         this.currentPassword = '';
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('changePasswordLoader');
-                        this.$forceUpdate();
 
                         if (!err.response.data.errors) {
                             this.$q.notify({
@@ -248,7 +242,6 @@
 
             updatePasswordButtonClicked() {
                 this.$singleLoaderTrue('changePasswordLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('auth/updatePassword', {
                     vm        : this,
@@ -256,7 +249,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('changePasswordLoader');
-                        this.$forceUpdate();
 
                         this.passwordChangeModal = false;
                         this.$q.notify({
@@ -267,7 +259,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('changePasswordLoader');
-                        this.$forceUpdate();
 
                         if (!err.response.data.errors) {
                             this.$q.notify({

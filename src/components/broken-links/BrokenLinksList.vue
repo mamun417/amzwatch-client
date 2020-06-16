@@ -61,7 +61,7 @@
 
             this.interval = setInterval(() => {
                 this.getBrokenLinkInfo();
-            }, 8000)
+            }, this.$interValTime)
         },
 
         beforeDestroy() {

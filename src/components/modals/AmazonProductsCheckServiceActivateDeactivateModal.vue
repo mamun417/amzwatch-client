@@ -61,7 +61,6 @@
         methods : {
             serviceActivateDeactivateHandle() {
                 this.$singleLoaderTrue('amazonProductCheckServiceFormLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('amazon_products_links/updateAmazonProductCheckService', {
                     vm        : this,
@@ -72,7 +71,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('amazonProductCheckServiceFormLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -85,7 +83,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('amazonProductCheckServiceFormLoader');
-                        this.$forceUpdate();
                         //handle error
                     });
             }
