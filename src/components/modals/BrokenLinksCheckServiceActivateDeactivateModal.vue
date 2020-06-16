@@ -5,7 +5,9 @@
     >
         <q-card style="min-width: 400px">
             <q-card-section class="bg-primary text-white">
-                <div class="text-h6">{{updateData.status === 'inactive' ? 'Deactivate' : 'Activate'}} this service?</div>
+                <div class="text-h6">
+                    {{updateData.status === 'inactive' ? 'Deactivate' : 'Activate'}} this service?
+                </div>
             </q-card-section>
 
             <q-card-section class="text-center q-pa-xl">
