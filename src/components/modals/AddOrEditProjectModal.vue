@@ -100,7 +100,6 @@
             addProjectButtonClicked() {
 
                 this.$singleLoaderTrue('addOrEditProjectLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('projects/addProject', {
                     vm    : this,
@@ -108,7 +107,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('addOrEditProjectLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -121,7 +119,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('addOrEditProjectLoader');
-                        this.$forceUpdate();
 
                         if (!err.response.data.errors) {
                             this.$q.notify({
@@ -138,7 +135,6 @@
             updateProjectButtonClicked() {
 
                 this.$singleLoaderTrue('addOrEditProjectLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('projects/updateProject', {
                     vm        : this,
@@ -147,7 +143,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('addOrEditProjectLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -160,7 +155,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('addOrEditProjectLoader');
-                        this.$forceUpdate();
 
                         if (!err.response.data.errors) {
                             this.$q.notify({

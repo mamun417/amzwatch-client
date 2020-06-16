@@ -59,7 +59,6 @@
             loginButtonClicked() {
 
                 this.$singleLoaderTrue('loginLoader');
-                this.$forceUpdate();
 
                 this.$store.dispatch('auth/login', {
                     vm    : this,
@@ -67,7 +66,6 @@
                 })
                     .then(() => {
                         this.$singleLoaderFalse('loginLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -79,7 +77,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('loginLoader');
-                        this.$forceUpdate();
 
                         if (!err.response.data.errors) {
                             this.$q.notify({

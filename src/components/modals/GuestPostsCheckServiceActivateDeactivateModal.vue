@@ -158,7 +158,6 @@
             serviceActivateDeactivateHandle() {
 
                 this.$singleLoaderTrue('guestLinkCheckerUpdateLoader');
-                this.$forceUpdate();
 
                 let guestLinks = []
 
@@ -179,7 +178,6 @@
                 })
                     .then(res => {
                         this.$singleLoaderFalse('guestLinkCheckerUpdateLoader');
-                        this.$forceUpdate();
 
                         this.$q.notify({
                             color   : 'positive',
@@ -192,7 +190,6 @@
                     })
                     .catch(err => {
                         this.$singleLoaderFalse('guestLinkCheckerUpdateLoader');
-                        this.$forceUpdate();
                         //handle error
                     });
             }

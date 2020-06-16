@@ -22,8 +22,6 @@
                 <q-input class="col-grow" label="Search Projects" value="" dense/>
                 <q-select class="col-grow" label="Filter" value="all" :options="['all', 'active', 'inactive']" dense/>
             </q-card-section>
-
-            <q-inner-loading color="primary" :showing="!!singleLoader.projectListLoader"/>
         </q-card>
 
         <single-project-info-in-listing
@@ -34,7 +32,7 @@
             @serviceUpdated="getProjects()"
         />
 
-        <div v-if="projectPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="!!projectPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <q-pagination
                 :value="projectPaginationMeta.current_page"
                 :max="projectPaginationMeta.last_page"
@@ -51,6 +49,9 @@
             @projectUpdated="handleProjectUpdated"
             @modalClosed="selectedForEdit = {}"
         />
+
+        <q-inner-loading color="primary" :showing="!!singleLoader.projectListLoader"/>
+
     </section>
 </template>
 
@@ -70,14 +71,22 @@
 
                 projectUpdateModal     : false,
                 showAddEditProjectModal: false,
-                selectedForEdit         : {}
+                selectedForEdit         : {},
+                interval                : null
             }
         },
 
         mounted() {
             // get projects first then assign to projects.
             this.getProjects();
-            // dont worry for loading. we will add later
+
+            this.interval = setInterval(() => {
+                this.getProjects();
+            }, this.$interValTime)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         computed: {

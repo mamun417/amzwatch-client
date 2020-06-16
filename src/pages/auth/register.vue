@@ -99,12 +99,10 @@ export default {
         registerButtonClicked() {
 
             this.$singleLoaderTrue('registerLoader');
-            this.$forceUpdate();
 
             this.$store.dispatch('auth/register', {vm: this, inputs: this.formData})
                 .then(res => {
                     this.$singleLoaderFalse('registerLoader');
-                    this.$forceUpdate();
 
                     this.$q.notify({
                         color   : 'positive',
@@ -116,7 +114,6 @@ export default {
                 })
                 .catch(err => {
                     this.$singleLoaderFalse('registerLoader');
-                    this.$forceUpdate();
 
                     this.formErrors = err.response.data.errors;
                 })

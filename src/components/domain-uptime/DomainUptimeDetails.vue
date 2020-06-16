@@ -134,7 +134,15 @@
         },
 
         mounted() {
-            this.getDomainUptimeDetail()
+            this.getDomainUptimeDetail();
+
+            this.interval = setInterval(() => {
+                this.getDomainUptimeDetail();
+            }, this.$interValTime)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         methods: {

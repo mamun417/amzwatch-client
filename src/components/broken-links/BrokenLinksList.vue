@@ -31,7 +31,7 @@
             </q-expansion-item>
         </q-list>
 
-        <div v-if="brokenLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="brokenLinksPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="brokenLinksPaginationMeta.current_page"
                 :last_page="brokenLinksPaginationMeta.last_page"
@@ -63,7 +63,7 @@
 
             this.interval = setInterval(() => {
                 this.getBrokenLinkInfo();
-            }, 8000)
+            }, this.$interValTime)
         },
 
         beforeDestroy() {

@@ -204,7 +204,7 @@
             </q-expansion-item>
         </q-list>
 
-        <div v-if="pageSpeedListPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="pageSpeedListPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="pageSpeedListPaginationMeta.current_page"
                 :last_page="pageSpeedListPaginationMeta.last_page"
@@ -238,6 +238,14 @@
 
         mounted() {
             this.getPagesSpeedInfo();
+
+            this.interval = setInterval(() => {
+                this.getPagesSpeedInfo();
+            }, this.$interValTime)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         computed: {

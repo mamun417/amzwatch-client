@@ -39,7 +39,7 @@
             </q-expansion-item>
         </q-list>
 
-        <div v-if="guestLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="guestLinksPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="guestLinksPaginationMeta.current_page"
                 :last_page="guestLinksPaginationMeta.last_page"
@@ -74,6 +74,14 @@
 
         mounted() {
             this.getGuestLinks();
+
+            this.interval = setInterval(() => {
+                this.getGuestLinks();
+            }, this.$interValTime)
+        },
+
+        beforeDestroy() {
+            this.interval && clearInterval(this.interval);
         },
 
         computed: {
