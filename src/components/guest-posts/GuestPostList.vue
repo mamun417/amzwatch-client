@@ -39,7 +39,7 @@
             </q-expansion-item>
         </q-list>
 
-        <div v-if="guestLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="guestLinksPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="guestLinksPaginationMeta.current_page"
                 :last_page="guestLinksPaginationMeta.last_page"
@@ -58,11 +58,11 @@
     import Pagination from "components/pagination/Pagination";
 
     export default {
-        name: "GuestLinksList",
+        name      : "GuestLinksList",
         components: {Pagination},
-        props: {
+        props     : {
             getGuestPostsCount: {
-                type: Boolean,
+                type   : Boolean,
                 default: false
             }
         },
@@ -79,7 +79,7 @@
         computed: {
             ...mapGetters({
                 guestLinksPaginationMeta: 'guest_links/paginationMeta',
-                singleLoader         : 'ui/singleLoaderStatus'
+                singleLoader            : 'ui/singleLoaderStatus'
             })
         },
 
@@ -94,11 +94,11 @@
                 return 'pending'
             },
             getGuestLinks() {
-
                 this.$singleLoaderTrue('guestLinksListLoader');
+                this.$forceUpdate();
 
                 this.$store.dispatch('guest_links/getGuestPosts', {
-                    vm: this,
+                    vm        : this,
                     project_id: this.$route.params.project_id
                 })
                     .then(res => {

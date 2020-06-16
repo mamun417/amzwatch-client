@@ -31,16 +31,14 @@
             </q-expansion-item>
         </q-list>
 
-        <div v-if="brokenLinksPaginationMeta.total !== 1" class="q-pa-lg flex flex-center">
+        <div v-if="brokenLinksPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="brokenLinksPaginationMeta.current_page"
                 :last_page="brokenLinksPaginationMeta.last_page"
                 @handlePagination="brokenLinksPaginationHandle"
             />
         </div>
-
         <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinksListLoader"/>
-
     </div>
 </template>
 
@@ -92,8 +90,8 @@
                 return 'pending'
             },
             getBrokenLinkInfo() {
-
                 this.$singleLoaderTrue('brokenLinksListLoader');
+                this.$forceUpdate();
 
                 this.$store.dispatch('broken_links/getBrokenLinks', {
                     vm        : this,
