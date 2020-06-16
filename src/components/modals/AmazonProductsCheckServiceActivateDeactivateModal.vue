@@ -36,11 +36,16 @@
                     <q-btn color="positive" label="Update" class="q-px-lg" @click="serviceActivateDeactivateHandle"/>
                 </div>
             </q-card-section>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.amazonProductCheckServiceFormLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         props  : {
             show       : {
@@ -60,8 +65,17 @@
                 }
             }
         },
+        computed: {
+            ...mapGetters({
+                singleLoader : 'ui/singleLoaderStatus'
+            })
+        },
         methods: {
             serviceActivateDeactivateHandle() {
+
+                this.$singleLoaderTrue('amazonProductCheckServiceFormLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('amazon_products_links/updateAmazonProductCheckService', {
                     vm        : this,
                     project_id: this.projectInfo.id,
@@ -71,10 +85,21 @@
                     }
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('amazonProductCheckServiceFormLoader');
+                        this.$forceUpdate();
+
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Amazon product checker service has been updated Successful',
+                            position: 'top'
+                        });
+
                         this.$emit('serviceUpdated', res.data.project);
                         this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('amazonProductCheckServiceFormLoader');
+                        this.$forceUpdate();
                         //handle error
                     });
             }

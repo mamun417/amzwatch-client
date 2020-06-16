@@ -28,10 +28,15 @@
                 <q-btn @click="loginButtonClicked" color="primary" flat>Lets Go</q-btn>
             </q-card-actions>
         </q-card>
+
+        <q-inner-loading color="primary" :showing="!!singleLoader.loginLoader"/>
+
     </q-page>
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         name   : 'Login',
         data() {
@@ -43,22 +48,39 @@
                 formErrors: {}
             }
         },
+
+        computed: {
+            ...mapGetters({
+                singleLoader : 'ui/singleLoaderStatus'
+            })
+        },
+
         methods: {
             loginButtonClicked() {
+
+                this.$singleLoaderTrue('loginLoader');
+                this.$forceUpdate();
+
                 this.$store.dispatch('auth/login', {
                     vm    : this,
                     inputs: this.formData
                 })
                     .then(() => {
+                        this.$singleLoaderFalse('loginLoader');
+                        this.$forceUpdate();
+
                         this.$q.notify({
                             color   : 'positive',
                             message : 'Login Successful',
                             position: 'top'
                         })
 
-                        this.$router.push('/projects')
+                        this.$router.push('/projects');
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('loginLoader');
+                        this.$forceUpdate();
+
                         if (!err.response.data.errors) {
                             this.$q.notify({
                                 color   : 'negative',
