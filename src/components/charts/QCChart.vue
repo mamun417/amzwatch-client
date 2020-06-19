@@ -1,5 +1,5 @@
 <template>
-    <canvas id="q-c-chart" height="50px"/>
+    <canvas id="q-c-chart" height="100px"/>
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
                     labels: ['jan', 'feb', 'march', 'april', 'may'],
                     datasets: [{
                         label: '# of broken links',
-                        data: [12, 19, 3, 5, 2],
+                        data: [12, 19, 3, 5, 2, 30],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)'
                         ],

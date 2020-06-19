@@ -1,135 +1,154 @@
 <template>
-    <div
-        v-if="Object.keys(details).length"
-    >
-        <div>
-            <span class="text-subtitle2">Currently active uptime checks</span>
-            <span class="q-ml-md">
-                <q-chip
-                    v-for="(type, index) in ['http', 'ping']"
-                    class="q-px-sm"
-                    :class="[getCheckTypesActiveState(type) ? 'text-white' : '']"
-                    :color="getCheckTypesActiveState(type) ? 'primary' : ''"
-                    :disable="!getCheckTypesActiveState(type)"
-                    dense
-                >
-                    {{type}}
-                </q-chip>
-            </span>
-        </div>
+    <div v-if="Object.keys(details).length">
+        <div class="row">
+            <div class="col-md-8 q-pa-md">
 
-        <q-card
-            v-for="(checkType, index) in ['http', 'ping']"
-            class="q-my-md"
-        >
-            <q-card-section class="bg-primary text-white row items-center">
-                <div class="col">
-                    {{$_.upperCase(checkType)}}
-                </div>
+                <q-card-actions class="q-pt-none">
+                    <q-btn flat round icon="bar_chart"/>
+                    <div class="text-h6">Uptime</div>
+                    <q-btn flat color="green">
+                        Last 24 hours
+                    </q-btn>
+                </q-card-actions>
 
                 <div>
-                    <q-badge :color="getCheckTypesActiveState(checkType) ? 'positive' : 'warning'">
-                        {{getCheckTypesActiveState(checkType) ? 'active' : 'inactive'}}
-                    </q-badge>
+                    <q-linear-progress rounded
+                       size="20px"
+                       :value="1"
+                       color="green"
+                    />
                 </div>
 
-                <div class="col text-right">
-                    <template v-if="getCheckTypesHasLastDate(checkType)">
-                        <template v-if="getCheckTypesHasLastDate(checkType)">
-                            <span>Last checked</span>
-                            <span
-                                class="q-ml-sm"
-                            >{{$timestampToDate(details.uptime_checker[checkType].last_checked_at)}}</span>
-                        </template>
-                        <div v-else>Pending</div>
-                    </template>
-                </div>
-            </q-card-section>
+                <q-separator class="q-mt-sm"/>
 
-            <q-card-section v-if="getCheckTypesActiveState(checkType)">
-                <template v-if="getCheckTypesActiveState(checkType)">
-                    <div
-                        v-if="checkType === 'ping'"
-                        class="shadow-1 q-mx-auto q-my-md"
-                        style="max-width: 400px"
-                    >
-                        <q-list class="text-center text-md text-weight-medium" dense separator>
-                            <q-item>
-                                <q-item-section
-                                    class="text-primary text-subtitle2 q-my-sm"
-                                >Result
-                                </q-item-section>
-                            </q-item>
+                <q-card-actions>
+                    <q-btn flat round icon="bar_chart"/>
+                    <div class="text-h6">Response Time</div>
+                    <q-btn flat color="green">
+                        Last 24 hours (788.00ms av.)
+                    </q-btn>
+                </q-card-actions>
 
-                            <q-item
-                                clickable
-                            >
-                                <q-item-section>Packet Size</q-item-section>
-                                <q-item-section>32 byte</q-item-section>
-                            </q-item>
-                            <q-item
-                                clickable
-                            >
-                                <q-item-section>Checked</q-item-section>
-                                <q-item-section>4 times</q-item-section>
-                            </q-item>
+                <span>
+                    Shows the "instant" that the monitor started returning a response in ms
+                    (and average for the displayed period is 788.00ms).
+                </span>
 
-                            <q-item
-                                v-for="(item, index) in pingResultsShow"
-                                clickable
-                            >
-                                <q-item-section>{{item.title}}</q-item-section>
-                                <q-item-section>
-                                    {{details.meta.uptime_check.ping.result[item.key]}}
-                                    {{['min', 'max', 'avg'].includes(item.key) ? ' ms' : ''}}
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
-                    </div>
-                </template>
-                <div v-else class="text-subtitle2 text-center">Pending</div>
-            </q-card-section>
-        </q-card>
+                <q-separator class="q-mt-sm"/>
+
+            </div>
+
+            <div class="col-md-4 q-pa-md">
+
+                <q-card class="q-mb-md">
+                    <q-card-actions class="q-pa-xs">
+                        <q-btn flat round
+                               icon="radio_button_checked"
+                               size="10px"
+                        />
+                        <div class="text-bold">Current Status</div>
+                    </q-card-actions>
+
+                    <q-separator/>
+
+                    <q-card-actions class="q-pa-none">
+                        <q-btn flat round
+                               icon="radio_button_checked"
+                               color="green"
+                        />
+                        <div class="text-h6 text-green">Up</div>
+                    </q-card-actions>
+
+                    <q-card-actions class="q-pt-none">
+                        Since 16 hours, 19 mins (2020-06-13 00:14:12)
+                    </q-card-actions>
+                </q-card>
+
+                <q-card class="q-mb-md">
+                    <q-card-actions class="q-pa-xs">
+                        <q-btn flat round
+                           icon="bar_chart"
+                           size="10px"
+                        />
+                        <div class="text-bold">Uptime</div>
+                    </q-card-actions>
+                    <q-separator/>
+
+                    <q-card-actions class="q-pa-none" v-for="n in 3">
+                        <q-btn flat round
+                           icon="stars"
+                           color="green"
+                        />
+                        <div>
+                            <span class="text-bold text-green">99.747%</span> (last 24 hours)
+                        </div>
+                        <q-separator v-if="n !== 3"/>
+                    </q-card-actions>
+                </q-card>
+
+                <q-card>
+                    <q-card-actions class="q-pa-xs">
+                        <q-btn flat round
+                           icon="radio_button_checked"
+                           size="10px"
+                           color="red"
+                        />
+                        <span class="text-bold text-red">Latest Downtime</span>
+                    </q-card-actions>
+
+                    <q-separator/>
+
+                    <q-card-actions>
+                        It was recorded on 20-06-13 00:10:29
+                        and the downtime lasted for 0 hours, 3 mins.
+                    </q-card-actions>
+                </q-card>
+
+            </div>
+        </div>
     </div>
-    <div
-        v-else
-        class="text-subtitle2 text-center q-pa-lg"
-    >
+
+    <div v-else class="text-subtitle2 text-center q-pa-lg">
         No Data found
     </div>
 </template>
 
 <script>
+    import QCChart from "components/charts/QCChart";
+
     export default {
+        components: {
+            QCChart
+        },
         data() {
             return {
-                details        : {},
+                details: {},
                 pingResultsShow: [
                     {
-                        key  : 'alive',
+                        key: 'alive',
                         title: 'Alive'
                     },
                     {
-                        key  : 'packetLoss',
+                        key: 'packetLoss',
                         title: 'Packet Loss'
                     },
                     {
-                        key  : 'times',
+                        key: 'times',
                         title: 'Times'
                     },
                     {
-                        key  : 'min',
+                        key: 'min',
                         title: 'Min time'
                     },
                     {
-                        key  : 'max',
+                        key: 'max',
                         title: 'Max time'
                     },
                     {
-                        key  : 'avg',
+                        key: 'avg',
                         title: 'Avg time'
                     },
-                ]
+                ],
             }
         },
 
@@ -162,7 +181,7 @@
 
             getDomainUptimeDetail() {
                 this.$store.dispatch('domain_uptime/getDomainUptimeDetails', {
-                    vm        : this,
+                    vm: this,
                     project_id: this.$route.params.project_id
                 })
                     .then(res => {
