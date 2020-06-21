@@ -4,6 +4,7 @@ export function getAmazonProducts(context, payload) {
 
         payload.vm.$get(urlPath)
             .then(res => {
+                context.commit('updatePaginationMeta', res.data.amazonProducts.pagination_meta);
                 resolve(res)
             })
             .catch(err => {
@@ -15,7 +16,7 @@ export function getAmazonProducts(context, payload) {
 export function getAmazonProductInPages(context, payload) {
     return new Promise((resolve, reject) => {
         payload.vm.$get('/amazon-products/' + payload.product_id, {
-            affiliate_id: payload.affiliate_id
+            project_id: payload.project_id
         }) //amazonproduct id
             .then(res => {
                 resolve(res)

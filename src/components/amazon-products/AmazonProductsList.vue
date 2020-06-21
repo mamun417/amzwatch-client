@@ -22,9 +22,13 @@
                     class="row full-width justify-between text-subtitle2 items-center"
                 >
                     <q-item-section class="col">
-                        <q-avatar size="64px" square>
-                            <img :src="product.product.meta.metas.product_image" />
-                        </q-avatar>
+                        <q-img
+                            style="width: 82px; height: 82px"
+                            :src="product.product.meta.metas.product_image"
+                            contain
+                        >
+                            <!-- <img :src="product.product.meta.metas.product_image" /> -->
+                        </q-img>
                     </q-item-section>
                     <q-item-section class="col">{{product.product.meta.metas.product_name}}</q-item-section>
                     <q-item-section class="col inline-block text-right">
@@ -51,7 +55,9 @@
                 </q-card>
 
                 <q-card v-else class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
-                    <q-card-section>Last checked this product: {{$timestampToDate(product.product.updated_at.last_scraped_at)}}</q-card-section>
+                    <q-card-section
+                        class="q-pb-xs"
+                    >Last checked this product: {{$timestampToDate(product.product.updated_at.last_scraped_at)}}</q-card-section>
                     <q-card-section>
                         <div class="flex q-mb-sm">
                             <div class="q-mr-sm">This product has in:</div>
@@ -75,7 +81,7 @@
                             </q-item>
                         </q-list>
                     </q-card-section>
-                    <div v-if="product.productsInPagesCount > 1" class="text-center">
+                    <div v-if="product.productsInPagesCount === 1" class="text-center">
                         <q-btn
                             color="primary"
                             size="sm"
@@ -86,6 +92,11 @@
                             @click="showProductInPagesModal(product)"
                         />
                     </div>
+
+                    <q-inner-loading
+                        color="primary"
+                        :showing="!!singleLoader.amazonProductInPagesLoader"
+                    />
                 </q-card>
             </q-expansion-item>
 
@@ -198,11 +209,13 @@ export default {
         },
 
         showProductLinksInfo(product) {
+            this.$singleLoaderTrue("amazonProductInPagesLoader");
+
             this.$store
                 .dispatch("amazon_products_links/getAmazonProductInPages", {
                     vm: this,
                     product_id: product.product_id, //amazonproduct id
-                    affiliate_id: product.affiliate_id
+                    project_id: this.$route.params.project_id
                 })
                 .then(res => {
                     this.amazonProductsInfo = this.amazonProductsInfo.map(
@@ -220,9 +233,12 @@ export default {
                             return amazonProduct;
                         }
                     );
+
+                    this.$singleLoaderFalse("amazonProductInPagesLoader");
                 })
                 .catch(err => {
                     //handle error
+                    this.$singleLoaderFalse("amazonProductInPagesLoader");
                 });
         },
 

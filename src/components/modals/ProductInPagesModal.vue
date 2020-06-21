@@ -17,10 +17,10 @@
                     :key="index"
                     clickable
                 >
-                    <q-item-section>{{link.page.url}}</q-item-section>
-                    <q-item-section class="text-right text-sm">
-                        {{ $timestampToDate(product.product.updated_at.last_scraped_at, "Do MM YYYY, h:mm:ss a") }}
-                    </q-item-section>
+                    <q-item-section class="text-sm">{{link.page.url}}</q-item-section>
+                    <q-item-section
+                        class="text-right text-sm"
+                    >{{ $timestampToDate(product.product.updated_at.last_scraped_at, "Do MM YYYY, h:mm:ss a") }}</q-item-section>
                 </q-item>
             </q-list>
         </q-card>
@@ -28,44 +28,45 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            active : {
-                type   : Boolean,
-                default: false
-            },
-            product: {
-                type   : Object,
-                default: () => ({})
-            }
+export default {
+    props: {
+        active: {
+            type: Boolean,
+            default: false
         },
+        product: {
+            type: Object,
+            default: () => ({})
+        }
+    },
 
-        data() {
-            return {
-                productInPages: []
-            }
-        },
+    data() {
+        return {
+            productInPages: []
+        };
+    },
 
-        mounted() {
-            this.getProductInPages();
-        },
+    mounted() {
+        this.getProductInPages();
+    },
 
-        methods: {
-            getProductInPages() {
-                this.productInPages = [];
+    methods: {
+        getProductInPages() {
+            this.productInPages = [];
 
-                this.$store.dispatch('amazon_products_links/getAmazonProductInPages', {
-                    vm          : this,
-                    product_id  : this.product.product_id, //amazonproduct id
+            this.$store
+                .dispatch("amazon_products_links/getAmazonProductInPages", {
+                    vm: this,
+                    product_id: this.product.product_id, //amazonproduct id
                     affiliate_id: this.product.affiliate_id
                 })
-                    .then(res => {
-                        this.productInPages = res.data.productsInPages.data;
-                    })
-                    .catch(err => {
-                        //handle error
-                    });
-            }
+                .then(res => {
+                    this.productInPages = res.data.productsInPages.data;
+                })
+                .catch(err => {
+                    //handle error
+                });
         }
     }
+};
 </script>
