@@ -81,7 +81,7 @@
                             </q-item>
                         </q-list>
                     </q-card-section>
-                    <div v-if="product.productsInPagesCount === 1" class="text-center">
+                    <div v-if="product.productsInPagesCount > 5" class="text-center">
                         <q-btn
                             color="primary"
                             size="sm"
