@@ -1,23 +1,25 @@
 <template>
-    <div v-if="Object.keys(details).length">
+    <div class="q-pa-sm">
         <div class="row">
-            <div class="col-md-8 q-pa-md">
-                <q-card-section class="q-pt-none flex items-center">
+            <div class="col-md-8 q-pr-md">
+                <!-- <q-card-section class="q-pt-none flex items-center">
                     <q-icon size="sm" name="bar_chart" />
                     <span class="text-h6 q-mr-sm">Uptime</span>
                     <span class="text-green text-subtitle1">Last 24 hours</span>
-                </q-card-section>
+                </q-card-section>-->
 
-                <div>
+                <!-- <div>
                     <q-linear-progress rounded size="20px" :value="1" color="green" />
-                </div>
+                </div>-->
 
-                <q-separator class="q-mt-lg" />
+                <!-- <q-separator class="q-mt-lg" /> -->
 
-                <q-card-section class="flex items-center">
+                <q-card-section class="flex items-center q-pt-none">
                     <q-icon size="sm" name="bar_chart" />
                     <span class="text-h6 q-mr-sm">Response Times(avg.)</span>
-                    <span class="text-green text-subtitle1">Last 24 hours (788.00ms av.)</span>
+                    <span
+                        class="text-green text-subtitle1 q-mt-xs"
+                    >Last 24 hours ( {{pingResponseTimeAvg.avg}}ms )</span>
                 </q-card-section>
 
                 <!-- <span>
@@ -27,64 +29,95 @@
 
                 <!-- <q-separator class="q-mt-sm" /> -->
 
-                <q-c-chart />
+                <q-c-chart v-if="uptimePingTimeline.length" :data="pingChartData" />
             </div>
 
-            <div class="col-md-4 q-pa-md">
+            <div class="col-md-4 q-pl-md">
                 <q-card class="q-mb-md">
-                    <q-card-actions class="q-pa-xs">
+                    <q-card-section class="flex items-center q-px-sm q-py-sm">
                         <q-btn flat round icon="radio_button_checked" size="10px" />
                         <div class="text-bold">Current Status</div>
-                    </q-card-actions>
+                    </q-card-section>
 
                     <q-separator />
 
-                    <q-card-actions class="q-pa-none">
-                        <q-btn flat round icon="radio_button_checked" color="green" />
-                        <div class="text-h6 text-green">Up</div>
-                    </q-card-actions>
+                    <q-card-section class="q-py-sm q-px-sm flex items-center">
+                        <template v-if="uptimePingTimeline.length">
+                            <q-btn flat round icon="radio_button_checked" color="green" />
+                            <div
+                                class="text-h6"
+                                :class="[isDomainUp ? 'text-green' : 'text-red']"
+                            >{{isDomainUp ? 'Up' : 'Down'}}</div>
+                        </template>
+                        <div
+                            v-else
+                            class="text-center text-weight-bold full-width"
+                        >No logs found yet</div>
 
-                    <q-card-actions class="q-pt-none">Since 16 hours, 19 mins (2020-06-13 00:14:12)</q-card-actions>
+                        <q-inner-loading
+                            color="primary"
+                            :showing="!!singleLoader.domainUptimeTimelineLoader"
+                        />
+                    </q-card-section>
                 </q-card>
 
                 <q-card class="q-mb-md">
-                    <q-card-actions class="q-pa-xs">
+                    <q-card-section class="flex items-center q-px-sm q-py-sm">
                         <q-btn flat round icon="bar_chart" size="10px" />
                         <div class="text-bold">Uptime</div>
-                    </q-card-actions>
+                    </q-card-section>
                     <q-separator />
 
-                    <q-card-actions class="q-pa-none" v-for="n in 3">
+                    <q-card-actions class="q-pa-none">
                         <q-btn flat round icon="stars" color="green" />
                         <div>
-                            <span class="text-bold text-green">99.747%</span> (last 24 hours)
+                            <span class="text-bold text-green">{{uptimePercent.day1}}%</span> (last 24 hours)
                         </div>
-                        <q-separator v-if="n !== 3" />
+                        <q-separator />
+                    </q-card-actions>
+                    <q-card-actions class="q-pa-none">
+                        <q-btn flat round icon="stars" color="green" />
+                        <div>
+                            <span class="text-bold text-green">{{uptimePercent.day7}}%</span> (last 7 days)
+                        </div>
+                        <q-separator />
+                    </q-card-actions>
+                    <q-card-actions class="q-pa-none">
+                        <q-btn flat round icon="stars" color="green" />
+                        <div>
+                            <span class="text-bold text-green">{{uptimePercent.day30}}%</span> (last 30 days)
+                        </div>
+                        <q-separator />
                     </q-card-actions>
                 </q-card>
 
                 <q-card>
-                    <q-card-actions class="q-pa-xs">
+                    <q-card-section class="flex items-center q-px-sm q-py-sm">
                         <q-btn flat round icon="radio_button_checked" size="10px" color="red" />
                         <span class="text-bold text-red">Latest Downtime</span>
-                    </q-card-actions>
+                    </q-card-section>
 
                     <q-separator />
 
-                    <q-card-actions>
-                        It was recorded on 20-06-13 00:10:29
-                        and the downtime lasted for 0 hours, 3 mins.
-                    </q-card-actions>
+                    <q-card-section class="q-py-md">
+                        <template v-if="uptimeLatestDowntime">
+                            It was recorded on
+                            <span
+                                class="text-bold q-ml-sm"
+                            >{{$timestampToDate(uptimeLatestDowntime.logged_at)}}</span>
+                        </template>
+                        <template v-else>No latest downtime</template>
+                    </q-card-section>
                 </q-card>
             </div>
         </div>
 
-        <div class="q-pa-md">
-            <div class="q-pb-sm">
-                <span class="text-bold">Latest Events</span> (up, down, start, pause)
-            </div>
+        <q-separator class="q-mt-lg" />
 
-            <q-list class="q-pa-md" bordered dense>
+        <div class="q-mt-md relative-position">
+            <div class="text-h6">Latest Logs</div>
+
+            <q-list v-if="uptimeLogs.length" class="q-py-md" dense>
                 <q-item class="text-primary text-subtitle2 text-bold">
                     <q-item-section>Event</q-item-section>
                     <q-item-section class="text-center">Reason</q-item-section>
@@ -92,49 +125,89 @@
                 </q-item>
 
                 <q-item
-                    v-for="(n, index) in 10"
+                    v-for="(log, index) in uptimeLogs"
                     class="q-mb-sm shadow-1 text-weight-medium"
                     :key="index"
                     clickable
                 >
                     <q-item-section>
-                        <q-badge v-if="n%2 === 0" color="red" style="max-width: 70px">
+                        <q-badge
+                            :color="log.status !== 'ok' ? 'red' : 'green'"
+                            style="max-width: 70px"
+                        >
                             <q-icon name="arrow_downward" color="white" class="q-mr-xs text-bold" />
-                            <span class="text-bold">Down</span>
-                        </q-badge>
-
-                        <q-badge v-else color="green" style="max-width: 70px">
-                            <q-icon name="arrow_upward" color="white" class="q-mr-xs text-bold" />
-                            <span class="text-bold">Up</span>
+                            <span class="text-bold">{{log.status !== 'ok' ? 'Down': 'Up'}}</span>
                         </q-badge>
                     </q-item-section>
 
                     <q-item-section class="text-center">
-                        <span v-if="n%2 === 0" class="text-green">OK (200)</span>
-                        <span v-else class="text-red">Connection Timeout</span>
+                        <span
+                            :class="[log.status !== 'ok' ? 'text-red' : 'text-green']"
+                        >{{log.status !== 'ok' ? 'Connection Timeout' : 'OK (200)'}}</span>
                     </q-item-section>
 
-                    <q-item-section class="text-right">2020-06-13 00:14:12</q-item-section>
+                    <q-item-section class="text-right">{{$timestampToDate(log.logged_at)}}</q-item-section>
                 </q-item>
             </q-list>
+
+            <div v-else class="text-center q-py-md text-weight-bold">No logs found</div>
+
+            <div v-if="uptimeLogsPaginationMeta.last_page > 1" class="q-py-sm flex flex-center">
+                <pagination
+                    :current_page="uptimeLogsPaginationMeta.current_page"
+                    :last_page="uptimeLogsPaginationMeta.last_page"
+                    @handlePagination="uptimeLogsPaginationHandle"
+                />
+            </div>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.domainUptimeLogsLoader" />
         </div>
     </div>
 
-    <div v-else class="text-subtitle2 text-center q-pa-lg">No Data found</div>
+    <!-- <div v-else class="text-subtitle2 text-center q-pa-lg">No Data found</div> -->
 </template>
 
 <script>
 import QCChart from "components/charts/QCChart";
+import { mapGetters } from "vuex";
+import Pagination from "components/pagination/Pagination";
+import { now } from "moment";
 
 export default {
     components: {
-        QCChart
+        QCChart,
+        Pagination
     },
     data() {
         return {
             uptimePingTimeline: [],
             uptimeLatestDowntime: {},
             uptimeLogs: [],
+
+            pingResponseTimeAvg: {
+                min: 0,
+                max: 0,
+                avg: 0
+            },
+            uptimePercent: {
+                day1: 0,
+                day7: 0,
+                day30: 0
+            },
+
+            pingChartData: {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Uptime chart",
+                        data: [],
+                        backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+                        borderColor: ["rgba(255, 99, 132, 1)"],
+                        borderWidth: 1
+                    }
+                ]
+            },
+
             pingResultsShow: [
                 {
                     key: "alive",
@@ -178,21 +251,17 @@ export default {
         // this.interval && clearInterval(this.interval);
     },
 
+    computed: {
+        ...mapGetters({
+            uptimeLogsPaginationMeta: "domain_uptime/paginationMeta",
+            singleLoader: "ui/singleLoaderStatus"
+        })
+    },
+
     methods: {
-        getCheckTypesActiveState(type) {
-            return this.details.user_domain.domain_use_for.domain_uptime_check_service.check_types.includes(
-                type
-            );
-        },
-        getCheckTypesHasLastDate(type) {
-            if (this.details.hasOwnProperty("uptime_checker")) {
-                if (this.details.uptime_checker.hasOwnProperty(type)) {
-                    return (
-                        this.details.uptime_checker[type].hasOwnProperty(
-                            "last_checked_at"
-                        ) && this.details.uptime_checker[type].last_checked_at
-                    );
-                }
+        isDomainUp() {
+            if (this.uptimePingTimeline.length) {
+                return this.uptimePingTimeline[0].status === "ok";
             }
 
             return false;
@@ -207,14 +276,97 @@ export default {
                     interval: "min"
                 })
                 .then(res => {
-                    this.uptimePingTimeline = res.data.domainUptimePingTimeline;
+                    this.uptimePingTimeline =
+                        res.data.domainUptimePingTimeline.data;
+
+                    this.generatePingDataFromTimeline(this.uptimePingTimeline);
                 })
                 .catch(err => {
                     //handle error
                 });
         },
 
+        generatePingDataFromTimeline(timelineData, checkType = "ping") {
+            let day1InMinutes = 60 * 24;
+            let day7InMinutes = day1InMinutes * 7;
+            let day30InMinutes = day1InMinutes * 30;
+
+            let day1InMilliseconds = day1InMinutes * 60 * 1000;
+
+            let validCount = 0;
+            let totalMin = 0;
+            let totalMax = 0;
+            let totalAvg = 0;
+
+            let day1DownFor = 0;
+            let day7DownFor = 0;
+            let day30DownFor = 0;
+
+            let totalTimelineDayCalculated = 0;
+            let lastTimelineDayCalculated = 0;
+
+            let nowTime = new Date().getTime();
+            let chartLabels = [];
+            let chartData = [];
+
+            this.uptimePingTimeline.forEach((timeline, index) => {
+                // if (timeline.logged_at < nowTime - day1InMilliseconds) {
+                //     let hr = this.$moment(timeline.logged_at).format(
+                //         "MM-DD hh a"
+                //     );
+
+                //     if (!chartLabels.includes(hr)) {
+                //         chartLabels.push(hr);
+                //     }
+                // }
+
+                let currentTimelineDay = parseInt(
+                    this.$moment(timeline.logged_at).format("DD")
+                );
+
+                if (timeline.status === "ok" && checkType === "ping") {
+                    totalMin += parseFloat(timeline.info.min);
+                    totalMax += parseFloat(timeline.info.max);
+                    totalAvg += parseFloat(timeline.info.avg);
+
+                    validCount++;
+                }
+
+                if (totalTimelineDayCalculated <= 30) {
+                    if (timeline.status !== "ok") {
+                        if (totalTimelineDayCalculated <= 1) {
+                            day1DownFor++;
+                        }
+                        if (totalTimelineDayCalculated <= 7) {
+                            day7DownFor++;
+                        }
+                        if (totalTimelineDayCalculated <= 30) {
+                            day30DownFor++;
+                        }
+                    }
+
+                    if (currentTimelineDay !== lastTimelineDayCalculated) {
+                        lastTimelineDayCalculated = currentTimelineDay;
+                        totalTimelineDayCalculated++;
+                    }
+                }
+            });
+
+            this.pingResponseTimeAvg.avg = totalAvg / validCount;
+
+            this.uptimePercent.day1 =
+                ((day1InMinutes - day1DownFor) / day1InMinutes) * 100;
+            this.uptimePercent.day7 =
+                ((day7InMinutes - day7DownFor) / day7InMinutes) * 100;
+            this.uptimePercent.day30 =
+                ((day30InMinutes - day30DownFor) / day30InMinutes) * 100;
+
+            // this.pingChartData.labels = chartLabels;
+        },
+
         getDomainUptimeLatestDowntime() {
+            this.$singleLoaderTrue("domainUptimeTimelineLoader");
+
             this.$store
                 .dispatch("domain_uptime/getDomainUptimeLatestDowntime", {
                     vm: this,
@@ -224,13 +376,17 @@ export default {
                 .then(res => {
                     this.uptimeLatestDowntime =
                         res.data.domainUptimeLatestDowntime;
+                    this.$singleLoaderFalse("domainUptimeTimelineLoader");
                 })
                 .catch(err => {
                     //handle error
+                    this.$singleLoaderFalse("domainUptimeTimelineLoader");
                 });
         },
 
         getDomainUptimeLogs() {
+            this.$singleLoaderTrue("domainUptimeLogsLoader");
+
             this.$store
                 .dispatch("domain_uptime/getDomainUptimeLogs", {
                     vm: this,
@@ -238,10 +394,20 @@ export default {
                     log_type: "ping"
                 })
                 .then(res => {
-                    this.uptimePingTimeline = res.data.domainUptimeLogs;
+                    this.uptimeLogs = res.data.domainUptimeLogs.data;
+                    this.$singleLoaderFalse("domainUptimeLogsLoader");
                 })
                 .catch(err => {
                     //handle error
+                    this.$singleLoaderFalse("domainUptimeLogsLoader");
+                });
+        },
+
+        uptimeLogsPaginationHandle(page) {
+            this.$store
+                .dispatch("domain_uptime/updateUptimeLogsCurrentPage", page)
+                .then(() => {
+                    this.getDomainUptimeLogs();
                 });
         }
     }

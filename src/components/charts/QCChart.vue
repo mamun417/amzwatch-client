@@ -1,46 +1,48 @@
 <template>
-    <canvas id="q-c-chart" height="100px"/>
+    <canvas id="q-c-chart" height="100px" />
 </template>
 
 <script>
-import Chart from 'chart.js';
+import Chart from "chart.js";
 
 export default {
+    props: {
+        type: {
+            type: String,
+            default: "line"
+        },
+        data: {
+            type: Object,
+            default: () => ({})
+        }
+    },
     mounted() {
         this.createChart();
     },
     methods: {
         createChart() {
-            let ctx = document.getElementById('q-c-chart');
+            let ctx = document.getElementById("q-c-chart");
 
             let chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['jan', 'feb', 'march', 'april', 'may'],
-                    datasets: [{
-                        label: '# of broken links',
-                        data: [12, 19, 3, 5, 2, 30],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
+                type: this.type,
+                data: this.data,
                 options: {
                     scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                stepSize: 10
+                        xAxes: [
+                            {
+                                type: "time",
+                                time: {
+                                    displayFormats: {
+                                        quarter: "MMM YYYY"
+                                    }
+                                },
+                                distribution: "series"
                             }
-                        }]
+                        ]
                     }
                 }
-            })
+            });
         }
     }
-}
+};
 </script>
