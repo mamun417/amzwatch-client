@@ -1,10 +1,13 @@
 export function getNotifications(context, payload) {
     return new Promise((resolve, reject) => {
-        let urlPath = '/broken-links/'+payload.project_id+'?page=' + context.state.paginationMeta.current_page;
+        let urlPath = '/notifications';
 
-        payload.vm.$post(urlPath)
+        payload.vm.$get(urlPath, {
+            page: context.state.paginationMeta.current_page,
+            limit: 50
+        })
             .then(res => {
-                context.commit('updatePaginationMeta', res.data.brokenLinks.pagination_meta);
+                context.commit('updatePaginationMeta', res.data.notifications.pagination_meta);
                 resolve(res)
             })
             .catch(err => {

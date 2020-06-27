@@ -4,7 +4,7 @@
             <q-card class="my-card" v-for="item in 8" :key="item">
                 <q-item clickable>
                     <q-item-section avatar>
-                        <q-icon size="80px" color="primary" name="message"/>
+                        <q-icon size="80px" color="primary" name="message" />
                     </q-item-section>
 
                     <q-item-section>
@@ -17,7 +17,6 @@
                     <q-btn dense flat round color="red">12</q-btn>
                     <q-btn dense flat round color="teal">20</q-btn>
                 </q-card-actions>
-
             </q-card>
         </div>
     </div>
@@ -25,24 +24,22 @@
 
 <script>
 export default {
-    name: 'PageIndex',
+    name: "PageIndex",
 
     data() {
-        return {
-        }
+        return {};
     },
 
-    methods: {
-    },
+    methods: {},
 
     created() {
-        this.$get('/me')
+        this.$get("/me");
     }
-}
+};
 </script>
 <style lang="sass" scoped>
-    .my-card
-        width: 100%
-        max-width: 300px
+.my-card
+    width: 100%
+    max-width: 300px
 </style>
 
