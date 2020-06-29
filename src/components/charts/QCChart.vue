@@ -1,9 +1,10 @@
 <template>
-    <canvas id="q-c-chart" height="100px"/>
+    <div id="q-c-chart"/>
 </template>
 
 <script>
 import Chart from 'chart.js';
+import ApexCharts from 'apexcharts';
 
 export default {
     mounted() {
@@ -13,13 +14,71 @@ export default {
         createChart() {
             let ctx = document.getElementById('q-c-chart');
 
-            let chart = new Chart(ctx, {
+            let options = {
+                chart: {
+                    zoom: {
+                        enabled: false
+                    },
+                    toolbar: {
+                        show: false
+                    },
+                    height: 270,
+                    width: "100%",
+                    type: "area",
+                    animations: {
+                        initialAnimation: {
+                            enabled: false
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: "Series 1",
+                        data: [
+                            {
+                                x: "02-10-2017 GMT",
+                                y: 34
+                            },
+                            {
+                                x: "02-11-2017 GMT",
+                                y: 43
+                            },
+                            {
+                                x: "02-12-2017 GMT",
+                                y: 31
+                            },
+                            {
+                                x: "02-13-2017 GMT",
+                                y: 43
+                            },
+                            {
+                                x: "02-14-2017 GMT",
+                                y: 33
+                            },
+                            {
+                                x: "02-15-2017 GMT",
+                                y: 52
+                            }
+                        ]
+                    }
+                ],
+                xaxis: {
+                    type: "datetime"
+                }
+            };
+
+            let chart = new ApexCharts(ctx, options);
+
+            chart.render();
+
+
+            /*let chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['jan', 'feb', 'march', 'april', 'may'],
+                    labels: ['January', 'February', 'March', 'April'],
                     datasets: [{
                         label: '# of broken links',
-                        data: [12, 19, 3, 5, 2, 30],
+                        data: [0, 20, 40, 50],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)'
                         ],
@@ -33,13 +92,13 @@ export default {
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: true,
-                                stepSize: 10
+                                suggestedMin: 50,
+                                suggestedMax: 100
                             }
                         }]
                     }
                 }
-            })
+            })*/
         }
     }
 }
