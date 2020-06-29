@@ -27,19 +27,19 @@ export default {
                 type: this.type,
                 data: this.data,
                 options: {
-                    scales: {
-                        xAxes: [
-                            {
-                                type: "time",
-                                time: {
-                                    displayFormats: {
-                                        quarter: "MMM YYYY"
-                                    }
-                                },
-                                distribution: "series"
-                            }
-                        ]
-                    }
+                    // scales: {
+                    //     xAxes: [
+                    //         {
+                    //             type: "time",
+                    //             time: {
+                    //                 displayFormats: {
+                    //                     quarter: "MMM YYYY"
+                    //                 }
+                    //             },
+                    //             distribution: "series"
+                    //         }
+                    //     ]
+                    // }
                 }
             });
         }

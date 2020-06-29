@@ -10,6 +10,7 @@ import projects from './project'
 import pages_speed from './pages-speed'
 import domain_uptime from './domain-uptime'
 import notifications from './notifications'
+import counts from './counts'
 
 import ui from './ui'
 
@@ -36,6 +37,7 @@ export default function (/* { ssrContext } */) {
             pages_speed,
             domain_uptime,
             notifications,
+            counts,
 
             ui
         },
