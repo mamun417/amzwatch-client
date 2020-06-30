@@ -19,7 +19,7 @@
                     <span class="text-h6 q-mr-sm">Response Times(avg.)</span>
                     <span
                         class="text-green text-subtitle1 q-mt-xs"
-                    >Last 24 hours ( {{pingResponseTimeAvg.avg}}ms )</span>
+                    >Last 24 hours ( {{pingResponseTimeAvg.avg.toFixed(2)}}ms )</span>
                 </q-card-section>
 
                 <!-- <span>
@@ -29,7 +29,16 @@
 
                 <!-- <q-separator class="q-mt-sm" /> -->
 
-                <q-c-chart v-if="uptimePingTimeline.length" :data="pingChartData" />
+                <!--<q-c-chart v-if="uptimePingTimeline.length" :data="pingChartData" />-->
+                <div>
+                    <apex-chart v-if="chartDataReady"
+                        width="100%"
+                        height="380px"
+                        type="area"
+                        :options="options"
+                        :series="series"
+                    />
+                </div>
             </div>
 
             <div class="col-md-4 q-pl-md">
@@ -71,21 +80,21 @@
                     <q-card-actions class="q-pa-none">
                         <q-btn flat round icon="stars" color="green" />
                         <div>
-                            <span class="text-bold text-green">{{uptimePercent.day1}}%</span> (last 24 hours)
+                            <span class="text-bold text-green">{{uptimePercent.day1.toFixed(2)}}%</span> (last 24 hours)
                         </div>
                         <q-separator />
                     </q-card-actions>
                     <q-card-actions class="q-pa-none">
                         <q-btn flat round icon="stars" color="green" />
                         <div>
-                            <span class="text-bold text-green">{{uptimePercent.day7}}%</span> (last 7 days)
+                            <span class="text-bold text-green">{{uptimePercent.day7.toFixed(2)}}%</span> (last 7 days)
                         </div>
                         <q-separator />
                     </q-card-actions>
                     <q-card-actions class="q-pa-none">
                         <q-btn flat round icon="stars" color="green" />
                         <div>
-                            <span class="text-bold text-green">{{uptimePercent.day30}}%</span> (last 30 days)
+                            <span class="text-bold text-green">{{uptimePercent.day30.toFixed(2)}}%</span> (last 30 days)
                         </div>
                         <q-separator />
                     </q-card-actions>
@@ -172,14 +181,38 @@ import QCChart from "components/charts/QCChart";
 import { mapGetters } from "vuex";
 import Pagination from "components/pagination/Pagination";
 import { now } from "moment";
+import ApexChart from 'vue-apexcharts'
 
 export default {
     components: {
         QCChart,
-        Pagination
+        Pagination,
+        ApexChart
     },
     data() {
         return {
+            chartDataReady: false,
+            options: {
+                chart: {
+                    toolbar: {
+                        show: false
+                    },
+                    zoom: {
+                        enabled: false
+                    },
+                    id: 'vuechart-example',
+                },
+                xaxis: {
+                    type: "datetime"
+                }
+            },
+            series: [
+                {
+                    name: "Series 1",
+                    data: [],
+                }
+            ],
+
             uptimePingTimeline: [],
             uptimeLatestDowntime: {},
             uptimeLogs: [],
@@ -280,6 +313,20 @@ export default {
                         res.data.domainUptimePingTimeline.data;
 
                     this.generatePingDataFromTimeline(this.uptimePingTimeline);
+
+                    // push chart data
+                    this.uptimePingTimeline.forEach((timeline, index) => {
+                        let currentTimelineDay = this.$moment(timeline.logged_at).format("DD hh:mm")
+
+                        this.series[0].data.push(
+                            {
+                                x: currentTimelineDay,
+                                y: timeline.info.avg
+                            }
+                        );
+                    });
+
+                    this.chartDataReady = true;
                 })
                 .catch(err => {
                     //handle error
