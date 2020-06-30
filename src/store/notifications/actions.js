@@ -22,3 +22,69 @@ export function updateNotificationsCurrentPage(context, payload) {
         resolve(true)
     })
 }
+
+export function getLatestIssues(context, payload) {
+    return new Promise((resolve, reject) => {
+        let urlPath = '/latest-issues';
+
+        payload.vm.$get(urlPath)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+export function getLatestScrappedPages(context, payload) {
+    return new Promise((resolve, reject) => {
+        let urlPath = '/latest-scrapped-pages';
+
+        payload.vm.$get(urlPath)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+export function getLatestParsedPages(context, payload) {
+    return new Promise((resolve, reject) => {
+        let urlPath = '/latest-parsed-pages';
+
+        payload.vm.$get(urlPath)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+export function getLatestScrappedProducts(context, payload) {
+    return new Promise((resolve, reject) => {
+        let urlPath = '/latest-scrapped-products';
+
+        payload.vm.$get(urlPath)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+export function getLatestParsedProducts(context, payload) {
+    return new Promise((resolve, reject) => {
+        let urlPath = '/latest-parsed-products';
+
+        payload.vm.$get(urlPath)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}

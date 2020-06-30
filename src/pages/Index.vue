@@ -55,7 +55,7 @@
 
         <div class="row q-gutter-xl q-mt-lg">
             <q-card class="col">
-                <q-card-section class="q-py-sm">Latest Issues</q-card-section>
+                <q-card-section class="q-py-sm text-subtitle2 text-weight-bold">Latest Issues</q-card-section>
                 <q-separator />
                 <q-card-section>aaa</q-card-section>
             </q-card>
@@ -69,26 +69,32 @@
 
         <div class="row q-gutter-xl q-mt-md">
             <q-card class="col">
-                <q-card-section class="q-py-sm">Latest Scrapped Pages</q-card-section>
+                <q-card-section
+                    class="q-py-sm text-subtitle2 text-weight-bold"
+                >Latest Scrapped Pages</q-card-section>
                 <q-separator />
                 <q-card-section>aaa</q-card-section>
             </q-card>
 
             <q-card class="col">
-                <q-card-section class="q-py-sm">Latest Parsed Pages</q-card-section>
+                <q-card-section class="q-py-sm text-subtitle2 text-weight-bold">Latest Parsed Pages</q-card-section>
                 <q-separator />
                 <q-card-section>aaa</q-card-section>
             </q-card>
         </div>
         <div class="row q-gutter-xl q-mt-md">
             <q-card class="col">
-                <q-card-section class="q-py-sm">Latest Scrapped Products</q-card-section>
+                <q-card-section
+                    class="q-py-sm text-subtitle2 text-weight-bold"
+                >Latest Scrapped Products</q-card-section>
                 <q-separator />
                 <q-card-section>aaa</q-card-section>
             </q-card>
 
             <q-card class="col">
-                <q-card-section class="q-py-sm">Latest Parsed Products</q-card-section>
+                <q-card-section
+                    class="q-py-sm text-subtitle2 text-weight-bold"
+                >Latest Parsed Products</q-card-section>
                 <q-separator />
                 <q-card-section>aaa</q-card-section>
             </q-card>
@@ -104,7 +110,12 @@ export default {
         return {
             projectsCount: {},
             pagesCount: {},
-            productsCount: {}
+            productsCount: {},
+            latestIssues: [],
+            latestScrappedPages: [],
+            latestParsedPages: [],
+            latestScrappedProducts: [],
+            latestParsedProducts: []
         };
     },
 
@@ -112,6 +123,12 @@ export default {
         this.getProjectsCount();
         this.getPagesCount();
         this.getProductsCount();
+
+        this.getLatestIssues();
+        this.getLatestScrappedPages();
+        this.getLatestParsedPages();
+        this.getLatestScrappedProducts();
+        this.getLatestParsedProducts();
     },
 
     methods: {
@@ -158,6 +175,88 @@ export default {
                     this.productsCount = res.data.productsCount;
 
                     this.$singleLoaderFalse("productsCountLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
+
+        getLatestIssues() {
+            this.$singleLoaderTrue("latestIssuesLoader");
+
+            this.$store
+                .dispatch("notifications/getLatestIssues", {
+                    vm: this
+                })
+                .then(res => {
+                    this.latestIssues = res.data.latestIssues;
+
+                    this.$singleLoaderFalse("latestIssuesLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
+        getLatestScrappedPages() {
+            this.$singleLoaderTrue("latestScrappedPagesLoader");
+
+            this.$store
+                .dispatch("notifications/getLatestScrappedPages", {
+                    vm: this
+                })
+                .then(res => {
+                    this.latestScrappedPages = res.data.latestScrappedPages;
+
+                    this.$singleLoaderFalse("latestScrappedPagesLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
+        getLatestParsedPages() {
+            this.$singleLoaderTrue("latestParsedPagesLoader");
+
+            this.$store
+                .dispatch("notifications/getLatestParsedPages", {
+                    vm: this
+                })
+                .then(res => {
+                    this.latestParsedPages = res.data.latestParsedPages;
+
+                    this.$singleLoaderFalse("latestParsedPagesLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
+        getLatestScrappedProducts() {
+            this.$singleLoaderTrue("latestScrappedProductsLoader");
+
+            this.$store
+                .dispatch("notifications/getLatestScrappedProducts", {
+                    vm: this
+                })
+                .then(res => {
+                    this.latestScrappedProducts =
+                        res.data.latestScrappedProducts;
+
+                    this.$singleLoaderFalse("latestScrappedProductsLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
+        getLatestParsedProducts() {
+            this.$singleLoaderTrue("latestParsedProductsLoader");
+
+            this.$store
+                .dispatch("notifications/getLatestParsedProducts", {
+                    vm: this
+                })
+                .then(res => {
+                    this.latestParsedProducts = res.data.latestParsedProducts;
+
+                    this.$singleLoaderFalse("latestParsedProductsLoader");
                 })
                 .catch(err => {
                     //handle error
