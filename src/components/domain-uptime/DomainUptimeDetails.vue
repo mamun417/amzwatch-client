@@ -31,7 +31,8 @@
 
                 <!--<q-c-chart v-if="uptimePingTimeline.length" :data="pingChartData" />-->
                 <div>
-                    <apex-chart v-if="chartDataReady"
+                    <apex-chart
+                        v-if="chartDataReady"
                         width="100%"
                         height="380px"
                         type="area"
@@ -52,11 +53,16 @@
 
                     <q-card-section class="q-py-sm q-px-sm flex items-center">
                         <template v-if="uptimePingTimeline.length">
-                            <q-btn flat round icon="radio_button_checked" color="green" />
+                            <q-btn
+                                flat
+                                round
+                                icon="radio_button_checked"
+                                :color="isDomainUp() ? 'green' : 'red'"
+                            />
                             <div
                                 class="text-h6"
-                                :class="[isDomainUp ? 'text-green' : 'text-red']"
-                            >{{isDomainUp ? 'Up' : 'Down'}}</div>
+                                :class="[isDomainUp() ? 'text-green' : 'text-red']"
+                            >{{isDomainUp() ? 'Up' : 'Down'}}</div>
                         </template>
                         <div
                             v-else
@@ -181,7 +187,7 @@ import QCChart from "components/charts/QCChart";
 import { mapGetters } from "vuex";
 import Pagination from "components/pagination/Pagination";
 import { now } from "moment";
-import ApexChart from 'vue-apexcharts'
+import ApexChart from "vue-apexcharts";
 
 export default {
     components: {
@@ -190,26 +196,91 @@ export default {
         ApexChart
     },
     data() {
+        let tempThis = this;
+
         return {
             chartDataReady: false,
             options: {
                 chart: {
+                    type: "area",
                     toolbar: {
                         show: false
                     },
                     zoom: {
                         enabled: false
                     },
-                    id: 'vuechart-example',
+                    id: "vuechart-example"
+                },
+                annotations: {
+                    yaxis: [
+                        {
+                            y: 30,
+                            borderColor: "#999",
+                            label: {
+                                show: true,
+                                style: {
+                                    color: "#fff",
+                                    background: "#00E396"
+                                }
+                            }
+                        }
+                    ],
+                    xaxis: [
+                        {
+                            borderColor: "#999",
+                            yAxisIndex: 0,
+                            label: {
+                                show: true,
+                                style: {
+                                    color: "#fff",
+                                    background: "#775DD0"
+                                }
+                            }
+                        }
+                    ]
+                },
+                dataLabels: {
+                    enabled: true
                 },
                 xaxis: {
-                    type: "datetime"
+                    type: "datetime",
+                    // tickAmount: 6,
+                    labels: {
+                        // format: "DD MMM hh:mm"
+                        formatter: function(value) {
+                            return tempThis
+                                .$moment(value)
+                                .format("DD MMM hh:mm a"); // The formatter function overrides format property
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function(value) {
+                            return value + " ms";
+                        }
+                    }
+                    // tickAmount: 6
+                },
+                tooltip: {
+                    x: {
+                        format: "dd MMM yyyy hh:mm"
+                    }
+                },
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.9,
+                        stops: [0, 100]
+                    }
                 }
             },
             series: [
                 {
-                    name: "Series 1",
-                    data: [],
+                    name: "avg.(ms)",
+                    data: []
                 }
             ],
 
@@ -226,47 +297,7 @@ export default {
                 day1: 0,
                 day7: 0,
                 day30: 0
-            },
-
-            pingChartData: {
-                labels: [],
-                datasets: [
-                    {
-                        label: "Uptime chart",
-                        data: [],
-                        backgroundColor: ["rgba(255, 99, 132, 0.2)"],
-                        borderColor: ["rgba(255, 99, 132, 1)"],
-                        borderWidth: 1
-                    }
-                ]
-            },
-
-            pingResultsShow: [
-                {
-                    key: "alive",
-                    title: "Alive"
-                },
-                {
-                    key: "packetLoss",
-                    title: "Packet Loss"
-                },
-                {
-                    key: "times",
-                    title: "Times"
-                },
-                {
-                    key: "min",
-                    title: "Min time"
-                },
-                {
-                    key: "max",
-                    title: "Max time"
-                },
-                {
-                    key: "avg",
-                    title: "Avg time"
-                }
-            ]
+            }
         };
     },
 
@@ -313,20 +344,6 @@ export default {
                         res.data.domainUptimePingTimeline.data;
 
                     this.generatePingDataFromTimeline(this.uptimePingTimeline);
-
-                    // push chart data
-                    this.uptimePingTimeline.forEach((timeline, index) => {
-                        let currentTimelineDay = this.$moment(timeline.logged_at).format("DD hh:mm")
-
-                        this.series[0].data.push(
-                            {
-                                x: currentTimelineDay,
-                                y: timeline.info.avg
-                            }
-                        );
-                    });
-
-                    this.chartDataReady = true;
                 })
                 .catch(err => {
                     //handle error
@@ -334,6 +351,8 @@ export default {
         },
 
         generatePingDataFromTimeline(timelineData, checkType = "ping") {
+            this.chartDataReady = false;
+
             let day1InMinutes = 60 * 24;
             let day7InMinutes = day1InMinutes * 7;
             let day30InMinutes = day1InMinutes * 30;
@@ -353,19 +372,23 @@ export default {
             let lastTimelineDayCalculated = 0;
 
             let nowTime = new Date().getTime();
-            let chartLabels = [];
+
             let chartData = [];
 
             this.uptimePingTimeline.forEach((timeline, index) => {
-                // if (timeline.logged_at < nowTime - day1InMilliseconds) {
-                //     let hr = this.$moment(timeline.logged_at).format(
-                //         "MM-DD hh a"
-                //     );
-
-                //     if (!chartLabels.includes(hr)) {
-                //         chartLabels.push(hr);
-                //     }
-                // }
+                if (timeline.logged_at > nowTime - day1InMilliseconds) {
+                    if (timeline.status === "ok") {
+                        chartData.push({
+                            x: timeline.logged_at,
+                            y: timeline.info.avg
+                        });
+                    } else {
+                        chartData.push({
+                            x: timeline.logged_at,
+                            y: 0
+                        });
+                    }
+                }
 
                 let currentTimelineDay = parseInt(
                     this.$moment(timeline.logged_at).format("DD")
@@ -408,7 +431,8 @@ export default {
             this.uptimePercent.day30 =
                 ((day30InMinutes - day30DownFor) / day30InMinutes) * 100;
 
-            // this.pingChartData.labels = chartLabels;
+            this.series[0].data = this.$_.reverse(chartData);
+            this.chartDataReady = true;
         },
 
         getDomainUptimeLatestDowntime() {
