@@ -16,7 +16,7 @@
                         <div>{{ issue.service_type }}</div>
                     </q-item-section>
 
-                    <q-item-section class="text-center">
+                    <q-item-section class="text-right">
                         <div>{{ $moment(issue.logged_at).fromNow() }}</div>
                     </q-item-section>
                 </q-item>
@@ -62,7 +62,7 @@ export default {
                 })
                 .then(res => {
                     this.latestIssues = res.data.latestIssues.data;
-                    console.log(this.latestIssues)
+
                     this.$singleLoaderFalse("latestIssuesLoader");
                 })
                 .catch(err => {
