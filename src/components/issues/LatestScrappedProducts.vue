@@ -1,5 +1,5 @@
 <template>
-    <q-card class="col">
+    <q-card class="col" style="min-width: 250px" >
         <q-card-section class="q-py-sm">Latest Scrapped Products</q-card-section>
         <q-separator />
 
@@ -10,10 +10,14 @@
                 :key="index"
                 clickable
             >
-                <q-item-section class="col">{{ scrappedProduct.product.url }}</q-item-section>
-                <q-item-section class="text-center col">
-                    <div>{{ $moment(parseInt(scrappedProduct.product.updated_at.last_scraped_at)).fromNow() }}</div>
-                </q-item-section>
+                <div class="row full-width">
+                    <div class="col-sm-10" style="word-break: break-all">
+                        {{ scrappedProduct.product.url }}
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        {{ $moment(parseInt(scrappedProduct.product.updated_at.last_scraped_at)).fromNow() }}
+                    </div>
+                </div>
             </q-item>
         </q-list>
 
