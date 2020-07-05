@@ -16,19 +16,16 @@
                 clickable
             >
                 <q-item-section>
-                    <q-badge
-                        :color="log.status !== 'ok' ? 'red' : 'green'"
-                        style="max-width: 70px"
-                    >
+                    <q-badge :color="log.status !== 'ok' ? 'red' : 'green'" style="max-width: 70px">
                         <q-icon name="arrow_downward" color="white" class="q-mr-xs text-bold" />
                         <span class="text-bold">{{log.status !== 'ok' ? 'Down': 'Up'}}</span>
                     </q-badge>
                 </q-item-section>
 
                 <q-item-section class="text-center">
-                        <span
-                            :class="[log.status !== 'ok' ? 'text-red' : 'text-green']"
-                        >{{log.status !== 'ok' ? 'Connection Timeout' : 'OK (200)'}}</span>
+                    <span
+                        :class="[log.status !== 'ok' ? 'text-red' : 'text-green']"
+                    >{{log.status !== 'ok' ? 'Connection Timeout' : 'OK (200)'}}</span>
                 </q-item-section>
 
                 <q-item-section class="text-right">{{$timestampToDate(log.logged_at)}}</q-item-section>
@@ -50,17 +47,22 @@
 </template>
 
 <script>
-
 import { mapGetters } from "vuex";
 import Pagination from "components/pagination/Pagination";
 
 export default {
     components: {
-        Pagination,
+        Pagination
+    },
+    props: {
+        serviceTypes: {
+            type: Array,
+            default: () => []
+        }
     },
     data() {
         return {
-            uptimeLogs: [],
+            uptimeLogs: []
         };
     },
 
@@ -87,7 +89,7 @@ export default {
                 .dispatch("domain_uptime/getDomainUptimeLogs", {
                     vm: this,
                     project_id: this.$route.params.project_id,
-                    log_type: "ping"
+                    log_type: this.serviceTypes[0]
                 })
                 .then(res => {
                     this.uptimeLogs = res.data.domainUptimeLogs.data;

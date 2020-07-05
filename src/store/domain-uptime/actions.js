@@ -1,8 +1,8 @@
-export function getDomainUptimePingTimeline(context, payload) {
+export function getDomainUptimeTimeline(context, payload) {
     return new Promise((resolve, reject) => {
-        let urlPath = '/projects/' + payload.project_id + '/domain-uptime-ping-timeline';
+        let urlPath = '/projects/' + payload.project_id + '/domain-uptime-timeline';
 
-        payload.vm.$get(urlPath, { time_upto: payload.time_upto, interval: payload.interval })
+        payload.vm.$get(urlPath, { log_type: payload.log_type })
             .then(res => {
                 resolve(res)
             })

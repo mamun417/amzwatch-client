@@ -1,7 +1,10 @@
 <template>
     <div class="q-pa-sm">
-        <div class="row">
-            <div class="col-md-8 q-pr-md">
+        <div class="row q-col-gutter-x-md">
+            <div
+                v-if="serviceTypes.length && 'ping'.includes(serviceTypes)"
+                class="col-12 col-md-8"
+            >
                 <!-- <q-card-section class="q-pt-none flex items-center">
                     <q-icon size="sm" name="bar_chart" />
                     <span class="text-h6 q-mr-sm">Uptime</span>
@@ -29,7 +32,7 @@
 
                 <!-- <q-separator class="q-mt-sm" /> -->
 
-                <!--<q-c-chart v-if="uptimePingTimeline.length" :data="pingChartData" />-->
+                <!--<q-c-chart v-if="uptimeTimeline.length" :data="pingChartData" />-->
                 <div>
                     <apex-chart
                         v-if="chartDataReady"
@@ -42,7 +45,10 @@
                 </div>
             </div>
 
-            <div class="col-md-4 q-pl-md">
+            <div
+                class="col-12"
+                :class="[serviceTypes.length && 'ping'.includes(serviceTypes) ? 'col-md-4' : '']"
+            >
                 <q-card class="q-mb-md">
                     <q-card-section class="flex items-center q-px-sm q-py-sm">
                         <q-btn flat round icon="radio_button_checked" size="10px" />
@@ -52,7 +58,7 @@
                     <q-separator />
 
                     <q-card-section class="q-py-sm q-px-sm flex items-center">
-                        <template v-if="uptimePingTimeline.length">
+                        <template v-if="uptimeTimeline.length">
                             <q-btn
                                 flat
                                 round
@@ -128,8 +134,7 @@
         </div>
 
         <q-separator class="q-mt-lg" />
-
-        <latest-logs />
+        <latest-logs v-if="serviceTypes.length" :serviceTypes="serviceTypes" />
     </div>
 
     <!-- <div v-else class="text-subtitle2 text-center q-pa-lg">No Data found</div> -->
@@ -149,6 +154,12 @@ export default {
         QCChart,
         Pagination,
         ApexChart
+    },
+    props: {
+        serviceTypes: {
+            type: Array,
+            default: () => []
+        }
     },
     data() {
         let tempThis = this;
@@ -239,7 +250,7 @@ export default {
                 }
             ],
 
-            uptimePingTimeline: [],
+            uptimeTimeline: [],
             uptimeLatestDowntime: {},
             uptimeLogs: [],
 
@@ -257,7 +268,7 @@ export default {
     },
 
     mounted() {
-        this.getDomainUptimePingTimeline();
+        this.getDomainUptimeTimeline();
         this.getDomainUptimeLatestDowntime();
 
         // this.interval = setInterval(() => {
@@ -277,33 +288,31 @@ export default {
 
     methods: {
         isDomainUp() {
-            if (this.uptimePingTimeline.length) {
-                return this.uptimePingTimeline[0].status === "ok";
+            if (this.uptimeTimeline.length) {
+                return this.uptimeTimeline[0].status === "ok";
             }
 
             return false;
         },
 
-        getDomainUptimePingTimeline() {
+        getDomainUptimeTimeline() {
             this.$store
-                .dispatch("domain_uptime/getDomainUptimePingTimeline", {
+                .dispatch("domain_uptime/getDomainUptimeTimeline", {
                     vm: this,
                     project_id: this.$route.params.project_id,
-                    time_upto: 1,
-                    interval: "min"
+                    log_type: this.serviceTypes[0]
                 })
                 .then(res => {
-                    this.uptimePingTimeline =
-                        res.data.domainUptimePingTimeline.data;
+                    this.uptimeTimeline = res.data.domainUptimeTimeline.data;
 
-                    this.generatePingDataFromTimeline(this.uptimePingTimeline);
+                    this.generateDataFromTimeline(this.uptimeTimeline);
                 })
                 .catch(err => {
                     //handle error
                 });
         },
 
-        generatePingDataFromTimeline(timelineData, checkType = "ping") {
+        generateDataFromTimeline(timelineData, checkType = "ping") {
             this.chartDataReady = false;
 
             let day1InMinutes = 60 * 24;
@@ -328,7 +337,7 @@ export default {
 
             let chartData = [];
 
-            this.uptimePingTimeline.forEach((timeline, index) => {
+            this.uptimeTimeline.forEach((timeline, index) => {
                 if (timeline.logged_at > nowTime - day1InMilliseconds) {
                     if (timeline.status === "ok") {
                         chartData.push({
@@ -395,7 +404,7 @@ export default {
                 .dispatch("domain_uptime/getDomainUptimeLatestDowntime", {
                     vm: this,
                     project_id: this.$route.params.project_id,
-                    log_type: "ping"
+                    log_type: this.serviceTypes[0]
                 })
                 .then(res => {
                     this.uptimeLatestDowntime =
@@ -406,21 +415,6 @@ export default {
                     //handle error
                     this.$singleLoaderFalse("domainUptimeTimelineLoader");
                 });
-        },
-
-        pushChartDate() {
-            this.uptimePingTimeline.forEach((timeline, index) => {
-                let currentTimelineDay = this.$moment(
-                    timeline.logged_at
-                ).format("DD hh:mm");
-
-                this.series[0].data.push({
-                    x: currentTimelineDay,
-                    y: timeline.info.avg
-                });
-            });
-
-            this.chartDataReady = true;
         }
     }
 };

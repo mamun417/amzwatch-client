@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="relative-position">
         <q-card class="q-mb-lg">
             <q-card-section class="bg-primary text-white row justify-between items-center">
                 <div class="col">
@@ -50,7 +50,14 @@
             </q-card-section>
 
             <q-card-section>
-                <domain-uptime-details />
+                <domain-uptime-details
+                    v-if="!(!!singleLoader.projectCheckLoader) && serviceIsActive"
+                    :serviceTypes="projectInfo.domain_use_for.domain_uptime_check_service.check_types"
+                />
+                <div
+                    v-else
+                    class="text-center q-py-md text-subtitle1 text-weight-bold"
+                >Service is not active</div>
             </q-card-section>
         </q-card>
 
@@ -59,19 +66,21 @@
             :project-info="projectInfo"
             @serviceUpdated="handleServiceUpdate"
         />
+
+        <q-inner-loading color="primary" :showing="!!singleLoader.projectCheckLoader" />
     </section>
 </template>
 
 <script>
-import QCChart from "components/charts/QCChart";
+import { mapGetters } from "vuex";
+
 import DomainUptimeDetails from "components/domain-uptime/DomainUptimeDetails";
 import DomainUptimeCheckActivateDeactivateModal from "components/modals/DomainUptimeCheckActivateDeactivateModal";
 
 export default {
     components: {
         DomainUptimeDetails,
-        DomainUptimeCheckActivateDeactivateModal,
-        QCChart
+        DomainUptimeCheckActivateDeactivateModal
     },
     data() {
         return {
@@ -91,6 +100,10 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+            singleLoader: "ui/singleLoaderStatus"
+        }),
+
         serviceIsActive() {
             if (
                 !this.projectInfo.domain_use_for.hasOwnProperty(
@@ -108,6 +121,7 @@ export default {
 
     methods: {
         checkProject() {
+            this.$singleLoaderTrue("projectCheckLoader");
             // later get it from store n check first for id check then do these cz we need projectInfo
             // for now keep api call
             this.$store
@@ -117,10 +131,12 @@ export default {
                 })
                 .then(res => {
                     this.projectInfo = res.data.project;
+                    this.$singleLoaderFalse("projectCheckLoader");
                 })
                 .catch(err => {
                     if (err.response.status === 404) {
                         this.$router.push("/projects");
+                        this.$singleLoaderFalse("projectCheckLoader");
                     }
                 });
         },
