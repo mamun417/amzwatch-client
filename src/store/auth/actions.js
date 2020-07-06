@@ -71,6 +71,30 @@ export function updatePassword(context, payload) {
     })
 }
 
+export function forgotPassword(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/forgot-password', payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
+export function resetPassword(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$patch('/reset-password/'+payload.inputs.token, payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
 export function logout(context) {
     return new Promise((resolve, reject) => {
         context.commit('authOut');
