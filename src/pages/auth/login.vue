@@ -27,6 +27,10 @@
             <q-card-actions align="around">
                 <q-btn @click="loginButtonClicked" color="primary" flat>Lets Go</q-btn>
             </q-card-actions>
+
+            <q-card-actions align="around">
+                <router-link :to="{name: 'password.email'}" class="text-primary" style="text-decoration: none">Forgot password?</router-link>
+            </q-card-actions>
         </q-card>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.loginLoader"/>

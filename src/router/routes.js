@@ -36,7 +36,7 @@ const routes = [
                 path     : '/projects/:project_id/domain-uptime-check',
                 component: () => import('pages/domain-uptime/DomainUptime')
             },
-            
+
             {
                 path     : '/profile',
                 component: () => import('layouts/ProfileLayout.vue'),
@@ -62,12 +62,14 @@ const routes = [
             }
         ]
     },
-    
+
     {
         path     : '/auth',
         component: () => import('layouts/AuthLayout'),
         children : [
-            {path        : 'login',
+            {
+                path  : 'login',
+                name: 'login',
                 component: () => import('pages/auth/login')
             },
             {path        : 'register',
@@ -75,6 +77,16 @@ const routes = [
             },
             {path        : 'logout',
                 component: () => import('pages/auth/Logout')
+            },
+            {
+                path : 'password/forgot',
+                name: 'password.email',
+                component: () => import('pages/auth/email')
+            },
+            {
+                path : 'password/reset/:token',
+                name: 'password.reset',
+                component: () => import('pages/auth/reset')
             }
         ]
     }

@@ -69,7 +69,8 @@ module.exports = function (ctx) {
             // extractCSS: false,
 
             env: { // so on dev we'll have
-                API_ENDPOINT: JSON.stringify('http://localhost:1337')
+                API_ENDPOINT: JSON.stringify('http://localhost:1337'),
+                APP_URL: JSON.stringify('http://localhost:8080')
             },
 
             // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
