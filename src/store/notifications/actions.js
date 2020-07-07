@@ -36,9 +36,9 @@ export function getLatestIssues(context, payload) {
             })
     })
 }
-export function getLatestScrappedPages(context, payload) {
+export function getLatestScrapedPages(context, payload) {
     return new Promise((resolve, reject) => {
-        let urlPath = '/latest-scrapped-pages';
+        let urlPath = '/latest-scraped-pages';
 
         payload.vm.$get(urlPath)
             .then(res => {
@@ -62,9 +62,9 @@ export function getLatestParsedPages(context, payload) {
             })
     })
 }
-export function getLatestScrappedProducts(context, payload) {
+export function getLatestScrapedProducts(context, payload) {
     return new Promise((resolve, reject) => {
-        let urlPath = '/latest-scrapped-products';
+        let urlPath = '/latest-scraped-products';
 
         payload.vm.$get(urlPath)
             .then(res => {

@@ -4,7 +4,7 @@ import lodash from 'lodash'
 export default function ({ store, app, Vue }) {
     Vue.prototype.$moment = moment;
     Vue.prototype.$_ = lodash;
-    Vue.prototype.$interValTime = 60000; // 8 sec
+    Vue.prototype.$intervalTime = 180000; // 3 min in milsec
 
     Vue.prototype.$singleLoaderTrue = function (name) {
         store.dispatch('ui/setSingleLoaderToTrue', name);

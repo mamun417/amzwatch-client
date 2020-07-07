@@ -273,7 +273,7 @@ export default {
 
         // this.interval = setInterval(() => {
         //     this.getDomainUptimeDetail();
-        // }, this.$interValTime);
+        // }, this.$intervalTime);
     },
 
     beforeDestroy() {

@@ -152,7 +152,7 @@ export default {
 
         this.interval = setInterval(() => {
             this.getAmazonProductsInfo();
-        }, this.$interValTime);
+        }, this.$intervalTime);
     },
 
     beforeDestroy() {

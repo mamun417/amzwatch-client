@@ -8,32 +8,32 @@
             </q-item>
 
             <q-expansion-item
-                v-for="(guestPostInfo, index) in guestPostsInfo" :key="index"
+                v-for="(guestPostInfo, index) in guestPostsInfo"
+                :key="index"
                 group="guestPost"
-                icon=""
-                header-class=""
+                icon
+                header-class
                 expand-icon-class="hidden"
-                class="shadow-1 q-mb-sm">
-
+                class="shadow-1 q-mb-sm"
+            >
                 <q-item
                     slot="header"
-                    class="row full-width justify-between text-subtitle2 items-center">
+                    class="row full-width justify-between text-subtitle2 items-center"
+                >
                     <q-item-section class="col">{{ guestPostInfo.guest_post_url }}</q-item-section>
                     <q-item-section class="col text-center">{{ guestPostInfo.holding_url }}</q-item-section>
                     <q-item-section class="col inline-block text-right">
                         <q-badge
                             :color="calculateLinkExist(guestPostInfo) !== 'exist' ? 'warning' : 'positive'"
-                        >
-                            {{ calculateLinkExist(guestPostInfo) }}
-                        </q-badge>
+                        >{{ calculateLinkExist(guestPostInfo) }}</q-badge>
                     </q-item-section>
                 </q-item>
 
                 <q-card v-if="calculateLinkExist(guestPostInfo) !== 'pending'">
                     <q-card-section>
-                        <div class="text-caption text-bold">
-                            Last updated at: {{ $timestampToDate(guestPostInfo.updated_at.link_last_checked_at) }}
-                        </div>
+                        <div
+                            class="text-caption text-bold"
+                        >Last updated at: {{ $timestampToDate(guestPostInfo.updated_at.link_last_checked_at) }}</div>
                     </q-card-section>
                 </q-card>
             </q-expansion-item>
@@ -47,88 +47,92 @@
             />
         </div>
 
-        <q-inner-loading color="primary" :showing="!!singleLoader.guestLinksListLoader"/>
-
+        <q-inner-loading color="primary" :showing="!!singleLoader.guestLinksListLoader" />
     </div>
-
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
-    import Pagination from "components/pagination/Pagination";
+import { mapGetters } from "vuex";
+import Pagination from "components/pagination/Pagination";
 
-    export default {
-        name      : "GuestLinksList",
-        components: {Pagination},
-        props     : {
-            getGuestPostsCount: {
-                type   : Boolean,
-                default: false
-            }
-        },
-        data() {
-            return {
-                guestPostsInfo: []
-            }
-        },
+export default {
+    name: "GuestLinksList",
+    components: { Pagination },
+    props: {
+        getGuestPostsCount: {
+            type: Boolean,
+            default: false
+        }
+    },
+    data() {
+        return {
+            guestPostsInfo: []
+        };
+    },
 
-        mounted() {
+    mounted() {
+        this.getGuestLinks();
+
+        this.interval = setInterval(() => {
             this.getGuestLinks();
+        }, this.$intervalTime);
+    },
 
-            this.interval = setInterval(() => {
-                this.getGuestLinks();
-            }, this.$interValTime)
-        },
+    beforeDestroy() {
+        this.interval && clearInterval(this.interval);
+    },
 
-        beforeDestroy() {
-            this.interval && clearInterval(this.interval);
-        },
+    computed: {
+        ...mapGetters({
+            guestLinksPaginationMeta: "guest_links/paginationMeta",
+            singleLoader: "ui/singleLoaderStatus"
+        })
+    },
 
-        computed: {
-            ...mapGetters({
-                guestLinksPaginationMeta: 'guest_links/paginationMeta',
-                singleLoader            : 'ui/singleLoaderStatus'
-            })
-        },
-
-        methods: {
-            calculateLinkExist(guestPostObj) {
-                if (guestPostObj.hasOwnProperty('link_infos')) {
-                    if (guestPostObj.link_infos.hasOwnProperty('exists')) {
-                        return guestPostObj.link_infos.exists !== '1' ? 'not exist' : 'exist'
-                    }
+    methods: {
+        calculateLinkExist(guestPostObj) {
+            if (guestPostObj.hasOwnProperty("link_infos")) {
+                if (guestPostObj.link_infos.hasOwnProperty("exists")) {
+                    return guestPostObj.link_infos.exists !== "1"
+                        ? "not exist"
+                        : "exist";
                 }
+            }
 
-                return 'pending'
-            },
-            getGuestLinks() {
-                this.$singleLoaderTrue('guestLinksListLoader');
-                this.$forceUpdate();
+            return "pending";
+        },
+        getGuestLinks() {
+            this.$singleLoaderTrue("guestLinksListLoader");
+            this.$forceUpdate();
 
-                this.$store.dispatch('guest_links/getGuestPosts', {
-                    vm        : this,
+            this.$store
+                .dispatch("guest_links/getGuestPosts", {
+                    vm: this,
                     project_id: this.$route.params.project_id
                 })
-                    .then(res => {
-                        this.guestPostsInfo = res.data.linksInGuestPosts.data;
+                .then(res => {
+                    this.guestPostsInfo = res.data.linksInGuestPosts.data;
 
-                        this.$emit('getGuestLinksCount', res.data.linksInGuestPosts.pagination_meta.total);
+                    this.$emit(
+                        "getGuestLinksCount",
+                        res.data.linksInGuestPosts.pagination_meta.total
+                    );
 
-                        this.$singleLoaderFalse('guestLinksListLoader');
+                    this.$singleLoaderFalse("guestLinksListLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
 
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
-            },
-
-            guestLinksPaginationHandle(page) {
-                this.$store.dispatch('guest_links/updateGuestPostsCurrentPage', page)
-                    .then(() => {
-                        this.getGuestLinks();
-                    })
-            }
+        guestLinksPaginationHandle(page) {
+            this.$store
+                .dispatch("guest_links/updateGuestPostsCurrentPage", page)
+                .then(() => {
+                    this.getGuestLinks();
+                });
         }
     }
+};
 </script>
 

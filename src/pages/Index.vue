@@ -13,12 +13,20 @@
                 <q-separator />
 
                 <q-card-section class="row justify-between q-pa-xs">
-                    <q-btn color="positive" class="q-px-xs" no-caps flat dense>
-                        {{ projectsCount.active_count }} Active
-                    </q-btn>
-                    <q-btn color="warning" class="q-px-xs" no-caps flat dense>
-                        {{ projectsCount.inactive_count }} Inactive
-                    </q-btn>
+                    <q-btn
+                        color="positive"
+                        class="q-px-xs"
+                        no-caps
+                        flat
+                        dense
+                    >{{ projectsCount.active_count }} Active</q-btn>
+                    <q-btn
+                        color="warning"
+                        class="q-px-xs"
+                        no-caps
+                        flat
+                        dense
+                    >{{ projectsCount.inactive_count }} Inactive</q-btn>
                 </q-card-section>
                 <q-inner-loading color="primary" :showing="!!singleLoader.projectsCountLoader" />
             </q-card>
@@ -35,12 +43,20 @@
                 <q-separator />
 
                 <q-card-section class="row justify-between q-pa-xs">
-                    <q-btn color="positive" class="q-px-xs" no-caps flat dense>
-                        {{ pagesCount.active_count }} Available
-                    </q-btn>
-                    <q-btn color="warning" class="q-px-xs" no-caps flat dense>
-                        {{ pagesCount.inactive_count }} Unavailable
-                    </q-btn>
+                    <q-btn
+                        color="positive"
+                        class="q-px-xs"
+                        no-caps
+                        flat
+                        dense
+                    >{{ pagesCount.active_count }} Available</q-btn>
+                    <q-btn
+                        color="warning"
+                        class="q-px-xs"
+                        no-caps
+                        flat
+                        dense
+                    >{{ pagesCount.inactive_count }} Unavailable</q-btn>
                 </q-card-section>
                 <q-inner-loading color="primary" :showing="!!singleLoader.pagesCountLoader" />
             </q-card>
@@ -57,45 +73,53 @@
                 <q-separator />
 
                 <q-card-section class="row justify-between q-pa-xs">
-                    <q-btn color="positive" class="q-px-xs" no-caps flat dense>
-                        {{ productsCount.active_count }} Available
-                    </q-btn>
-                    <q-btn color="warning" class="q-px-xs" no-caps flat dense>
-                        {{ productsCount.inactive_count }} Unavailable
-                    </q-btn>
+                    <q-btn
+                        color="positive"
+                        class="q-px-xs"
+                        no-caps
+                        flat
+                        dense
+                    >{{ productsCount.active_count }} Available</q-btn>
+                    <q-btn
+                        color="warning"
+                        class="q-px-xs"
+                        no-caps
+                        flat
+                        dense
+                    >{{ productsCount.inactive_count }} Unavailable</q-btn>
                 </q-card-section>
                 <q-inner-loading color="primary" :showing="!!singleLoader.productsCountLoader" />
             </q-card>
         </div>
 
-        <latest-issues/>
+        <latest-issues />
 
         <div class="row q-gutter-xl q-mt-md">
-            <latest-scrapped-pages/>
-            <latest-parsed-pages/>
+            <latest-scraped-pages />
+            <latest-parsed-pages />
         </div>
         <div class="row q-gutter-xl q-mt-md">
-           <latest-scrapped-products/>
-            <latest-parsed-products/>
+            <latest-scraped-products />
+            <latest-parsed-products />
         </div>
     </div>
 </template>
 
 <script>
 import LatestIssues from "components/issues/LatestIssues";
-import LatestScrappedPages from "components/issues/LatestScrappedPages";
+import LatestScrapedPages from "components/issues/LatestScrapedPages";
 import LatestParsedPages from "components/issues/LatestParsedPages";
-import LatestScrappedProducts from "components/issues/LatestScrappedProducts";
+import LatestScrapedProducts from "components/issues/LatestScrapedProducts";
 import LatestParsedProducts from "components/issues/LatestParsedProducts";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
     name: "PageIndex",
     components: {
         LatestParsedProducts,
-        LatestScrappedProducts,
+        LatestScrapedProducts,
         LatestParsedPages,
-        LatestScrappedPages,
+        LatestScrapedPages,
         LatestIssues
     },
 
@@ -109,13 +133,21 @@ export default {
 
     computed: {
         totalProjectsCount() {
-            return this.projectsCount.active_count+this.projectsCount.inactive_count;
+            return (
+                this.projectsCount.active_count +
+                this.projectsCount.inactive_count
+            );
         },
         totalPagesCount() {
-            return this.pagesCount.active_count+this.pagesCount.inactive_count;
+            return (
+                this.pagesCount.active_count + this.pagesCount.inactive_count
+            );
         },
         totalProductsCount() {
-            return this.productsCount.active_count+this.productsCount.inactive_count;
+            return (
+                this.productsCount.active_count +
+                this.productsCount.inactive_count
+            );
         },
         ...mapGetters({
             singleLoader: "ui/singleLoaderStatus"

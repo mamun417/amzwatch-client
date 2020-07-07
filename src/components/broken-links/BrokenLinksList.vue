@@ -8,9 +8,13 @@
             </q-item>
 
             <q-expansion-item
-                v-for="(link, index) in brokenLinkInfo" :key="index"
-                group="brokenLink" icon="" header-class=""
-                expand-icon-class="hidden" class="shadow-3 q-mb-sm"
+                v-for="(link, index) in brokenLinkInfo"
+                :key="index"
+                group="brokenLink"
+                icon
+                header-class
+                expand-icon-class="hidden"
+                class="shadow-3 q-mb-sm"
             >
                 <q-item
                     slot="header"
@@ -18,14 +22,14 @@
                 >
                     <q-item-section class="col">{{ link.url }}</q-item-section>
                     <q-item-section class="col text-center inline-block">
-                        <q-badge :color="calculateLinkStatus(link) !== 'available' ? 'warning' : 'positive'">
-                            {{ calculateLinkStatus(link) }}
-                        </q-badge>
+                        <q-badge
+                            :color="calculateLinkStatus(link) !== 'available' ? 'warning' : 'positive'"
+                        >{{ calculateLinkStatus(link) }}</q-badge>
                     </q-item-section>
                     <q-item-section class="col text-right">
-                        <template v-if="calculateLinkStatus(link) !== 'pending'">
-                            {{$timestampToDate(link.updated_at.last_scraped_at)}}
-                        </template>
+                        <template
+                            v-if="calculateLinkStatus(link) !== 'pending'"
+                        >{{$timestampToDate(link.updated_at.last_scraped_at)}}</template>
                     </q-item-section>
                 </q-item>
             </q-expansion-item>
@@ -38,93 +42,99 @@
                 @handlePagination="brokenLinksPaginationHandle"
             />
         </div>
-        <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinksListLoader"/>
+        <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinksListLoader" />
     </div>
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
-    import Pagination from "components/pagination/Pagination";
+import { mapGetters } from "vuex";
+import Pagination from "components/pagination/Pagination";
 
-    export default {
-        name      : "BrokenLinksList",
-        components: {Pagination},
-        data() {
-            return {
-                brokenLinkInfo: [],
-                interval: null
-            }
-        },
+export default {
+    name: "BrokenLinksList",
+    components: { Pagination },
+    data() {
+        return {
+            brokenLinkInfo: [],
+            interval: null
+        };
+    },
 
-        mounted() {
+    mounted() {
+        this.getBrokenLinkInfo();
+
+        this.interval = setInterval(() => {
             this.getBrokenLinkInfo();
+        }, this.$intervalTime);
+    },
 
-            this.interval = setInterval(() => {
-                this.getBrokenLinkInfo();
-            }, this.$interValTime)
-        },
+    beforeDestroy() {
+        this.interval && clearInterval(this.interval);
+    },
 
-        beforeDestroy() {
-            this.interval && clearInterval(this.interval);
-        },
+    computed: {
+        ...mapGetters({
+            brokenLinksPaginationMeta: "broken_links/paginationMeta",
+            singleLoader: "ui/singleLoaderStatus"
+        })
+    },
 
-        computed: {
-            ...mapGetters({
-                brokenLinksPaginationMeta: 'broken_links/paginationMeta',
-                singleLoader             : 'ui/singleLoaderStatus'
-            })
-        },
+    methods: {
+        calculateLinkStatus(linkObj) {
+            if (linkObj.hasOwnProperty("meta")) {
+                if (
+                    linkObj.meta.hasOwnProperty("page_status") &&
+                    linkObj.meta.page_status
+                ) {
+                    let status = linkObj.meta.page_status.toString();
 
-        methods: {
-            calculateLinkStatus(linkObj) {
-                if (linkObj.hasOwnProperty('meta')) {
-                    if (linkObj.meta.hasOwnProperty('page_status') && linkObj.meta.page_status) {
-                        let status = linkObj.meta.page_status.toString()
-
-                        return [
-                            '2',
-                            '3'
-                        ].includes(status[0]) ? 'available' : 'unavailable';
-                    }
+                    return ["2", "3"].includes(status[0])
+                        ? "available"
+                        : "unavailable";
                 }
-                return 'pending'
-            },
-            getBrokenLinkInfo() {
-                this.$singleLoaderTrue('brokenLinksListLoader');
-                this.$forceUpdate();
+            }
+            return "pending";
+        },
+        getBrokenLinkInfo() {
+            this.$singleLoaderTrue("brokenLinksListLoader");
+            this.$forceUpdate();
 
-                this.$store.dispatch('broken_links/getBrokenLinks', {
-                    vm        : this,
+            this.$store
+                .dispatch("broken_links/getBrokenLinks", {
+                    vm: this,
                     project_id: this.$route.params.project_id
                 })
-                    .then(res => {
-                        this.brokenLinkInfo = res.data.brokenLinks.data;
+                .then(res => {
+                    this.brokenLinkInfo = res.data.brokenLinks.data;
 
-                        this.brokenLinkInfo.map(link => {
-                            if (!link.hasOwnProperty('meta')) {
-                                this.$set(link, 'meta', {})
-                            }
-                        })
+                    this.brokenLinkInfo.map(link => {
+                        if (!link.hasOwnProperty("meta")) {
+                            this.$set(link, "meta", {});
+                        }
+                    });
 
-                        this.$emit('linksCountUpdated', res.data.brokenLinks.pagination_meta.total);
+                    this.$emit(
+                        "linksCountUpdated",
+                        res.data.brokenLinks.pagination_meta.total
+                    );
 
-                        this.$singleLoaderFalse('brokenLinksListLoader');
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
-            },
+                    this.$singleLoaderFalse("brokenLinksListLoader");
+                })
+                .catch(err => {
+                    //handle error
+                });
+        },
 
-            brokenLinksPaginationHandle(page) {
-                this.$store.dispatch('broken_links/updateBrokenLinksCurrentPage', page)
-                    .then(() => {
-                        this.getBrokenLinkInfo()
-                    })
-            }
+        brokenLinksPaginationHandle(page) {
+            this.$store
+                .dispatch("broken_links/updateBrokenLinksCurrentPage", page)
+                .then(() => {
+                    this.getBrokenLinkInfo();
+                });
         }
     }
+};
 </script>
 
 <style scoped>
-
 </style>

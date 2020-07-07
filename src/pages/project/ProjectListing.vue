@@ -6,9 +6,10 @@
             >
                 <div class="text-subtitle1">Projects</div>
 
-                <div v-if="projects.length" class="text-caption">
-                    You have total {{ projectPaginationMeta.total }} projects
-                </div>
+                <div
+                    v-if="projects.length"
+                    class="text-caption"
+                >You have total {{ projectPaginationMeta.total }} projects</div>
 
                 <q-btn color="grey-3" @click="handleNewProjectClick" flat>Add New</q-btn>
             </q-card-section>
@@ -19,8 +20,14 @@
             </q-card-section>
 
             <q-card-section v-else class="row">
-                <q-input class="col-grow" label="Search Projects" value="" dense/>
-                <q-select class="col-grow" label="Filter" value="all" :options="['all', 'active', 'inactive']" dense/>
+                <q-input class="col-grow" label="Search Projects" value dense />
+                <q-select
+                    class="col-grow"
+                    label="Filter"
+                    value="all"
+                    :options="['all', 'active', 'inactive']"
+                    dense
+                />
             </q-card-section>
         </q-card>
 
@@ -37,8 +44,7 @@
                 :value="projectPaginationMeta.current_page"
                 :max="projectPaginationMeta.last_page"
                 @input="projectPaginationHandle"
-            >
-            </q-pagination>
+            ></q-pagination>
         </div>
 
         <add-or-edit-project-modal
@@ -50,107 +56,111 @@
             @modalClosed="selectedForEdit = {}"
         />
 
-        <q-inner-loading color="primary" :showing="!!singleLoader.projectListLoader"/>
-
+        <q-inner-loading color="primary" :showing="!!singleLoader.projectListLoader" />
     </section>
 </template>
 
 <script>
-    import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
-    import {mapGetters} from 'vuex'
-    import AddOrEditProjectModal from "components/modals/AddOrEditProjectModal";
+import SingleProjectInfoInListing from "pages/project/SingleProjectInfoInListing";
+import { mapGetters } from "vuex";
+import AddOrEditProjectModal from "components/modals/AddOrEditProjectModal";
 
-    export default {
-        components: {
-            AddOrEditProjectModal,
-            SingleProjectInfoInListing
-        },
-        data() {
-            return {
-                projects               : [],
+export default {
+    components: {
+        AddOrEditProjectModal,
+        SingleProjectInfoInListing
+    },
+    data() {
+        return {
+            projects: [],
 
-                projectUpdateModal     : false,
-                showAddEditProjectModal: false,
-                selectedForEdit         : {},
-                interval                : null
-            }
-        },
+            projectUpdateModal: false,
+            showAddEditProjectModal: false,
+            selectedForEdit: {},
+            interval: null
+        };
+    },
 
-        mounted() {
-            // get projects first then assign to projects.
+    mounted() {
+        // get projects first then assign to projects.
+        this.getProjects();
+
+        this.interval = setInterval(() => {
             this.getProjects();
+        }, this.$intervalTime);
+    },
 
-            this.interval = setInterval(() => {
-                this.getProjects();
-            }, this.$interValTime)
+    beforeDestroy() {
+        this.interval && clearInterval(this.interval);
+    },
+
+    computed: {
+        ...mapGetters({
+            projectPaginationMeta: "projects/paginationMeta",
+            singleLoader: "ui/singleLoaderStatus"
+        })
+    },
+
+    methods: {
+        handleNewProjectClick() {
+            this.projectUpdateModal = false;
+            this.selectedForEdit = {};
+            this.showAddEditProjectModal = true;
+        },
+        handleEditProjectClick(data) {
+            this.projectUpdateModal = true;
+            this.selectedForEdit = data;
+
+            this.showAddEditProjectModal = true;
         },
 
-        beforeDestroy() {
-            this.interval && clearInterval(this.interval);
-        },
+        getProjects() {
+            this.$singleLoaderTrue("projectListLoader");
 
-        computed: {
-            ...mapGetters({
-                projectPaginationMeta: 'projects/paginationMeta',
-                singleLoader         : 'ui/singleLoaderStatus'
-            })
-        },
+            this.$store
+                .dispatch("projects/getProjects", { vm: this })
+                .then(res => {
+                    this.projects = res.data.userProjects.data.map(project => {
+                        let domainUseFor = project.domain_use_for;
+                        project["services"] = [];
 
-        methods: {
-            handleNewProjectClick() {
-                this.projectUpdateModal = false;
-                this.selectedForEdit = {}
-                this.showAddEditProjectModal = true;
-            },
-            handleEditProjectClick(data) {
-                this.projectUpdateModal = true;
-                this.selectedForEdit    = data;
-
-                this.showAddEditProjectModal = true;
-            },
-
-            getProjects() {
-                this.$singleLoaderTrue('projectListLoader');
-
-                this.$store.dispatch('projects/getProjects', {vm: this})
-                    .then(res => {
-                        this.projects           = res.data.userProjects.data.map(project => {
-                            let domainUseFor    = project.domain_use_for
-                            project['services'] = [];
-
-                            Object.keys(domainUseFor).map(objKey => {
-                                if (domainUseFor.hasOwnProperty('status') && domainUseFor.status === 'active') {
-                                    project.services.push(objKey)
-                                }
-                            })
-
-                            return project;
+                        Object.keys(domainUseFor).map(objKey => {
+                            if (
+                                domainUseFor.hasOwnProperty("status") &&
+                                domainUseFor.status === "active"
+                            ) {
+                                project.services.push(objKey);
+                            }
                         });
 
-                        this.$singleLoaderFalse('projectListLoader')
-                    })
-                    .catch(err => {
-                        //handle error
-                    })
-            },
+                        return project;
+                    });
 
-            handleProjectUpdated(data) {
-                this.projects.map(project => {
-                    if (project.id === data.id) {
-                        project.project_name = data.project_name;
-                        project.deactivated_at = data.deactivated_at;
-                    }
+                    this.$singleLoaderFalse("projectListLoader");
                 })
-            },
+                .catch(err => {
+                    //handle error
+                });
+        },
 
-            projectPaginationHandle(page) {
-                this.$store.dispatch('projects/updateProjectsCurrentPage', page)
-                    .then(() => {
-                        this.getProjects()
-                    })
-            }
+        handleProjectUpdated(data) {
+            this.projects.map(project => {
+                if (project.id === data.id) {
+                    project.project_name = data.project_name;
+                    project.deactivated_at = data.deactivated_at;
+                }
+            });
+        },
 
-            // use start service apis
+        projectPaginationHandle(page) {
+            this.$store
+                .dispatch("projects/updateProjectsCurrentPage", page)
+                .then(() => {
+                    this.getProjects();
+                });
         }
+
+        // use start service apis
     }
+};
 </script>
