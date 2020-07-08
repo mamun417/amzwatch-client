@@ -26,10 +26,6 @@
                 </q-btn>
             </q-card-actions>
 
-            <pre v-if="response">
-                {{ response }}
-            </pre>
-
         </q-card>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.resetPasswordLoader"/>
@@ -50,7 +46,6 @@ export default {
                 reset_url : process.env.APP_URL+'auth/password/reset'
             },
             formErrors: {},
-            response: ''
         }
     },
 
@@ -74,9 +69,7 @@ export default {
                         position: 'top'
                     });
 
-
                     this.formData = '';
-                    this.response = res.data;
                 })
                 .catch(err => {
                     this.$singleLoaderFalse('resetPasswordLoader');
