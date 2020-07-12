@@ -21,9 +21,6 @@ export function register(context, payload) {
     return new Promise((resolve, reject) => {
         payload.vm.$post('/register', payload.inputs)
             .then(res => {
-                let info = res.data
-                context.commit('authSuccess', {user: info.user, token: info.bearerToken});
-
                 resolve(res)
             })
             .catch(err => {
@@ -86,6 +83,30 @@ export function forgotPassword(context, payload) {
 export function resetPassword(context, payload) {
     return new Promise((resolve, reject) => {
         payload.vm.$patch('/reset-password/'+payload.inputs.token, payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
+export function resendVerifyEmail(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$post('/resend-verify-email', payload.inputs)
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
+export function successVerifyEmail(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$patch('/email/verify/'+payload.inputs.token)
             .then(res => {
                 resolve(res)
             })

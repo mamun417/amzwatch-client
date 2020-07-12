@@ -70,10 +70,25 @@ const routes = [
             {
                 path  : 'login',
                 name: 'login',
-                component: () => import('pages/auth/login')
+                component: () => import('pages/auth/Login')
             },
             {path        : 'register',
-                component: () => import('pages/auth/register')
+                component: () => import('pages/auth/Register')
+            },
+            {
+                path : 'email/verify',
+                name: 'verify',
+                component: () => import('pages/auth/account-verification/Verify')
+            },
+            {
+                path : 'email/verify/resend',
+                name: 'verify.resend',
+                component: () => import('pages/auth/account-verification/ResendVerifyEmail')
+            },
+            {
+                path : 'account/verify/:token',
+                name: 'verify.success',
+                component: () => import('pages/auth/account-verification/Success')
             },
             {path        : 'logout',
                 component: () => import('pages/auth/Logout')
@@ -81,12 +96,12 @@ const routes = [
             {
                 path : 'password/forgot',
                 name: 'password.email',
-                component: () => import('pages/auth/email')
+                component: () => import('pages/auth/forgot-password/Email')
             },
             {
                 path : 'password/reset/:token',
                 name: 'password.reset',
-                component: () => import('pages/auth/reset')
+                component: () => import('pages/auth/forgot-password/Reset')
             }
         ]
     }
