@@ -19,4 +19,19 @@ export default function ({ store, app, Vue }) {
     Vue.prototype.$timestampToDate = function (timestamp, format = "DD MM YYYY, h:mm:ss a") {
         return moment(parseInt(timestamp)).format(format)
     }
+
+    Vue.prototype.$updatePipeline = function (storeState, payloadState) {
+        let payloadStateKeys = Object.keys(payloadState);
+        storeState = lodash.cloneDeep(storeState)
+
+        if (!payloadStateKeys.length) return storeState;
+
+        payloadStateKeys.forEach(pipelineKey => {
+            if (storeState.hasOwnProperty(pipelineKey)) {
+                storeState[pipelineKey] = payloadState[pipelineKey]
+            }
+        })
+
+        return storeState
+    }
 }

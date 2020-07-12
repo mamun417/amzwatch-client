@@ -9,25 +9,32 @@
                 <div
                     v-if="projects.length"
                     class="text-caption"
-                >You have total {{ projectPaginationMeta.total }} projects</div>
+                >{{ projectPaginationMeta.total }} projects found</div>
 
                 <q-btn color="grey-3" @click="handleNewProjectClick" flat>Add New</q-btn>
+            </q-card-section>
+
+            <q-card-section class="row">
+                <q-input
+                    class="col-grow"
+                    label="Search Projects"
+                    :value="projectsPipeline.s"
+                    @input="projectPipelineHandle({s:$event})"
+                    dense
+                />
+                <q-select
+                    class="col-grow"
+                    label="Filter"
+                    :value="projectsPipeline.f"
+                    :options="['all', 'active', 'inactive']"
+                    @input="projectPipelineHandle({f:$event})"
+                    dense
+                />
             </q-card-section>
 
             <q-card-section v-if="!projects.length" class="text-center q-py-xl">
                 <div class="q-mb-lg text-subtitle2">No projects found</div>
                 <q-btn @click="handleNewProjectClick" color="primary">Add One</q-btn>
-            </q-card-section>
-
-            <q-card-section v-else class="row">
-                <q-input class="col-grow" label="Search Projects" value dense />
-                <q-select
-                    class="col-grow"
-                    label="Filter"
-                    value="all"
-                    :options="['all', 'active', 'inactive']"
-                    dense
-                />
             </q-card-section>
         </q-card>
 
@@ -97,6 +104,7 @@ export default {
     computed: {
         ...mapGetters({
             projectPaginationMeta: "projects/paginationMeta",
+            projectsPipeline: "projects/pipeline",
             singleLoader: "ui/singleLoaderStatus"
         })
     },
@@ -155,6 +163,16 @@ export default {
         projectPaginationHandle(page) {
             this.$store
                 .dispatch("projects/updateProjectsCurrentPage", page)
+                .then(() => {
+                    this.getProjects();
+                });
+        },
+        projectPipelineHandle(pipeline) {
+            this.$store
+                .dispatch("projects/updateProjectsPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
                 .then(() => {
                     this.getProjects();
                 });

@@ -1,9 +1,13 @@
 export function getProjects(context, payload) {
     return new Promise((resolve, reject) => {
         // it will updated later for filter etc
-        let urlPath = '/projects?page=' + context.state.paginationMeta.current_page;
-        
-        payload.vm.$get(urlPath)
+        let urlPath = '/projects';
+
+        payload.vm.$get(urlPath, {
+            page: context.state.paginationMeta.current_page,
+            s: context.state.pipeline.s,
+            f: context.state.pipeline.f
+        })
             .then(res => {
                 context.commit('updatePaginationMeta', res.data.userProjects.pagination_meta);
                 resolve(res)
@@ -18,7 +22,7 @@ export function getProject(context, payload) {
     return new Promise((resolve, reject) => {
         // it will updated later for filter etc
         let urlPath = `/projects/${payload.id}`;
-        
+
         payload.vm.$get(urlPath)
             .then(res => {
                 resolve(res)
@@ -56,6 +60,13 @@ export function updateProject(context, payload) {
 export function updateProjectsCurrentPage(context, payload) {
     return new Promise((resolve, reject) => {
         context.commit('updateCurrentPagePaginationMeta', payload);
+        resolve(true)
+    })
+}
+
+export function updateProjectsPipeline(context, payload) {
+    return new Promise((resolve, reject) => {
+        context.commit('updatePipeline', payload);
         resolve(true)
     })
 }
