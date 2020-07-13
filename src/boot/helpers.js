@@ -20,6 +20,10 @@ export default function ({ store, app, Vue }) {
         return moment(parseInt(timestamp)).format(format)
     }
 
+    Vue.prototype.$fromNowTime = function (timestamp) {
+        return moment(parseInt(timestamp)).fromNow()
+    }
+
     Vue.prototype.$updatePipeline = function (storeState, payloadState) {
         let payloadStateKeys = Object.keys(payloadState);
         storeState = lodash.cloneDeep(storeState)

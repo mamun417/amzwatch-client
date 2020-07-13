@@ -1,21 +1,17 @@
 <template>
     <q-card class="col" style="min-width: 250px">
-        <q-card-section class="q-py-sm">Latest Scraped Pages</q-card-section>
+        <q-card-section class="q-py-sm text-subtitle1">Latest Scraped Pages</q-card-section>
         <q-separator />
 
-        <q-list v-if="latestScrapedPages.length" class="q-py-md q-pa-md" dense>
+        <q-list v-if="latestScrapedPages.length" class="q-pa-md" dense>
             <q-item
                 v-for="(page, index) in latestScrapedPages"
-                class="q-mb-sm shadow-1 text-weight-medium"
+                class="q-mb-sm shadow-1 text-weight-medium text-md"
                 :key="index"
                 clickable
             >
-                <div class="row full-width">
-                    <div class="col-sm-10" style="word-break: break-all">{{ page.url }}</div>
-                    <div
-                        class="col-sm-2 text-right"
-                    >{{ $moment(parseInt(page.updated_at.last_scraped_at)).fromNow() }}</div>
-                </div>
+                <q-item-section style="overflow-wrap: anywhere">{{ page.url }}</q-item-section>
+                <q-item-section side no-wrap>{{ $fromNowTime(page.updated_at.last_scraped_at) }}</q-item-section>
             </q-item>
         </q-list>
 

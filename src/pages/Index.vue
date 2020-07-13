@@ -6,7 +6,9 @@
                     <q-icon color="primary" name="settings" size="50px" />
                     <div class="text-subtitle1 text-weight-bold text-right col">
                         <div class="text-grey-7">Total Projects</div>
-                        <div class="text-primary">{{ totalProjectsCount }}</div>
+                        <div
+                            class="text-primary"
+                        >{{ handleCount(projectsCount, ['active', 'inactive']) }}</div>
                     </div>
                 </q-card-section>
 
@@ -19,14 +21,33 @@
                         no-caps
                         flat
                         dense
-                    >{{ projectsCount.active_count }} Active</q-btn>
-                    <q-btn
-                        color="warning"
-                        class="q-px-xs"
-                        no-caps
-                        flat
-                        dense
-                    >{{ projectsCount.inactive_count }} Inactive</q-btn>
+                    >{{ handleCount(projectsCount, ['active']) }} Active</q-btn>
+
+                    <q-btn color="warning" class="q-px-xs" no-caps flat dense>
+                        <div>{{ handleCount(projectsCount, ['inactive']) }} Inactive</div>
+
+                        <q-menu v-if="handleCount(projectsCount, ['inactive']) > 0">
+                            <q-list
+                                v-for="(group, key) in projectsCount"
+                                class
+                                style="min-width: 230px"
+                                :key="key"
+                                dense
+                            >
+                                <q-item
+                                    v-if="handleCount([group], ['inactive'])"
+                                    class="text-weight-medium"
+                                    @click="handleProjectRedirect({s:group.user_domain.project_name, f: 'inactive'})"
+                                    clickable
+                                >
+                                    <q-item-section>{{group.user_domain.project_name}}</q-item-section>
+                                    <q-item-section class="text-right text-warning">Inactive</q-item-section>
+                                </q-item>
+
+                                <q-separator />
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
                 </q-card-section>
                 <q-inner-loading color="primary" :showing="!!singleLoader.projectsCountLoader" />
             </q-card>
@@ -36,7 +57,9 @@
                     <q-icon color="primary" name="link_off" size="50px" />
                     <div class="text-subtitle1 text-weight-bold text-right col">
                         <div class="text-grey-7">Total Links Scraped</div>
-                        <div class="text-primary">{{ totalPagesCount }}</div>
+                        <div
+                            class="text-primary"
+                        >{{ handleCount(pagesCount, ['available', 'status_404', 'other_error']) }}</div>
                     </div>
                 </q-card-section>
 
@@ -49,14 +72,49 @@
                         no-caps
                         flat
                         dense
-                    >{{ pagesCount.active_count }} Available</q-btn>
-                    <q-btn
-                        color="warning"
-                        class="q-px-xs"
-                        no-caps
-                        flat
-                        dense
-                    >{{ pagesCount.inactive_count }} Unavailable</q-btn>
+                    >{{ handleCount(pagesCount, ['available']) }} Available</q-btn>
+
+                    <q-btn color="warning" class="q-px-xs" no-caps flat dense>
+                        <div>{{ handleCount(pagesCount, ['status_404', 'other_error']) }} Problems</div>
+
+                        <q-menu v-if="handleCount(pagesCount, ['status_404', 'other_error']) > 0">
+                            <q-list
+                                v-for="(group, key) in pagesCount"
+                                class
+                                style="min-width: 230px"
+                                :key="key"
+                                dense
+                            >
+                                <q-item class="text-weight-medium">
+                                    <q-item-section>{{group.user_domain.project_name}}</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >Total {{handleCount([group], ['status_404', 'other_error'])}}</q-item-section>
+                                </q-item>
+
+                                <q-item
+                                    v-if="individualErrorCount(group, 'status_404') > 0"
+                                    clickable
+                                >
+                                    <q-item-section class="q-pl-md">404 errors</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >{{individualErrorCount(group, 'status_404')}}</q-item-section>
+                                </q-item>
+                                <q-item
+                                    v-if="individualErrorCount(group, 'other_error') > 0"
+                                    clickable
+                                >
+                                    <q-item-section class="q-pl-md">Other errors</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >{{individualErrorCount(group, 'other_error')}}</q-item-section>
+                                </q-item>
+
+                                <q-separator />
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
                 </q-card-section>
                 <q-inner-loading color="primary" :showing="!!singleLoader.pagesCountLoader" />
             </q-card>
@@ -66,7 +124,9 @@
                     <q-icon color="primary" name="link_off" size="50px" />
                     <div class="text-subtitle1 text-weight-bold text-right col">
                         <div class="text-grey-7">Total Products Scraped</div>
-                        <div class="text-primary">{{ totalProductsCount }}</div>
+                        <div
+                            class="text-primary"
+                        >{{ handleCount(productsCount, ['available', 'unavailable', 'status_404', 'other_error']) }}</div>
                     </div>
                 </q-card-section>
 
@@ -79,14 +139,60 @@
                         no-caps
                         flat
                         dense
-                    >{{ productsCount.active_count }} Available</q-btn>
-                    <q-btn
-                        color="warning"
-                        class="q-px-xs"
-                        no-caps
-                        flat
-                        dense
-                    >{{ productsCount.inactive_count }} Unavailable</q-btn>
+                    >{{ handleCount(productsCount, ['available']) }} Available</q-btn>
+
+                    <q-btn color="warning" class="q-px-xs" no-caps flat dense>
+                        <div>{{ handleCount(pagesCount, ['unavailable','status_404', 'other_error']) }} Problems</div>
+
+                        <q-menu
+                            v-if="handleCount(productsCount, ['unavailable','status_404', 'other_error']) > 0"
+                        >
+                            <q-list
+                                v-for="(group, key) in productsCount"
+                                class
+                                style="min-width: 230px"
+                                :key="key"
+                                dense
+                            >
+                                <q-item class="text-weight-medium">
+                                    <q-item-section>{{group.user_domain.project_name}}</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >Total {{handleCount([group], ['status_404', 'other_error'])}}</q-item-section>
+                                </q-item>
+
+                                <q-item
+                                    v-if="individualErrorCount(group, 'unavailable') > 0"
+                                    clickable
+                                >
+                                    <q-item-section no-wrap class="q-pl-md">Unavailable errors</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >{{individualErrorCount(group, 'unavailable')}}</q-item-section>
+                                </q-item>
+                                <q-item
+                                    v-if="individualErrorCount(group, 'status_404') > 0"
+                                    clickable
+                                >
+                                    <q-item-section class="q-pl-md">404 errors</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >{{individualErrorCount(group, 'status_404')}}</q-item-section>
+                                </q-item>
+                                <q-item
+                                    v-if="individualErrorCount(group, 'other_error') > 0"
+                                    clickable
+                                >
+                                    <q-item-section class="q-pl-md">Other errors</q-item-section>
+                                    <q-item-section
+                                        class="text-right text-warning"
+                                    >{{individualErrorCount(group, 'other_error')}}</q-item-section>
+                                </q-item>
+
+                                <q-separator />
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
                 </q-card-section>
                 <q-inner-loading color="primary" :showing="!!singleLoader.productsCountLoader" />
             </q-card>
@@ -125,30 +231,13 @@ export default {
 
     data() {
         return {
-            projectsCount: {},
-            pagesCount: {},
-            productsCount: {}
+            projectsCount: [],
+            pagesCount: [],
+            productsCount: []
         };
     },
 
     computed: {
-        totalProjectsCount() {
-            return (
-                this.projectsCount.active_count +
-                this.projectsCount.inactive_count
-            );
-        },
-        totalPagesCount() {
-            return (
-                this.pagesCount.active_count + this.pagesCount.inactive_count
-            );
-        },
-        totalProductsCount() {
-            return (
-                this.productsCount.active_count +
-                this.productsCount.inactive_count
-            );
-        },
         ...mapGetters({
             singleLoader: "ui/singleLoaderStatus"
         })
@@ -161,6 +250,26 @@ export default {
     },
 
     methods: {
+        handleCount(datas, contains) {
+            let total = 0;
+
+            datas.forEach(data => {
+                Object.keys(data).forEach(objKey => {
+                    if (contains.includes(objKey)) {
+                        total += data[objKey];
+                    }
+                });
+            });
+
+            return total;
+        },
+        individualErrorCount(data, keyName) {
+            if (data.hasOwnProperty(keyName)) {
+                return data[keyName];
+            }
+
+            return 0;
+        },
         getProjectsCount() {
             this.$singleLoaderTrue("projectsCountLoader");
 
@@ -169,7 +278,7 @@ export default {
                     vm: this
                 })
                 .then(res => {
-                    this.projectsCount = res.data.projectsCount;
+                    this.projectsCount = res.data.projectsCount.data;
 
                     this.$singleLoaderFalse("projectsCountLoader");
                 })
@@ -185,7 +294,7 @@ export default {
                     vm: this
                 })
                 .then(res => {
-                    this.pagesCount = res.data.pagesCount;
+                    this.pagesCount = res.data.pagesCount.data;
 
                     this.$singleLoaderFalse("pagesCountLoader");
                 })
@@ -201,12 +310,23 @@ export default {
                     vm: this
                 })
                 .then(res => {
-                    this.productsCount = res.data.productsCount;
+                    this.productsCount = res.data.productsCount.data;
 
                     this.$singleLoaderFalse("productsCountLoader");
                 })
                 .catch(err => {
                     //handle error
+                });
+        },
+
+        handleProjectRedirect(pipeline) {
+            this.$store
+                .dispatch("projects/updateProjectsPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
+                .then(() => {
+                    this.$router.push("/projects");
                 });
         }
     }

@@ -1,35 +1,28 @@
 <template>
-    <q-card class="col" style="min-width: 250px" >
-        <q-card-section class="q-py-sm">Latest Parsed Pages</q-card-section>
+    <q-card class="col" style="min-width: 250px">
+        <q-card-section class="q-py-sm text-subtitle1">Latest Parsed Pages</q-card-section>
         <q-separator />
 
-        <q-list v-if="latestParsedPages.length" class="q-py-md q-pa-md" dense>
+        <q-list v-if="latestParsedPages.length" class="q-pa-md" dense>
             <q-item
                 v-for="(page, index) in latestParsedPages"
-                class="q-mb-sm shadow-1 text-weight-medium"
+                class="q-mb-sm shadow-1 text-weight-medium text-md"
                 :key="index"
                 clickable
             >
-                <div class="row full-width">
-                    <div class="col-sm-10" style="word-break: break-all">
-                        {{ page.url }}
-                    </div>
-                    <div class="col-sm-2 text-right">
-                        {{ $moment(parseInt(page.updated_at.last_parsed_at)).fromNow() }}
-                    </div>
-                </div>
+                <q-item-section style="overflow-wrap: anywhere">{{ page.url }}</q-item-section>
+                <q-item-section side no-wrap>{{ $fromNowTime(page.updated_at.last_parsed_at) }}</q-item-section>
             </q-item>
         </q-list>
 
         <div v-else class="text-center q-py-md text-weight-bold">No parsed pages found</div>
 
         <q-inner-loading color="primary" :showing="!!singleLoader.latestParsedPagesLoader" />
-
     </q-card>
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 import Pagination from "components/pagination/Pagination";
 
 export default {
@@ -37,13 +30,13 @@ export default {
 
     data() {
         return {
-            latestParsedPages  : [],
+            latestParsedPages: []
         };
     },
 
     computed: {
         ...mapGetters({
-            singleLoader: "ui/singleLoaderStatus",
+            singleLoader: "ui/singleLoaderStatus"
         })
     },
 
@@ -67,11 +60,10 @@ export default {
                 .catch(err => {
                     //handle error
                 });
-        },
+        }
     }
-}
+};
 </script>
 
 <style scoped>
-
 </style>
