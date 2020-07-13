@@ -83,7 +83,8 @@ export default {
                 email           : 'testjohn@example.com',
                 password        : '123',
                 confirm_password: '123',
-                agree           : false
+                agree           : false,
+                verify_url      : process.env.APP_URL+'auth/account/verify'
             },
             formErrors: {}
         }
@@ -110,7 +111,7 @@ export default {
                         position: 'top'
                     })
 
-                    this.$router.push('/');
+                    this.$router.push({name: 'verify'});
                 })
                 .catch(err => {
                     this.$singleLoaderFalse('registerLoader');

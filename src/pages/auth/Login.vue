@@ -7,7 +7,7 @@
                     style="margin-top: -30%; border-radius: 4px"
                 >
                     <div class="text-h6">Log in</div>
-                    <!--                    or social login-->
+                    <!--or social login-->
                 </div>
             </q-card-section>
 
@@ -68,8 +68,13 @@
                     vm    : this,
                     inputs: this.formData
                 })
-                    .then(() => {
+                    .then(res => {
                         this.$singleLoaderFalse('loginLoader');
+
+                        if (res.data.unverified){
+                            this.$router.push({name: 'verify'});
+                            return;
+                        }
 
                         this.$q.notify({
                             color   : 'positive',

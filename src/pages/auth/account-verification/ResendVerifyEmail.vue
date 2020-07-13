@@ -6,7 +6,7 @@
                     class="bg-primary text-center q-py-xl shadow-3 border"
                     style="margin-top: -25%; border-radius: 4px"
                 >
-                    <div class="text-h6">Reset Password</div>
+                    <div class="text-h6">Verify Your Email Address</div>
                 </div>
             </q-card-section>
 
@@ -21,14 +21,14 @@
             </q-card-section>
 
             <q-card-actions align="around">
-                <q-btn color="primary" @click="resetPasswordButtonClicked" flat>
+                <q-btn color="primary" @click="sendEmailButtonClicked" flat>
                     Send Email
                 </q-btn>
             </q-card-actions>
 
         </q-card>
 
-        <q-inner-loading color="primary" :showing="!!singleLoader.resetPasswordLoader"/>
+        <q-inner-loading color="primary" :showing="!!singleLoader.resendVerifyEmailLoader"/>
 
     </q-page>
 </template>
@@ -37,13 +37,13 @@
 import {mapGetters} from "vuex";
 
 export default {
-    name: 'Reset-Password',
+    name: 'Resend-Verify-Email',
 
     data() {
         return {
             formData  : {
                 email : '',
-                reset_url : process.env.APP_URL+'auth/password/reset'
+                verify_url : process.env.APP_URL+'auth/account/verify'
             },
             formErrors: {},
         }
@@ -56,23 +56,34 @@ export default {
     },
 
     methods: {
-        resetPasswordButtonClicked() {
-            this.$singleLoaderTrue('resetPasswordLoader');
+        sendEmailButtonClicked() {
+            this.$singleLoaderTrue('resendVerifyEmailLoader');
 
-            this.$store.dispatch('auth/forgotPassword', {vm: this, inputs: this.formData})
+            this.$store.dispatch('auth/resendVerifyEmail', {vm: this, inputs: this.formData})
                 .then(res => {
-                    this.$singleLoaderFalse('resetPasswordLoader');
+                    this.$singleLoaderFalse('resendVerifyEmailLoader');
+
+                    if (res.data.already_verify){
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Your account already verified, You can login now.',
+                            position: 'top'
+                        });
+
+                        this.$router.push({name: 'login'});
+                        return
+                    }
 
                     this.$q.notify({
                         color   : 'positive',
-                        message : 'We have e-mailed your password reset link!',
+                        message : 'A fresh verification link has been sent to your email address.',
                         position: 'top'
                     });
 
                     this.formData = '';
                 })
                 .catch(err => {
-                    this.$singleLoaderFalse('resetPasswordLoader');
+                    this.$singleLoaderFalse('resendVerifyEmailLoader');
 
                     if (!err.response.data.errors) {
                         this.$q.notify({
