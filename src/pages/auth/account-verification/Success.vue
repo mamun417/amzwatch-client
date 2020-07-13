@@ -37,6 +37,16 @@ export default {
                 .then(res => {
                     this.$singleLoaderFalse('successVerifyEmailLoader');
 
+                    if (res.data.token_expired){
+                        this.$q.notify({
+                            color   : 'negative',
+                            message : 'your token has been expired',
+                            position: 'top'
+                        });
+
+                        this.$router.push({name: 'verify'}); return
+                    }
+
                     this.$q.notify({
                         color   : 'positive',
                         message : 'Your account verification successful, You can login now.',
