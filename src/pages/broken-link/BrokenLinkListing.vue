@@ -21,12 +21,19 @@
             </q-card-section>
 
             <q-card-section class="row">
-                <q-input class="col-grow" label="Search Links" value dense />
+                <q-input
+                    class="col-grow"
+                    label="Search Links"
+                    :value="brokenLinksPipeline.s"
+                    @input="brokenLinksPipelineHandle({s:$event})"
+                    dense
+                />
                 <q-select
                     class="col-grow"
                     label="Filter"
-                    value
+                    :value="brokenLinksPipeline.f"
                     :options="['all', 'available', '404', 'other']"
+                    @input="brokenLinksPipelineHandle({f:$event})"
                     dense
                 />
             </q-card-section>
@@ -124,6 +131,7 @@
 import QCChart from "components/charts/QCChart";
 import BrokenLinksList from "components/broken-links/BrokenLinksList";
 import BrokenLinksCheckServiceActivateDeactivateModal from "components/modals/BrokenLinksCheckServiceActivateDeactivateModal";
+import {mapGetters} from "vuex";
 
 export default {
     components: {
@@ -161,7 +169,11 @@ export default {
                 this.projectInfo.domain_use_for.broken_links_check_service
                     .status === "active"
             );
-        }
+        },
+
+        ...mapGetters({
+            brokenLinksPipeline: "broken_links/pipeline"
+        })
     },
 
     methods: {
@@ -206,6 +218,17 @@ export default {
             );
 
             this.$refs.broken_links_list_viewer.getBrokenLinkInfo();
+        },
+
+        brokenLinksPipelineHandle(pipeline) {
+            this.$store
+                .dispatch("broken_links/updateBrokenLinksPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
+                .then(() => {
+                    this.$refs.broken_links_list_viewer.getBrokenLinkInfo();
+                });
         }
     }
 };
