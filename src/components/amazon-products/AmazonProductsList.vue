@@ -107,6 +107,10 @@
             />
         </q-list>
 
+        <q-card-section v-if="!amazonProductsInfo.length" class="text-center q-py-xl">
+            <div class="q-mb-lg text-subtitle2">No amazon products link found</div>
+        </q-card-section>
+
         <div v-if="amazonProductsPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="amazonProductsPaginationMeta.current_page"

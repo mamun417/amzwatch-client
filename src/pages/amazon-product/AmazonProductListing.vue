@@ -24,6 +24,24 @@
                     />
                 </div>
             </q-card-section>
+
+            <q-card-section class="row">
+                <q-input
+                    class="col-grow"
+                    label="Search Amazon Products"
+                    :value="amazonProductsPipeline.s"
+                    @input="amazonProductsLinksPipelineHandle({s:$event})"
+                    dense
+                />
+                <q-select
+                    class="col-grow"
+                    label="Filter"
+                    :value="amazonProductsPipeline.f"
+                    :options="['all', 'available', 'unavailable', '404', 'other']"
+                    @input="amazonProductsLinksPipelineHandle({f:$event})"
+                    dense
+                />
+            </q-card-section>
         </q-card>
 
         <q-card class="q-mb-xl">
@@ -121,6 +139,7 @@ import QCChart from "components/charts/QCChart";
 import ProductInPagesModal from "components/modals/ProductInPagesModal";
 import AmazonProductsList from "components/amazon-products/AmazonProductsList";
 import AmazonProductsCheckServiceActivateDeactivateModal from "components/modals/AmazonProductsCheckServiceActivateDeactivateModal";
+import {mapGetters} from "vuex";
 
 export default {
     components: {
@@ -159,7 +178,11 @@ export default {
                 this.projectInfo.domain_use_for.amazon_products_check_service
                     .status === "active"
             );
-        }
+        },
+
+        ...mapGetters({
+            amazonProductsPipeline: "amazon_products_links/pipeline"
+        })
     },
 
     methods: {
@@ -209,6 +232,17 @@ export default {
             );
 
             this.$refs.amazon_products_list_viewer.getAmazonProductsInfo();
+        },
+
+        amazonProductsLinksPipelineHandle(pipeline) {
+            this.$store
+                .dispatch("amazon_products_links/updateAmazonProductsPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
+                .then(() => {
+                    this.$refs.amazon_products_list_viewer.getAmazonProductsInfo();
+                });
         }
     }
 };
