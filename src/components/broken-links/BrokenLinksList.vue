@@ -35,6 +35,10 @@
             </q-expansion-item>
         </q-list>
 
+        <q-card-section v-if="!brokenLinkInfo.length" class="text-center q-py-xl">
+            <div class="q-mb-lg text-subtitle2">No broken link found</div>
+        </q-card-section>
+
         <div v-if="brokenLinksPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="brokenLinksPaginationMeta.current_page"

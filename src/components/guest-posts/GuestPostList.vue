@@ -39,6 +39,10 @@
             </q-expansion-item>
         </q-list>
 
+        <q-card-section v-if="!guestPostsInfo.length" class="text-center q-py-xl">
+            <div class="q-mb-lg text-subtitle2">No guest link found</div>
+        </q-card-section>
+
         <div v-if="guestLinksPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="guestLinksPaginationMeta.current_page"

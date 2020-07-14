@@ -20,6 +20,23 @@
                     <q-btn icon="settings" @click="showModal = !showModal" flat dense/>
                 </div>
             </q-card-section>
+            <q-card-section class="row">
+                <q-input
+                    class="col-grow"
+                    label="Search Guest Links"
+                    :value="guestPostsPipeline.s"
+                    @input="guestPostsPipelineHandle({s:$event})"
+                    dense
+                />
+                <q-select
+                    class="col-grow"
+                    label="Filter"
+                    :value="guestPostsPipeline.f"
+                    :options="['all', 'exist', 'not-exist']"
+                    @input="guestPostsPipelineHandle({f:$event})"
+                    dense
+                />
+            </q-card-section>
         </q-card>
 
         <q-card class="q-mb-xl">
@@ -105,6 +122,7 @@
     import GuestPostList from "components/guest-posts/GuestPostList";
     import GuestPostsCheckServiceActivateDeactivateModal
         from "components/modals/GuestPostsCheckServiceActivateDeactivateModal";
+    import {mapGetters} from "vuex";
 
     export default {
         components: {
@@ -135,7 +153,11 @@
                 if (!this.projectInfo.domain_use_for.hasOwnProperty('guest_posts_check_service')) return false
 
                 return this.projectInfo.domain_use_for.guest_posts_check_service.status === 'active'
-            }
+            },
+
+            ...mapGetters({
+                guestPostsPipeline: "guest_links/pipeline"
+            })
         },
         methods : {
             checkProject() {
@@ -165,6 +187,17 @@
                 this.$set(this.projectInfo.domain_use_for.guest_posts_check_service, 'status', updatedService.status)
 
                 this.$refs.guest_posts_list_viewer.getGuestLinks();
+            },
+
+            guestPostsPipelineHandle(pipeline) {
+                this.$store
+                    .dispatch("guest_links/updateBrokenLinksPipeline", {
+                        vm: this,
+                        pipeline: pipeline
+                    })
+                    .then(() => {
+                        this.$refs.guest_posts_list_viewer.getGuestLinks();
+                    });
             }
         }
     }
