@@ -1,7 +1,16 @@
 <template>
     <div class="q-mt-md relative-position">
         <div class="text-h6">Latest Logs</div>
-
+        <q-card-section class="row">
+            <q-select
+                class="col-grow"
+                label="Filter"
+                :value="domainUptimeLogsPipeline.f"
+                :options="['all', 'ok', 'error']"
+                @input="domainUptimeLogsPipelineHandle({f:$event})"
+                dense
+            />
+        </q-card-section>
         <q-list v-if="uptimeLogs.length" class="q-py-md" dense>
             <q-item class="text-primary text-subtitle2 text-bold">
                 <q-item-section>Event</q-item-section>
@@ -68,16 +77,21 @@ export default {
 
     mounted() {
         this.getDomainUptimeLogs();
+
+        this.interval = setInterval(() => {
+            this.getDomainUptimeLogs();
+        }, this.$intervalTime);
     },
 
     beforeDestroy() {
-        // this.interval && clearInterval(this.interval);
+        this.interval && clearInterval(this.interval);
     },
 
     computed: {
         ...mapGetters({
             uptimeLogsPaginationMeta: "domain_uptime/paginationMeta",
-            singleLoader: "ui/singleLoaderStatus"
+            singleLoader: "ui/singleLoaderStatus",
+            domainUptimeLogsPipeline: "domain_uptime/pipeline"
         })
     },
 
@@ -104,6 +118,17 @@ export default {
         uptimeLogsPaginationHandle(page) {
             this.$store
                 .dispatch("domain_uptime/updateUptimeLogsCurrentPage", page)
+                .then(() => {
+                    this.getDomainUptimeLogs();
+                });
+        },
+
+        domainUptimeLogsPipelineHandle(pipeline) {
+            this.$store
+                .dispatch("domain_uptime/updateDomainUptimeLogsPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
                 .then(() => {
                     this.getDomainUptimeLogs();
                 });

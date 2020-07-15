@@ -203,6 +203,10 @@
             </q-expansion-item>
         </q-list>
 
+        <q-card-section v-if="!pagesSpeedInfo.length" class="text-center q-py-xl">
+            <div class="q-mb-lg text-subtitle2">No page found</div>
+        </q-card-section>
+
         <div v-if="pageSpeedListPaginationMeta.last_page > 1" class="q-pa-lg flex flex-center">
             <pagination
                 :current_page="pageSpeedListPaginationMeta.current_page"
@@ -211,7 +215,7 @@
             />
         </div>
 
-        <q-inner-loading color="primary" :showing="!!singleLoader.pageSpeedListListLoader" />
+        <q-inner-loading color="primary" :showing="!!singleLoader.pageSpeedListLoader" />
     </div>
 </template>
 
