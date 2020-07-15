@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="settings" @click="showModal = !showModal" flat dense/>
+                    <q-btn icon="edit" label="Edit" @click="showModal = !showModal" flat dense/>
                 </div>
             </q-card-section>
             <q-card-section class="row">
