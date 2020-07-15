@@ -30,7 +30,11 @@ export function getDomainUptimeLogs(context, payload) {
     return new Promise((resolve, reject) => {
         let urlPath = '/projects/' + payload.project_id + '/domain-uptime-logs';
 
-        payload.vm.$get(urlPath, { log_type: payload.log_type, page: context.state.paginationMeta.current_page })
+        payload.vm.$get(urlPath, {
+            log_type: payload.log_type,
+            page: context.state.paginationMeta.current_page,
+            f: context.state.pipeline.f
+        })
             .then(res => {
                 context.commit('updatePaginationMeta', res.data.domainUptimeLogs.pagination_meta);
                 resolve(res)
@@ -60,3 +64,9 @@ export function updateUptimeLogsCurrentPage(context, payload) {
     })
 }
 
+export function updateDomainUptimeLogsPipeline(context, payload) {
+    return new Promise((resolve, reject) => {
+        context.commit('updatePipeline', payload);
+        resolve(true)
+    })
+}
