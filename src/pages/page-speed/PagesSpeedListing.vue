@@ -24,6 +24,16 @@
                     />
                 </div>
             </q-card-section>
+
+            <q-card-section class="row">
+                <q-input
+                    class="col-grow"
+                    label="Search Page"
+                    :value="pageSpeedPipeline.s"
+                    @input="pageSpeedPipelineHandle({s:$event})"
+                    dense
+                />
+            </q-card-section>
         </q-card>
 
         <q-card class="q-mb-xl">
@@ -101,6 +111,7 @@
 <script>
     import QCChart from "components/charts/QCChart";
     import PageSpeedList from "components/page-speed/PageSpeedList";
+    import {mapGetters} from "vuex";
 
     export default {
         components: {
@@ -129,7 +140,11 @@
                 if (!this.projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service')) return false
 
                 return this.projectInfo.domain_use_for.pages_speed_check_service.status === 'active'
-            }
+            },
+
+            ...mapGetters({
+                pageSpeedPipeline: "pages_speed/pipeline"
+            })
         },
 
         methods: {
@@ -156,6 +171,17 @@
                 if (!this.projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service')) {
                     this.$set(this.projectInfo.domain_use_for, 'pages_speed_check_service', {})
                 }
+            },
+
+            pageSpeedPipelineHandle(pipeline) {
+                this.$store
+                    .dispatch("pages_speed/updatePageSpeedPipeline", {
+                        vm: this,
+                        pipeline: pipeline
+                    })
+                    .then(() => {
+                        this.$refs.page_speed_list_viewer.getPagesSpeedInfo();
+                    });
             }
         }
     }

@@ -1,8 +1,11 @@
 export function getPagesSpeed(context, payload) {
     return new Promise((resolve, reject) => {
-        let urlPath = '/projects/' + payload.project_id + '/pages-speed?page=' + context.state.paginationMeta.current_page;
+        let urlPath = '/projects/' + payload.project_id + '/pages-speed';
 
-        payload.vm.$get(urlPath)
+        payload.vm.$get(urlPath, {
+            page: context.state.paginationMeta.current_page,
+            s: context.state.pipeline.s
+        })
             .then(res => {
                 context.commit('updatePaginationMeta', res.data.pageSpeedResults.pagination_meta);
                 resolve(res)
@@ -29,6 +32,13 @@ export function updatePagesSpeedCheckService(context, payload) {
 export function updatePageSpeedListCurrentPage(context, payload) {
     return new Promise((resolve, reject) => {
         context.commit('updateCurrentPagePaginationMeta', payload);
+        resolve(true)
+    })
+}
+
+export function updatePageSpeedPipeline(context, payload) {
+    return new Promise((resolve, reject) => {
+        context.commit('updatePipeline', payload);
         resolve(true)
     })
 }
