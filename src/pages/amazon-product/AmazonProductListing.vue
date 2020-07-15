@@ -17,7 +17,8 @@
 
                 <div class="col text-right">
                     <q-btn
-                        icon="settings"
+                        icon="edit"
+                        label="Edit"
                         @click="showServiceActivateDeactivateModal = !showServiceActivateDeactivateModal"
                         flat
                         dense
