@@ -42,8 +42,7 @@ export default {
     data() {
         return {
             formData  : {
-                email : '',
-                verify_url : process.env.APP_URL+'auth/account/verify'
+                email : ''
             },
             formErrors: {},
         }
