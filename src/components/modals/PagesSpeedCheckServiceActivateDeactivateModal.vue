@@ -23,11 +23,16 @@
                     @click="serviceActivateDeactivateHandle"
                 />
             </q-card-section>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.pageSpeedCheckerUpdateLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         props  : {
             show       : {
@@ -46,8 +51,18 @@
                 }
             }
         },
+
+        computed: {
+            ...mapGetters({
+                singleLoader : 'ui/singleLoaderStatus'
+            })
+        },
+
         methods: {
             serviceActivateDeactivateHandle() {
+
+                this.$singleLoaderTrue('pageSpeedCheckerUpdateLoader');
+
                 this.$store.dispatch('pages_speed/updatePagesSpeedCheckService', {
                     vm        : this,
                     project_id: this.projectInfo.id,
@@ -56,10 +71,20 @@
                     }
                 })
                     .then(res => {
+
+                        this.$singleLoaderFalse('pageSpeedCheckerUpdateLoader');
+
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Page speed checker service has been updated Successful',
+                            position: 'top'
+                        });
+
                         this.$emit('serviceUpdated', res.data.project);
                         this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('pageSpeedCheckerUpdateLoader');
                         //handle error
                     });
             }

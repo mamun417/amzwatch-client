@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="col text-right">
-                    <q-btn icon="edit" @click="handleProjectEditModal" flat dense/>
+                    <q-btn icon="edit" label="Edit" @click="handleProjectEditModal" flat dense/>
                 </div>
             </q-card-section>
         </q-card>

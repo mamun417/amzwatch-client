@@ -106,6 +106,13 @@
                 @getPagesSpeedCount="pagesSpeedCount = $event"
             />
         </q-card>
+
+        <pages-speed-check-service-activate-deactivate-modal
+            :show.sync="showServiceActivateDeactivateModal"
+            :project-info="projectInfo"
+            @serviceUpdated="handlePagesSpeedCheckServiceUpdate"
+        />
+
     </section>
 </template>
 
@@ -113,9 +120,12 @@
     import QCChart from "components/charts/QCChart";
     import PageSpeedList from "components/page-speed/PageSpeedList";
     import {mapGetters} from "vuex";
+    import PagesSpeedCheckServiceActivateDeactivateModal
+        from "components/modals/PagesSpeedCheckServiceActivateDeactivateModal";
 
     export default {
         components: {
+            PagesSpeedCheckServiceActivateDeactivateModal,
             PageSpeedList,
             QCChart,
         },
@@ -172,6 +182,8 @@
                 if (!this.projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service')) {
                     this.$set(this.projectInfo.domain_use_for, 'pages_speed_check_service', {})
                 }
+
+                this.$set(this.projectInfo.domain_use_for.pages_speed_check_service, 'status', updatedService.status)
             },
 
             pageSpeedPipelineHandle(pipeline) {

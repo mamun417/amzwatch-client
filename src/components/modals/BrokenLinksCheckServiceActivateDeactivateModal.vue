@@ -24,11 +24,16 @@
                     @click="serviceActivateDeactivateHandle"
                 />
             </q-card-section>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.brokenLinkCheckServiceFormLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         props  : {
             show       : {
@@ -47,8 +52,17 @@
                 }
             }
         },
+
+        computed: {
+            ...mapGetters({
+                singleLoader: 'ui/singleLoaderStatus'
+            })
+        },
+
         methods: {
             serviceActivateDeactivateHandle() {
+                this.$singleLoaderTrue('brokenLinkCheckServiceFormLoader');
+
                 this.$store.dispatch('broken_links/updateBrokenLinksCheckService', {
                     vm        : this,
                     project_id: this.projectInfo.id,
@@ -57,10 +71,19 @@
                     }
                 })
                     .then(res => {
+                        this.$singleLoaderFalse('brokenLinkCheckServiceFormLoader');
+
+                        this.$q.notify({
+                            color   : 'positive',
+                            message : 'Broken link checker service has been updated Successful',
+                            position: 'top'
+                        });
+
                         this.$emit('serviceUpdated', res.data.project);
                         this.$emit('update:show', false);
                     })
                     .catch(err => {
+                        this.$singleLoaderFalse('brokenLinkCheckServiceFormLoader');
                         //handle error
                     });
             }
