@@ -42,8 +42,7 @@ export default {
     data() {
         return {
             formData  : {
-                email : '',
-                reset_url : process.env.APP_URL+'auth/password/reset'
+                email : ''
             },
             formErrors: {},
         }

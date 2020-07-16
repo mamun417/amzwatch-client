@@ -83,8 +83,7 @@ export default {
                 email           : 'testjohn@example.com',
                 password        : '123',
                 confirm_password: '123',
-                agree           : false,
-                verify_url      : process.env.APP_URL+'auth/account/verify'
+                agree           : false
             },
             formErrors: {}
         }
