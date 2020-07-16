@@ -94,6 +94,7 @@
 
                                 <q-item
                                     v-if="individualErrorCount(group, 'status_404') > 0"
+                                    @click="handleBrokenLinksRedirect(group.user_domain._id, {f: '404'})"
                                     clickable
                                 >
                                     <q-item-section class="q-pl-md">404 errors</q-item-section>
@@ -101,8 +102,10 @@
                                         class="text-right text-warning"
                                     >{{individualErrorCount(group, 'status_404')}}</q-item-section>
                                 </q-item>
+
                                 <q-item
                                     v-if="individualErrorCount(group, 'other_error') > 0"
+                                    @click="handleBrokenLinksRedirect(group.user_domain._id, {f: 'other'})"
                                     clickable
                                 >
                                     <q-item-section class="q-pl-md">Other errors</q-item-section>
@@ -163,6 +166,7 @@
 
                                 <q-item
                                     v-if="individualErrorCount(group, 'unavailable') > 0"
+                                    @click="handleProductRedirect(group.user_domain._id, {f: 'unavailable'})"
                                     clickable
                                 >
                                     <q-item-section no-wrap class="q-pl-md">Unavailable errors</q-item-section>
@@ -170,8 +174,10 @@
                                         class="text-right text-warning"
                                     >{{individualErrorCount(group, 'unavailable')}}</q-item-section>
                                 </q-item>
+
                                 <q-item
                                     v-if="individualErrorCount(group, 'status_404') > 0"
+                                    @click="handleProductRedirect(group.user_domain._id, {f: '404'})"
                                     clickable
                                 >
                                     <q-item-section class="q-pl-md">404 errors</q-item-section>
@@ -179,8 +185,10 @@
                                         class="text-right text-warning"
                                     >{{individualErrorCount(group, 'status_404')}}</q-item-section>
                                 </q-item>
+
                                 <q-item
                                     v-if="individualErrorCount(group, 'other_error') > 0"
+                                    @click="handleProductRedirect(group.user_domain._id, {f: 'other'})"
                                     clickable
                                 >
                                     <q-item-section class="q-pl-md">Other errors</q-item-section>
@@ -327,6 +335,28 @@ export default {
                 })
                 .then(() => {
                     this.$router.push("/projects");
+                });
+        },
+
+        handleBrokenLinksRedirect(projectId, pipeline){
+            this.$store
+                .dispatch("broken_links/updateBrokenLinksPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
+                .then(() => {
+                    this.$router.push("projects/"+projectId+"/broken-links-check");
+                });
+        },
+
+        handleProductRedirect(projectId, pipeline){
+            this.$store
+                .dispatch("amazon_products_links/updateAmazonProductsPipeline", {
+                    vm: this,
+                    pipeline: pipeline
+                })
+                .then(() => {
+                    this.$router.push("projects/"+projectId+"/amazon-products-check");
                 });
         }
     }
