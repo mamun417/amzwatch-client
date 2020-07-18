@@ -147,7 +147,8 @@ export default {
             showProductsInPagesModal: {
                 showModal: false,
                 product: {}
-            }
+            },
+            expandedItemId: ''
         };
     },
 
@@ -205,6 +206,8 @@ export default {
                         res.data.amazonProducts.pagination_meta.total
                     );
 
+                    this.setExpandedItemData();
+
                     this.$singleLoaderFalse("amazonProductsLoader");
                 })
                 .catch(err => {
@@ -232,6 +235,8 @@ export default {
                                     amazonProduct["productInPagesLinks"] =
                                         res.data.productsInPages.data;
                                 }
+
+                                this.expandedItemId = product.id
                             }
 
                             return amazonProduct;
@@ -261,6 +266,16 @@ export default {
                 .then(() => {
                     this.getAmazonProductsInfo();
                 });
+        },
+
+        setExpandedItemData(){
+            if (this.expandedItemId){
+                this.amazonProductsInfo.map( amazonProduct => {
+                    if (this.expandedItemId === amazonProduct.id){
+                        this.showProductLinksInfo(amazonProduct)
+                    }
+                })
+            }
         }
     }
 };
