@@ -7,10 +7,10 @@
             icon="notifications"
             rounded
         >
-            <!-- <q-badge color="red" floating>2</q-badge> -->
+             <q-badge v-if="getUnseenNotifications > 0" color="red" floating>{{ getUnseenNotifications }}</q-badge>
         </q-avatar>
 
-        <q-menu>
+        <q-menu @show="updateNotification">
             <q-infinite-scroll @load="loadNewItems" :offset="75" :disable="disableInfiniteScroll">
                 <q-list
                     bordered
@@ -20,7 +20,7 @@
                     <!-- <q-item-label header>Notifications</q-item-label> -->
 
                     <div v-for="(item, index) in notifications" :key="index">
-                        <q-item class="flex items-center" clickable v-ripple>
+                        <q-item class="flex items-center" :class="[item.seen ? '' : 'bg-blue-grey-1']" clickable v-ripple>
                             <q-item-section avatar>
                                 <q-icon size="20px" :name="calcServiceIcon(item.service_type)" />
                             </q-item-section>
@@ -66,6 +66,12 @@ export default {
     },
 
     computed: {
+        getUnseenNotifications() {
+            return this.notifications.filter(notification => {
+                return !notification.seen
+            }).length
+        },
+
         ...mapGetters({
             notificationsPaginationMeta: "notifications/paginationMeta",
             singleLoader: "ui/singleLoaderStatus"
@@ -99,7 +105,6 @@ export default {
 
         getNotifications() {
             this.$singleLoaderTrue("notificationsLoader");
-
             this.$store
                 .dispatch("notifications/getNotifications", {
                     vm: this
@@ -112,6 +117,30 @@ export default {
                 .catch(err => {
                     //handle error
                 });
+        },
+
+        updateNotification() {
+            let unseenNotifications = this.notifications.filter(notification => {
+                return !notification.seen
+            })
+
+            let ids = unseenNotifications.map(notification => {
+                return notification.id
+            })
+
+            if (ids.length > 0){
+                this.$store
+                    .dispatch("notifications/updateNotifications", {
+                        vm: this,
+                        ids: ids
+                    })
+                    .then(res => {
+                        this.getNotifications()
+                    })
+                    .catch(err => {
+                        //handle error
+                    });
+            }
         }
     }
 };

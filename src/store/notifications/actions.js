@@ -16,6 +16,22 @@ export function getNotifications(context, payload) {
     })
 }
 
+export function updateNotifications(context, payload) {
+    return new Promise((resolve, reject) => {
+        let urlPath = '/notifications/update';
+
+        payload.vm.$patch(urlPath, {
+            ids: payload.ids,
+        })
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
 export function updateNotificationsCurrentPage(context, payload) {
     return new Promise((resolve, reject) => {
         context.commit('updateCurrentPagePaginationMeta', payload);
