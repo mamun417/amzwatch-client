@@ -79,7 +79,7 @@ export default {
                         position: 'top'
                     });
 
-                    this.formData = '';
+                    this.formData.email = '';
                 })
                 .catch(err => {
                     this.$singleLoaderFalse('resendVerifyEmailLoader');
