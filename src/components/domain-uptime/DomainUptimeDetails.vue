@@ -5,17 +5,26 @@
                 v-if="serviceTypes.length && 'ping'.includes(serviceTypes)"
                 class="col-12 col-md-8"
             >
-                <!-- <q-card-section class="q-pt-none flex items-center">
+                 <q-card-section class="q-pt-none flex items-center">
                     <q-icon size="sm" name="bar_chart" />
                     <span class="text-h6 q-mr-sm">Uptime</span>
                     <span class="text-green text-subtitle1">Last 24 hours</span>
-                </q-card-section>-->
+                </q-card-section>
 
-                <!-- <div>
-                    <q-linear-progress rounded size="20px" :value="1" color="green" />
-                </div>-->
+                <q-scroll-area horizontal style="height: 35px">
+                    <div class="row no-wrap">
+                        <div v-for="n in 100" class="cursor-pointer bg-green"
+                            style="margin-right: 2px;
+                            height: 20px; width: 3px"
+                        >
+                            <q-tooltip content-class="bg-black" anchor="top middle" self="bottom middle">
+                                Tooltip Text goes here
+                            </q-tooltip>
+                        </div>
+                    </div>
+                </q-scroll-area>
 
-                <!-- <q-separator class="q-mt-lg" /> -->
+                 <q-separator class="q-mt-lg" />
 
                 <q-card-section class="flex items-center q-pt-none">
                     <q-icon size="sm" name="bar_chart" />
@@ -34,14 +43,14 @@
 
                 <!--<q-c-chart v-if="uptimeTimeline.length" :data="pingChartData" />-->
                 <div>
-                    <apex-chart
+                    <!--<apex-chart
                         v-if="chartDataReady"
                         width="100%"
                         height="380px"
                         type="area"
                         :options="options"
                         :series="series"
-                    />
+                    />-->
                 </div>
             </div>
 
@@ -253,6 +262,7 @@ export default {
             uptimeTimeline: [],
             uptimeLatestDowntime: {},
             uptimeLogs: [],
+            uptimeBarData: [],
 
             pingResponseTimeAvg: {
                 min: 0,
