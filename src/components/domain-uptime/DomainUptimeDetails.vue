@@ -3,7 +3,7 @@
         <div class="row q-col-gutter-x-md">
             <div
                 v-if="serviceTypes.length && 'ping'.includes(serviceTypes)"
-                class="col-12 col-md-8"
+                class="col-12 col-md-8 relative-position"
             >
                  <q-card-section class="q-pt-none flex items-center">
                     <q-icon size="sm" name="bar_chart" />
@@ -12,13 +12,15 @@
                 </q-card-section>
 
                 <q-scroll-area horizontal style="height: 35px">
-                    <div class="row no-wrap">
-                        <div v-for="n in 100" class="cursor-pointer bg-green"
-                            style="margin-right: 2px;
-                            height: 20px; width: 3px"
+                    <div class="row no-wrap" id="uptimeBar">
+                        <div v-for="uptimeBar in uptimeBarData"
+                             class="cursor-pointer"
+                             :class="[uptimeBar.status === 'ok' ? 'bg-green' : 'bg-warning']"
+                             id="singleBar"
                         >
-                            <q-tooltip content-class="bg-black" anchor="top middle" self="bottom middle">
-                                Tooltip Text goes here
+                            <q-tooltip content-class="bg-black text-md" anchor="top middle" self="bottom middle">
+                                {{ $timestampToDate(uptimeBar.logged_at) }}
+                                <div class="text-center">{{ uptimeBar.status }}</div>
                             </q-tooltip>
                         </div>
                     </div>
@@ -43,15 +45,20 @@
 
                 <!--<q-c-chart v-if="uptimeTimeline.length" :data="pingChartData" />-->
                 <div>
-                    <!--<apex-chart
+                    <apex-chart
                         v-if="chartDataReady"
                         width="100%"
                         height="380px"
                         type="area"
                         :options="options"
                         :series="series"
-                    />-->
+                    />
                 </div>
+
+                <q-inner-loading
+                    color="primary"
+                    :showing="!!singleLoader.domainUptimeChartLoader"
+                />
             </div>
 
             <div
@@ -306,6 +313,8 @@ export default {
         },
 
         getDomainUptimeTimeline() {
+            this.$singleLoaderTrue("domainUptimeChartLoader");
+
             this.$store
                 .dispatch("domain_uptime/getDomainUptimeTimeline", {
                     vm: this,
@@ -313,6 +322,8 @@ export default {
                     log_type: this.serviceTypes[0]
                 })
                 .then(res => {
+                    this.$singleLoaderFalse("domainUptimeChartLoader");
+
                     this.uptimeTimeline = res.data.domainUptimeTimeline.data;
 
                     this.generateDataFromTimeline(this.uptimeTimeline);
@@ -360,6 +371,8 @@ export default {
                             y: 0
                         });
                     }
+
+                    this.uptimeBarData.push(timeline)
                 }
 
                 let currentTimelineDay = parseInt(
@@ -429,3 +442,15 @@ export default {
     }
 };
 </script>
+
+<style lang="sass">
+    #uptimeBar #singleBar
+        height: 25px
+        width: 5px
+        opacity: 0.7
+        border-left: 1px solid #fff
+        border-right: 1px solid #fff
+
+    #uptimeBar #singleBar:hover
+        opacity: 1!important
+</style>
