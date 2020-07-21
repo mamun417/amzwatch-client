@@ -22,19 +22,20 @@
                     class="row full-width justify-between text-subtitle2 items-center"
                 >
                     <q-item-section class="col">
-                        <q-img
+                        <pre>{{ product }}</pre>
+
+                        <!--<q-img
                             style="width: 82px; height: 82px"
-                            :src="product.product.meta.metas.product_image"
+                            :src="calculateProductStatus(product) === 'pending' ? '' : product.product.meta.metas.product_image"
                             contain
                         >
-                            <!-- <img :src="product.product.meta.metas.product_image" /> -->
-                        </q-img>
+                        </q-img>-->
                     </q-item-section>
-                    <q-item-section class="col">{{product.product.meta.metas.product_name}}</q-item-section>
+                   <!-- <q-item-section class="col">{{product.product.meta.metas.product_name}}</q-item-section>-->
                     <q-item-section class="col inline-block text-right">
                         <q-badge
                             :color="calculateProductStatus(product) === 'available' ? 'positive' : 'warning'"
-                        >{{calculateProductStatus(product) === 'available' ? 'available' : 'unavailable'}}</q-badge>
+                        >{{calculateProductStatus(product)}}</q-badge>
                     </q-item-section>
                 </q-item>
 
@@ -182,13 +183,21 @@ export default {
                     ) {
                         let status = productObj.product.meta.page_status.toString();
 
-                        return ["2", "3"].includes(status[0])
-                            ? "available"
-                            : "unavailable";
+                        if (["4"].includes(status[0])) {
+                            return "404"
+                        } else if (["2", "3"].includes(status[0])) {
+                            return parseInt(productObj.product.meta.metas.in_stock)
+                                ? "available" : "unavailable"
+                        } else {
+                            return "other"
+                        }
+                    }
+                }else {
+                    if (!productObj.product.updated_at.hasOwnProperty("meta")){
+                        return "pending";
                     }
                 }
             }
-            return "pending";
         },
         getAmazonProductsInfo() {
             this.$singleLoaderTrue("amazonProductsLoader");
