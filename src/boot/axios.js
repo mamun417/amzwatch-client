@@ -1,14 +1,14 @@
 import axios from 'axios'
 
-export default function ({store, Vue, router}) {
+export default function ({ store, Vue, router }) {
     axios.defaults.withCredentials = true;
-    Vue.prototype.$http            = axios
+    Vue.prototype.$http = axios
 
     let apiBase = process.env.PROD ? process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT;
 
     Vue.prototype.$apiBase = apiBase;
 
-// handle before req happen
+    // handle before req happen
     axios.interceptors.request.use(
         req => {
             const token = localStorage.getItem('token');
@@ -24,7 +24,7 @@ export default function ({store, Vue, router}) {
         }
     )
 
-// handle before res is send to client
+    // handle before res is send to client
     axios.interceptors.response.use(
         res => {
             return res
@@ -44,7 +44,13 @@ export default function ({store, Vue, router}) {
                     .catch(err => {
                         // think what we need to do. i think do logout cz we cant refresh so do manual login
                     })
-            } else {
+            }
+            if (err.response.status === 422 && ['Bearer token invalid', 'Refresh token not found'].includes(err.response.data.message)) {
+                store.dispatch('auth/logout').then(() => {
+                    return router.push('/auth/login')
+                })
+            }
+            else {
                 return Promise.reject(err)
             }
         }
@@ -56,7 +62,7 @@ export default function ({store, Vue, router}) {
 
     Vue.prototype.$get = function (path, queryParams) {
         return new Promise((resolve, reject) => {
-            this.$http.get(this.$api(path), {params: queryParams})
+            this.$http.get(this.$api(path), { params: queryParams })
                 .then(res => {
                     resolve(res)
                 })
