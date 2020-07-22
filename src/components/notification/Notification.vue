@@ -19,24 +19,29 @@
                 >
                     <!-- <q-item-label header>Notifications</q-item-label> -->
 
-                    <div v-for="(item, index) in notifications" :key="index">
-                        <q-item class="flex items-center" :class="[item.seen ? '' : 'bg-blue-grey-1']" clickable v-ripple>
-                            <q-item-section avatar>
-                                <q-icon size="20px" :name="calcServiceIcon(item.service_type)" />
-                            </q-item-section>
+                    <div v-if="notifications.length">
+                        <div v-for="(item, index) in notifications" :key="index">
+                            <q-item class="flex items-center" :class="[item.seen ? '' : 'bg-blue-grey-1']" clickable v-ripple>
+                                <q-item-section avatar>
+                                    <q-icon size="20px" :name="calcServiceIcon(item.service_type)" />
+                                </q-item-section>
 
-                            <q-item-section>
-                                <q-item-label lines="1">{{calcNotificationTitle(item.service_type)}}</q-item-label>
-                                <q-item-label
-                                    caption
-                                    lines="2"
-                                >{{calcNotificationCaption(item.service_type, item.log)}}</q-item-label>
-                            </q-item-section>
+                                <q-item-section>
+                                    <q-item-label lines="1">{{calcNotificationTitle(item.service_type)}}</q-item-label>
+                                    <q-item-label
+                                        caption
+                                        lines="2"
+                                    >{{calcNotificationCaption(item.service_type, item.log)}}</q-item-label>
+                                </q-item-section>
 
-                            <q-item-section side>{{$moment(item.log.logged_at).fromNow()}}</q-item-section>
-                        </q-item>
-                        <q-separator />
+                                <q-item-section side>{{$moment(item.log.logged_at).fromNow()}}</q-item-section>
+                            </q-item>
+                            <q-separator />
+                        </div>
                     </div>
+
+                    <div v-else class="text-center q-py-md text-weight-bold">No notification found</div>
+
                 </q-list>
                 <template v-slot:loading>
                     <div class="row justify-center q-my-md">

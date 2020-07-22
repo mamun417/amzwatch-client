@@ -15,6 +15,7 @@
                 header-class
                 expand-icon-class="hidden"
                 class="shadow-3 q-mb-sm"
+                ref="pagesItem"
             >
                 <q-item
                     slot="header"
@@ -313,6 +314,10 @@ export default {
         },
 
         pageSpeedListPaginationHandle(page) {
+            this.$refs.pagesItem.forEach(item => {
+                item.hide()
+            })
+
             this.$store
                 .dispatch("pages_speed/updatePageSpeedListCurrentPage", page)
                 .then(() => {
