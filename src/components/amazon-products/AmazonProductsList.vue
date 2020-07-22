@@ -22,16 +22,27 @@
                     class="row full-width justify-between text-subtitle2 items-center"
                 >
                     <q-item-section class="col">
-                        <pre>{{ product }}</pre>
-
-                        <!--<q-img
+                        <q-img
+                            v-if="calculateProductStatus(product) !== 'pending' &&
+                            (calculateProductStatus(product) !== 'other' && product.product.meta.hasOwnProperty('metas'))"
                             style="width: 82px; height: 82px"
-                            :src="calculateProductStatus(product) === 'pending' ? '' : product.product.meta.metas.product_image"
+                            :src="product.product.meta.metas.product_image"
                             contain
-                        >
-                        </q-img>-->
+                        />
+                        <q-img
+                            v-else
+                            style="width: 82px; height: 82px"
+                            src="/statics/broken-image.jpg"
+                            contain
+                        />
                     </q-item-section>
-                   <!-- <q-item-section class="col">{{product.product.meta.metas.product_name}}</q-item-section>-->
+                    <q-item-section
+                        class="col"
+                        v-if="calculateProductStatus(product) !== 'pending' &&
+                        (calculateProductStatus(product) !== 'other' && product.product.meta.hasOwnProperty('metas'))"
+                    >
+                        {{product.product.meta.metas.product_name}}
+                    </q-item-section>
                     <q-item-section class="col inline-block text-right">
                         <q-badge
                             :color="calculateProductStatus(product) === 'available' ? 'positive' : 'warning'"
@@ -193,7 +204,7 @@ export default {
                         }
                     }
                 }else {
-                    if (!productObj.product.updated_at.hasOwnProperty("meta")){
+                    if (!productObj.product.updated_at.hasOwnProperty("last_parsed_at")){
                         return "pending";
                     }
                 }

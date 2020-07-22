@@ -38,7 +38,7 @@
                     class="col-grow"
                     label="Filter"
                     :value="amazonProductsPipeline.f"
-                    :options="['all', 'available', 'unavailable', '404', 'other']"
+                    :options="['all', 'available', 'unavailable', '404', 'pending', 'other']"
                     @input="amazonProductsLinksPipelineHandle({f:$event})"
                     dense
                 />
