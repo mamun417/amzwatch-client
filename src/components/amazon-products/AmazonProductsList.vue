@@ -16,6 +16,7 @@
                 expand-icon-class="hidden"
                 class="shadow-3 q-mb-sm"
                 @show="showProductLinksInfo(product)"
+                ref="productItem"
             >
                 <q-item
                     slot="header"
@@ -278,6 +279,10 @@ export default {
         },
 
         amazonProductsPaginationHandle(page) {
+            this.$refs.productItem.forEach(item => {
+                item.hide()
+            })
+
             this.$store
                 .dispatch(
                     "amazon_products_links/updateAmazonProductsCurrentPage",
