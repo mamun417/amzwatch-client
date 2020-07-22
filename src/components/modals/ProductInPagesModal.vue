@@ -23,11 +23,16 @@
                     >{{ $timestampToDate(product.product.updated_at.last_scraped_at, "Do MM YYYY, h:mm:ss a") }}</q-item-section>
                 </q-item>
             </q-list>
+
+            <q-inner-loading color="primary" :showing="!!singleLoader.productInPagesLoader"/>
+
         </q-card>
     </q-dialog>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     props: {
         active: {
@@ -46,24 +51,34 @@ export default {
         };
     },
 
+    computed: {
+        ...mapGetters({
+            singleLoader : 'ui/singleLoaderStatus'
+        })
+    },
+
     mounted() {
         this.getProductInPages();
     },
 
     methods: {
         getProductInPages() {
+            this.$singleLoaderTrue('productInPagesLoader');
+
             this.productInPages = [];
 
             this.$store
                 .dispatch("amazon_products_links/getAmazonProductInPages", {
                     vm: this,
                     product_id: this.product.product_id, //amazonproduct id
-                    affiliate_id: this.product.affiliate_id
+                    project_id: this.$route.params.project_id
                 })
                 .then(res => {
+                    this.$singleLoaderFalse('productInPagesLoader');
                     this.productInPages = res.data.productsInPages.data;
                 })
                 .catch(err => {
+                    this.$singleLoaderFalse('productInPagesLoader');
                     //handle error
                 });
         }
