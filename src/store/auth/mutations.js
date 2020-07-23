@@ -1,4 +1,4 @@
-export function authSuccess(state, {token, user}) {
+export function authSuccess(state, { token, user }) {
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
 
@@ -12,7 +12,7 @@ export function updateToken(state, token) {
     state.token = token;
 }
 
-export function updateProfile(state, {user}) {
+export function updateProfile(state, { user }) {
     localStorage.setItem('user', JSON.stringify(user));
 
     state.user = user;
@@ -20,8 +20,8 @@ export function updateProfile(state, {user}) {
 
 export function authOut(state) {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
     state.token = '';
+
+    localStorage.removeItem('user');
     state.user = {};
 }

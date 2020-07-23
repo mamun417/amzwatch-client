@@ -45,10 +45,13 @@ export default function ({ store, Vue, router }) {
                         // think what we need to do. i think do logout cz we cant refresh so do manual login
                     })
             }
-            if (err.response.status === 422 && ['Bearer token invalid', 'Refresh token not found'].includes(err.response.data.message)) {
+            else if (err.response.status === 422 && ['Bearer token invalid', 'Refresh token not found'].includes(err.response.data.message)) {
                 store.dispatch('auth/logout').then(() => {
                     return router.push('/auth/login')
                 })
+            }
+            else if (err.response.status === 403 && err.response.data.message === 'Forbidden') {
+                return router.push('/')
             }
             else {
                 return Promise.reject(err)
