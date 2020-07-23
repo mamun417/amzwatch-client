@@ -41,7 +41,8 @@
                                     class="q-mx-xs"
                                     :class="[`text-${calculateScoreType(calculateOverallScore(page.meta[device].categories)).color}`]"
                                     :value="calculateOverallScore(page.meta[device].categories)"
-                                    size="40px"
+                                    size="60px"
+                                    font-size="10px"
                                     :color="calculateScoreType(calculateOverallScore(page.meta[device].categories)).color"
                                     track-color="grey-3"
                                     show-value
@@ -135,11 +136,14 @@
                                                 class="q-mx-xs"
                                                 :class="[`text-${calculateScoreType(page.meta[device].audits[key].score * 100).color}`]"
                                                 :value="page.meta[device].audits[key].score * 100"
-                                                size="40px"
+                                                size="60px"
+                                                font-size="10px"
                                                 :color="calculateScoreType(page.meta[device].audits[key].score * 100).color"
                                                 track-color="grey-4"
                                                 show-value
-                                            />
+                                            >
+                                                {{ page.meta[device].audits[key].displayValue }}
+                                            </q-circular-progress>
                                             <span v-else class="q-ml-xs text-warning">Pending</span>
                                         </div>
                                     </div>
@@ -178,11 +182,12 @@
                                             class="q-mx-xs"
                                             :class="[`text-${calculateScoreType(page.meta[device].categories[cr].score * 100).color}`]"
                                             :value="page.meta[device].categories[cr].score * 100"
-                                            size="40px"
+                                            size="60px"
+                                            font-size="10px"
                                             :color="calculateScoreType(page.meta[device].categories[cr].score * 100).color"
                                             track-color="grey-3"
                                             show-value
-                                        />
+                                        >{{ (page.meta[device].categories[cr].score * 100).toFixed(2)+'%' }}</q-circular-progress>
                                         <span v-else class="q-ml-xs text-warning">Pending</span>
                                     </div>
                                 </div>

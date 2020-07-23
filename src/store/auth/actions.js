@@ -116,6 +116,25 @@ export function successVerifyEmail(context, payload) {
     })
 }
 
+export function getUserInfo(context, payload) {
+    return new Promise((resolve, reject) => {
+        payload.vm.$get('/me')
+            .then(res => {
+                resolve(res)
+            })
+            .catch(err => {
+                reject(err)
+            })
+    })
+}
+
+export function updateUserInfo(context, payload) {
+    return new Promise((resolve, reject) => {
+        context.commit('updateProfile', {user: payload.user});
+        resolve(true)
+    })
+}
+
 export function logout(context) {
     return new Promise((resolve, reject) => {
         context.commit('authOut');
