@@ -145,7 +145,7 @@
                     >{{ handleCount(productsCount, ['available']) }} Available</q-btn>
 
                     <q-btn color="warning" class="q-px-xs" no-caps flat dense>
-                        <div>{{ handleCount(pagesCount, ['unavailable','status_404', 'other_error']) }} Problems</div>
+                        <div>{{ handleCount(productsCount, ['unavailable','status_404', 'other_error']) }} Problems</div>
 
                         <q-menu
                             v-if="handleCount(productsCount, ['unavailable','status_404', 'other_error']) > 0"
@@ -161,7 +161,7 @@
                                     <q-item-section>{{group.user_domain.project_name}}</q-item-section>
                                     <q-item-section
                                         class="text-right text-warning"
-                                    >Total {{handleCount([group], ['status_404', 'other_error'])}}</q-item-section>
+                                    >Total {{handleCount([group], ['unavailable', 'status_404', 'other_error'])}}</q-item-section>
                                 </q-item>
 
                                 <q-item
