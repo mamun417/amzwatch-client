@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-list>
-            <q-item class="q-mb-sm text-subtitle2 text-primary">
+            <q-item v-if="$q.screen.gt.sm" class="q-mb-sm text-subtitle2 text-primary">
                 <q-item-section class="q-ml-md">Image</q-item-section>
                 <q-item-section class="text-center">Product Name</q-item-section>
                 <q-item-section class="text-right q-mr-md">In Pages</q-item-section>
@@ -18,11 +18,12 @@
                 @show="showProductLinksInfo(product)"
                 ref="productItem"
             >
-                <q-item
+                <div
                     slot="header"
                     class="row full-width justify-between text-subtitle2 items-center"
+                    :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <q-item-section class="col">
+                    <div class="col-12 col-sm">
                         <q-img
                             v-if="calculateProductStatus(product) !== 'pending' &&
                             (calculateProductStatus(product) !== 'other' && product.product.meta.hasOwnProperty('metas'))"
@@ -36,20 +37,23 @@
                             src="/statics/broken-image.jpg"
                             contain
                         />
-                    </q-item-section>
-                    <q-item-section
-                        class="col"
+                    </div>
+                    <div
+                        class="col-12 col-sm"
                         v-if="calculateProductStatus(product) !== 'pending' &&
                         (calculateProductStatus(product) !== 'other' && product.product.meta.hasOwnProperty('metas'))"
                     >
                         {{product.product.meta.metas.product_name}}
-                    </q-item-section>
-                    <q-item-section class="col inline-block text-right">
+                    </div>
+                    <div
+                        class="col-12 col-sm inline-block"
+                        :class="$q.screen.lt.sm ? 'text-center' : 'text-right'"
+                    >
                         <q-badge
                             :color="calculateProductStatus(product) === 'available' ? 'positive' : 'warning'"
                         >{{calculateProductStatus(product)}}</q-badge>
-                    </q-item-section>
-                </q-item>
+                    </div>
+                </div>
 
                 <q-card
                     v-if="showLinksCountAfterExpand"
@@ -87,9 +91,10 @@
                                 :key="index"
                                 clickable
                             >
-                                <q-item-section>{{link.page.url}}</q-item-section>
+                                <q-item-section style="overflow-wrap: anywhere">{{link.page.url}}</q-item-section>
                                 <q-item-section
-                                    class="text-right col-auto"
+                                    side
+                                    no-wrap
                                 >{{ $timestampToDate(product.product.updated_at.last_scraped_at) }}</q-item-section>
                             </q-item>
                         </q-list>
