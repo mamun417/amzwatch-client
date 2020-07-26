@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-list>
-            <q-item class="q-mb-sm text-subtitle2 text-primary">
+            <q-item v-if="$q.screen.gt.sm" class="q-mb-sm text-subtitle2 text-primary">
                 <q-item-section class="q-ml-md">Link</q-item-section>
                 <q-item-section class="text-center">Status</q-item-section>
                 <q-item-section class="text-right q-mr-md">Last Checked</q-item-section>
@@ -16,22 +16,25 @@
                 expand-icon-class="hidden"
                 class="shadow-3 q-mb-sm"
             >
-                <q-item
+                <div
                     slot="header"
                     class="row full-width justify-between text-subtitle2 items-center"
+                    :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <q-item-section class="col">{{ link.url }}</q-item-section>
-                    <q-item-section class="col text-center inline-block">
+                    <div class="col-12 col-sm">{{ link.url }}</div>
+                    <div class="col-12 col-sm text-center">
                         <q-badge
                             :color="calculateLinkStatus(link) !== 'available' ? 'warning' : 'positive'"
                         >{{ calculateLinkStatus(link) }}</q-badge>
-                    </q-item-section>
-                    <q-item-section class="col text-right">
+                    </div>
+                    <div class="col-12 col-sm"
+                         :class="$q.screen.lt.sm ? 'text-center' : 'text-right'"
+                    >
                         <template
                             v-if="calculateLinkStatus(link) !== 'pending'"
                         >{{$timestampToDate(link.updated_at.last_scraped_at)}}</template>
-                    </q-item-section>
-                </q-item>
+                    </div>
+                </div>
             </q-expansion-item>
         </q-list>
 
