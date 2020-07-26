@@ -47,7 +47,7 @@
                     </div>
                     <div
                         class="col-12 col-sm inline-block"
-                        :class="$q.screen.lt.sm ? 'text-center' : 'text-right'"
+                        :class="$q.screen.gt.sm ? 'text-right':''"
                     >
                         <q-badge
                             :color="calculateProductStatus(product) === 'available' ? 'positive' : 'warning'"

@@ -28,7 +28,7 @@
                         >{{ calculateLinkStatus(link) }}</q-badge>
                     </div>
                     <div class="col-12 col-sm"
-                         :class="$q.screen.lt.sm ? 'text-center' : 'text-right'"
+                         :class="$q.screen.gt.sm ? 'text-right':''"
                     >
                         <template
                             v-if="calculateLinkStatus(link) !== 'pending'"

@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-list>
-            <q-item class="q-mb-sm text-subtitle2 text-primary">
+            <q-item v-if="$q.screen.gt.sm" class="q-mb-sm text-subtitle2 text-primary">
                 <q-item-section class="q-ml-md">Page Url</q-item-section>
                 <q-item-section class="text-center">Overall result</q-item-section>
                 <q-item-section class="text-right q-mr-md"></q-item-section>
@@ -17,14 +17,14 @@
                 class="shadow-3 q-mb-sm"
                 ref="pagesItem"
             >
-                <q-item
+                <div
                     slot="header"
                     class="row full-width justify-between text-subtitle2 items-center"
+                    :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <!--                {{page}}-->
-                    <q-item-section class="col">{{page.url}}</q-item-section>
+                    <div class="col-12 col-sm">{{page.url}}</div>
 
-                    <q-item-section class="col text-center">
+                    <div class="col-12 col-sm text-center">
                         <div v-if="!page.hasOwnProperty('meta')">Page is in pending state</div>
                         <div v-else class="row items-center justify-center">
                             <div
@@ -50,10 +50,10 @@
                                 <span v-else class="q-ml-xs text-warning">Pending</span>
                             </div>
                         </div>
-                    </q-item-section>
+                    </div>
 
                     <q-item-section class="col inline-block text-right text-md"></q-item-section>
-                </q-item>
+                </div>
 
                 <q-card class="bg-blue-grey-1 q-px-md q-py-sm text-bold text-caption">
                     <q-card-section class>
@@ -91,64 +91,60 @@
                         >Default Results</div>
 
                         <q-list>
-                            <q-item
+                            <div
                                 v-for="(key, index) in Object.keys(auditsNaming)"
-                                class="shadow-1 q-my-xs"
+                                class="row full-width q-pa-sm justify-between items-center shadow-1 q-mb-sm"
+                                :class="$q.screen.lt.sm ? 'text-center' : ''"
                                 :key="index"
-                                clickable
                             >
-                                <q-item-section>{{auditsNaming[key]}}</q-item-section>
+                                <div class="col-12 col-sm q-mb-sm">{{auditsNaming[key]}}</div>
 
-                                <q-item-section>
-                                    <div class="row items-center">
-                                        <div
-                                            v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
-                                            class="q-mx-md"
-                                        >
-                                            <q-icon
-                                                :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
-                                                size="20px"
-                                                color="primary"
-                                            />
-                                            <span
-                                                v-if="page.meta.hasOwnProperty(device) && page.meta[device]"
-                                                class="q-mx-xs"
-                                                :class="[`text-${calculateScoreType(page.meta[device].audits[key].score * 100).color}`]"
-                                            >{{calculateScoreType(page.meta[device].audits[key].score * 100).type}}</span>
-                                            <span v-else class="q-ml-xs text-warning">Pending</span>
-                                        </div>
-                                    </div>
-                                </q-item-section>
+                                <div class="col-12 col-sm q-mb-sm">
+                                    <span
+                                        v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
+                                        class="q-mx-md"
+                                    >
+                                        <q-icon
+                                            :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
+                                            size="20px"
+                                            color="primary"
+                                        />
+                                        <span
+                                            v-if="page.meta.hasOwnProperty(device) && page.meta[device]"
+                                            class="q-mx-xs"
+                                            :class="[`text-${calculateScoreType(page.meta[device].audits[key].score * 100).color}`]"
+                                        >{{calculateScoreType(page.meta[device].audits[key].score * 100).type}}</span>
+                                        <span v-else class="q-ml-xs text-warning">Pending</span>
+                                    </span>
+                                </div>
 
-                                <q-item-section side>
-                                    <div class="row items-center">
-                                        <div
-                                            v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
-                                            class="q-mx-md"
+                                <div class="col-12 col-sm">
+                                    <span
+                                        v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
+                                        class="q-mx-md"
+                                    >
+                                        <q-icon
+                                            :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
+                                            size="20px"
+                                            color="primary"
+                                        />
+                                        <q-circular-progress
+                                            v-if="page.meta.hasOwnProperty(device) && page.meta[device]"
+                                            class="q-mx-xs"
+                                            :class="[`text-${calculateScoreType(page.meta[device].audits[key].score * 100).color}`]"
+                                            :value="page.meta[device].audits[key].score * 100"
+                                            size="60px"
+                                            font-size="10px"
+                                            :color="calculateScoreType(page.meta[device].audits[key].score * 100).color"
+                                            track-color="grey-4"
+                                            show-value
                                         >
-                                            <q-icon
-                                                :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
-                                                size="20px"
-                                                color="primary"
-                                            />
-                                            <q-circular-progress
-                                                v-if="page.meta.hasOwnProperty(device) && page.meta[device]"
-                                                class="q-mx-xs"
-                                                :class="[`text-${calculateScoreType(page.meta[device].audits[key].score * 100).color}`]"
-                                                :value="page.meta[device].audits[key].score * 100"
-                                                size="60px"
-                                                font-size="10px"
-                                                :color="calculateScoreType(page.meta[device].audits[key].score * 100).color"
-                                                track-color="grey-4"
-                                                show-value
-                                            >
-                                                {{ page.meta[device].audits[key].displayValue }}
-                                            </q-circular-progress>
-                                            <span v-else class="q-ml-xs text-warning">Pending</span>
-                                        </div>
-                                    </div>
-                                </q-item-section>
-                            </q-item>
+                                            {{ page.meta[device].audits[key].displayValue }}
+                                        </q-circular-progress>
+                                        <span v-else class="q-ml-xs text-warning">Pending</span>
+                                    </span>
+                                </div>
+                            </div>
                         </q-list>
                     </q-card-section>
 
@@ -157,10 +153,10 @@
                             class="text-center text-primary text-subtitle1 text-weight-bold q-mb-md"
                         >Categorized Results</div>
 
-                        <q-item class="shadow-1 q-py-xl" clickable>
+                        <div class="row shadow-1 q-py-xl">
                             <div
                                 v-for="(cr, index) in ['seo', 'pwa', 'performance', 'best-practices', 'accessibility']"
-                                class="col text-center"
+                                class="col-6 col-sm text-center"
                                 :key="index"
                             >
                                 <div
@@ -170,7 +166,7 @@
                                 <div class="row items-center justify-center">
                                     <div
                                         v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
-                                        class="q-mx-sm"
+                                        class="q-mx-sm q-mb-sm"
                                     >
                                         <q-icon
                                             :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
@@ -185,14 +181,14 @@
                                             size="60px"
                                             font-size="10px"
                                             :color="calculateScoreType(page.meta[device].categories[cr].score * 100).color"
-                                            track-color="grey-3"
+                                            track-color="grey-4"
                                             show-value
                                         >{{ (page.meta[device].categories[cr].score * 100).toFixed(2)+'%' }}</q-circular-progress>
                                         <span v-else class="q-ml-xs text-warning">Pending</span>
                                     </div>
                                 </div>
                             </div>
-                        </q-item>
+                        </div>
                     </q-card-section>
 
                     <q-card-section class="text-center">
