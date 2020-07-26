@@ -27,13 +27,15 @@
         </q-card-section>
 
         <q-card-section>
-            <div class="row justify-between items-center q-py-sm">
-                <div class="col text-subtitle2 flex items-center">
+            <div class="row justify-between items-center q-py-sm"
+                 :class="$q.screen.lt.sm ? 'text-center' : ''"
+            >
+                <div class="col-12 col-sm text-subtitle2 items-center q-mb-sm">
                     <q-icon name="link_off" class="q-mr-xs"/>
-                    <div>Broken link checker</div>
+                    <span>Broken link checker</span>
                 </div>
 
-                <div class="col flex items-center justify-center">
+                <div class="col-12 col-sm flex items-center justify-center q-mb-sm">
                     <q-badge
                         v-if="!projectInfo.domain_use_for.hasOwnProperty('broken_links_check_service') || projectInfo.domain_use_for.broken_links_check_service.status !== 'active'"
                         color="warning"
@@ -50,7 +52,9 @@
                     </template>
                 </div>
 
-                <div class="col text-right items-center">
+                <div class="col-12 col-sm items-center"
+                     :class="$q.screen.gt.sm ? 'text-right':''"
+                >
                     <template
                         v-if="projectInfo.domain_use_for.hasOwnProperty('broken_links_check_service') && projectInfo.domain_use_for.broken_links_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
@@ -66,13 +70,15 @@
                 </div>
             </div>
 
-            <div class="row justify-between items-center q-py-sm">
-                <div class="col text-subtitle2 flex items-center">
+            <div class="row justify-between items-center q-py-sm"
+                 :class="$q.screen.lt.sm ? 'text-center' : ''"
+            >
+                <div class="col-12 col-sm text-subtitle2 items-center q-mb-sm">
                     <q-icon name="record_voice_over" class="q-mr-xs"/>
-                    <div>Guest posts checker</div>
+                    <span>Guest posts checker</span>
                 </div>
 
-                <div class="col flex items-center justify-center">
+                <div class="col-12 col-sm flex items-center justify-center q-mb-sm">
                     <q-badge
                         v-if="!projectInfo.domain_use_for.hasOwnProperty('guest_posts_check_service') || projectInfo.domain_use_for.guest_posts_check_service.status !== 'active'"
                         color="warning"
@@ -89,7 +95,9 @@
                     </template>
                 </div>
 
-                <div class="col text-right items-center">
+                <div class="col-12 col-sm items-center"
+                     :class="$q.screen.gt.sm ? 'text-right':''"
+                >
                     <template
                         v-if="projectInfo.domain_use_for.hasOwnProperty('guest_posts_check_service') && projectInfo.domain_use_for.guest_posts_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense/>
@@ -107,13 +115,15 @@
                 </div>
             </div>
 
-            <div class="row justify-between items-center q-py-sm">
-                <div class="col text-subtitle2 flex items-center q-mr-xs">
+            <div class="row justify-between items-center q-py-sm"
+                 :class="$q.screen.lt.sm ? 'text-center' : ''"
+            >
+                <div class="col-12 col-sm text-subtitle2 items-center q-mb-sm">
                     <q-icon name="local_mall" class="q-mr-xs"/>
-                    <div>Amazon product link checker</div>
+                    <span>Amazon product link checker</span>
                 </div>
 
-                <div class="col flex items-center justify-center">
+                <div class="col-12 col-sm flex items-center justify-center q-mb-sm">
                     <q-badge
                         v-if="!projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service') || projectInfo.domain_use_for.amazon_products_check_service.status !== 'active'"
                         color="warning"
@@ -130,7 +140,9 @@
                     </template>
                 </div>
 
-                <div class="col text-right items-center">
+                <div class="col-12 col-sm items-center"
+                     :class="$q.screen.gt.sm ? 'text-right':''"
+                >
                     <template
                         v-if="projectInfo.domain_use_for.hasOwnProperty('amazon_products_check_service') && projectInfo.domain_use_for.amazon_products_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
@@ -147,13 +159,15 @@
                 </div>
             </div>
 
-            <div class="row justify-between items-center q-py-sm">
-                <div class="col text-subtitle2 flex items-center q-mr-xs">
+            <div class="row justify-between items-center q-py-sm"
+                 :class="$q.screen.lt.sm ? 'text-center' : ''"
+            >
+                <div class="col-12 col-sm text-subtitle2 items-center q-mb-sm">
                     <q-icon name="speed" class="q-mr-xs"/>
-                    <div>Page speed checker</div>
+                    <span>Page speed checker</span>
                 </div>
 
-                <div class="col flex items-center justify-center">
+                <div class="col-12 col-sm flex items-center justify-center q-mb-sm">
                     <q-badge
                         v-if="!projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service') || projectInfo.domain_use_for.pages_speed_check_service.status !== 'active'"
                         color="warning"
@@ -170,7 +184,9 @@
                     </template>
                 </div>
 
-                <div class="col text-right items-center">
+                <div class="col-12 col-sm items-center"
+                     :class="$q.screen.gt.sm ? 'text-right':''"
+                >
                     <template
                         v-if="projectInfo.domain_use_for.hasOwnProperty('pages_speed_check_service') && projectInfo.domain_use_for.pages_speed_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
@@ -187,13 +203,15 @@
                 </div>
             </div>
 
-            <div class="row justify-between items-center q-py-sm">
-                <div class="col text-subtitle2 flex items-center q-mr-xs">
+            <div class="row justify-between items-center q-py-sm"
+                 :class="$q.screen.lt.sm ? 'text-center' : ''"
+            >
+                <div class="col-12 col-sm text-subtitle2 items-center q-mb-sm">
                     <q-icon name="network_check" class="q-mr-xs"/>
-                    <div>Uptime monitor checker</div>
+                    <span>Uptime monitor checker</span>
                 </div>
 
-                <div class="col flex items-center justify-center">
+                <div class="col-12 col-sm flex items-center justify-center q-mb-sm">
                     <q-badge
                         v-if="!projectInfo.domain_use_for.hasOwnProperty('domain_uptime_check_service') || projectInfo.domain_use_for.domain_uptime_check_service.status !== 'active'"
                         color="warning"
@@ -210,7 +228,9 @@
                     </template>
                 </div>
 
-                <div class="col text-right items-center">
+                <div class="col-12 col-sm items-center"
+                     :class="$q.screen.gt.sm ? 'text-right':''"
+                >
                     <template
                         v-if="projectInfo.domain_use_for.hasOwnProperty('domain_uptime_check_service') && projectInfo.domain_use_for.domain_uptime_check_service.status === 'active'">
                         <q-btn color="primary" icon="insert_chart_outlined" flat dense></q-btn>
