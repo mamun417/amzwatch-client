@@ -1,7 +1,7 @@
 <template>
     <div>
         <q-list>
-            <q-item class="q-mb-sm text-subtitle2 text-primary">
+            <q-item v-if="$q.screen.gt.sm" class="q-mb-sm text-subtitle2 text-primary">
                 <q-item-section class="q-ml-md">Link</q-item-section>
                 <q-item-section class="text-center">Hosted Link</q-item-section>
                 <q-item-section class="text-right q-mr-md">Status</q-item-section>
@@ -16,18 +16,21 @@
                 expand-icon-class="hidden"
                 class="shadow-1 q-mb-sm"
             >
-                <q-item
+                <div
                     slot="header"
                     class="row full-width justify-between text-subtitle2 items-center"
+                    :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <q-item-section class="col">{{ guestPostInfo.guest_post_url }}</q-item-section>
-                    <q-item-section class="col text-center">{{ guestPostInfo.holding_url }}</q-item-section>
-                    <q-item-section class="col inline-block text-right">
+                    <q-item-section class="col-12 col-sm">{{ guestPostInfo.guest_post_url }}</q-item-section>
+                    <q-item-section class="col-12 col-sm text-center">{{ guestPostInfo.holding_url }}</q-item-section>
+                    <q-item-section class="col-12 col-sm inline-block"
+                        :class="$q.screen.gt.sm ? 'text-right':''"
+                    >
                         <q-badge
                             :color="calculateLinkExist(guestPostInfo) !== 'exist' ? 'warning' : 'positive'"
                         >{{ calculateLinkExist(guestPostInfo) }}</q-badge>
                     </q-item-section>
-                </q-item>
+                </div>
 
                 <q-card v-if="calculateLinkExist(guestPostInfo) !== 'pending'">
                     <q-card-section>
