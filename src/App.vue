@@ -5,11 +5,20 @@
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         name: 'App',
+        computed: {
+            ...mapGetters({
+                isLoggedIn: "auth/isLoggedIn",
+            })
+        },
 
         mounted() {
-            this.getUserInfo();
+            if (this.isLoggedIn){
+                this.getUserInfo();
+            }
         },
 
         methods: {
