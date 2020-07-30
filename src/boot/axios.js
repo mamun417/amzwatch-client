@@ -6,6 +6,9 @@ export default function ({ store, Vue, router }) {
 
     let apiBase = process.env.PROD ? process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT;
 
+    let temToken = ''
+    let isRefreshing = false;
+
     Vue.prototype.$apiBase = apiBase;
 
     // handle before req happen
@@ -31,23 +34,45 @@ export default function ({ store, Vue, router }) {
         },
         err => {
             if (err.response.status === 498 && err.response.data.message === 'Token Expired/Invalid') {
-                axios.get(apiBase + '/refresh')
-                    .then(res => {
-                        let token = res.data.bearerToken;
 
-                        store.dispatch('auth/updateToken', token)
+                if (!isRefreshing) {
+                    isRefreshing = true;
 
-                        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+                    return axios.get(apiBase + '/refresh')
+                        .then(async (res) => {
+                            temToken = res.data.bearerToken;
 
-                        return axios(err.config)
+                            store.dispatch('auth/updateToken', temToken)
+
+                            axios.defaults.headers.common['Authorization'] = 'Bearer ' + temToken
+
+                            isRefreshing = false;
+
+                            return axios(err.config)
+                        })
+                        .catch(err => {
+                            // think what we need to do. i think do logout cz we cant refresh so do manual login
+                            isRefreshing = false;
+                        })
+                } else {
+                    return new Promise((resolve, reject) => {
+                        let intrvl = setInterval(async () => {
+                            if (!isRefreshing) {
+                                clearInterval(intrvl);
+
+                                axios.defaults.headers.common['Authorization'] = 'Bearer ' + temToken
+
+                                resolve(axios(err.config))
+                            }
+                        }, 300);
                     })
-                    .catch(err => {
-                        // think what we need to do. i think do logout cz we cant refresh so do manual login
-                    })
+                }
             }
             else if (err.response.status === 422 && ['Bearer token invalid', 'Refresh token not found'].includes(err.response.data.message)) {
                 store.dispatch('auth/logout').then(() => {
-                    return router.push('/auth/login')
+                    router.push('/auth/login')
+
+                    return Promise.reject(err)
                 })
             }
             else if (err.response.status === 403 && err.response.data.message === 'Forbidden') {
