@@ -403,8 +403,6 @@ export default {
                     this.fullSpeedAuditsNames.push(key)
                 }
             })
-
-            console.log(this.fullSpeedAuditsNames.length)
         },
 
         pageSpeedListPaginationHandle(page) {
