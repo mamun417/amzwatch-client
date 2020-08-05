@@ -3,7 +3,7 @@
         :value="show"
         @input="$emit('update:show', $event)"
     >
-        <q-card style="min-width: 400px">
+        <q-card class="q-dialog-plugin">
             <q-card-section class="bg-primary text-white">
                 <div class="text-h6">{{updateData.status === 'inactive' ? 'Deactivate' : 'Activate'}} this service?
                 </div>
