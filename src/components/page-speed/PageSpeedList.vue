@@ -46,7 +46,9 @@
                                     :color="calculateScoreType(calculateOverallScore(page.meta[device].categories)).color"
                                     track-color="grey-3"
                                     show-value
-                                />
+                                >
+                                    {{ calculateOverallScore(page.meta[device].categories).toFixed(2)+'%' }}
+                                </q-circular-progress>
                                 <span v-else class="q-ml-xs text-warning">Pending</span>
                             </div>
                         </div>
@@ -199,11 +201,18 @@
                             class="q-mr-md"
                             flat
                             no-caps
+                            @click="showPageSpeedFullResult(page)"
                         />
                     </q-card-section>
                 </q-card>
             </q-expansion-item>
         </q-list>
+
+        <full-page-speed-result
+            :active.sync="activeFullResultModal"
+            :full-speed-result-page="fullSpeedResultPage"
+            :full-speed-audits-names="fullSpeedAuditsNames"
+        />
 
         <q-card-section v-if="!pagesSpeedInfo.length" class="text-center q-py-xl">
             <div class="q-mb-lg text-subtitle2">No page found</div>
@@ -224,9 +233,10 @@
 <script>
 import { mapGetters } from "vuex";
 import Pagination from "components/pagination/Pagination";
+import FullPageSpeedResult from "components/modals/FullPageSpeedResult";
 
 export default {
-    components: { Pagination },
+    components: {FullPageSpeedResult, Pagination },
     name: "PageSpeedList",
     props: {},
 
@@ -236,7 +246,10 @@ export default {
             auditsNaming: {
                 "first-contentful-paint": "First Contentful Paint",
                 "max-potential-fid": "First input Delay"
-            }
+            },
+            activeFullResultModal: false,
+            fullSpeedResultPage: {},
+            fullSpeedAuditsNames: [],
         };
     },
 
@@ -312,6 +325,25 @@ export default {
                 type: "Good",
                 color: "positive"
             };
+        },
+
+        showPageSpeedFullResult(page) {
+            this.activeFullResultModal = true
+
+            this.fullSpeedResultPage = page
+
+            let audits = page.meta['lhr_desktop_result']['audits']
+
+            this.fullSpeedAuditsNames = []
+
+            Object.keys(audits).forEach(key => {
+
+                let auditsInfo = page.meta.lhr_desktop_result.audits[key]
+
+                if (auditsInfo.hasOwnProperty('displayValue') && auditsInfo.scoreDisplayMode === 'numeric') {
+                    this.fullSpeedAuditsNames.push(key)
+                }
+            })
         },
 
         pageSpeedListPaginationHandle(page) {

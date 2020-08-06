@@ -4,7 +4,7 @@
         @input="$emit('update:show', $event)"
         @hide="modalCloseHandle"
     >
-        <q-card style="min-width: 400px">
+        <q-card class="q-dialog-plugin">
             <q-card-section class="bg-primary text-white">
                 <div v-if="updateModal" class="text-h6">Edit {{addEditProjectData.project_name}} Project</div>
                 <div v-else class="text-h6">Add New Project</div>

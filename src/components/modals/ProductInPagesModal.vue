@@ -1,6 +1,6 @@
 <template>
     <q-dialog :value="active" @hide="$emit('update:active', false)">
-        <q-card style="min-width: 400px">
+        <q-card class="q-dialog-plugin">
             <q-card-section class="bg-primary text-white">
                 <div class="text-h6">Product in pages</div>
             </q-card-section>

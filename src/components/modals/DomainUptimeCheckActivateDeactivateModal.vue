@@ -1,6 +1,6 @@
 <template>
     <q-dialog :value="show" @input="$emit('update:show', $event)">
-        <q-card style="min-width: 400px">
+        <q-card class="q-dialog-plugin">
             <q-card-section class="bg-primary text-white">
                 <div class="text-h6">Update Uptime Monitor Service</div>
             </q-card-section>

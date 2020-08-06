@@ -87,7 +87,7 @@
         </q-card>
 
         <q-dialog v-model="passwordChangeModal" @hide="hidePasswordChangeForm">
-            <q-card style="overflow: unset; min-width: 400px">
+            <q-card class="q-dialog-plugin" style="overflow: unset">
                 <q-card-section class="bg-primary text-weight-bold text-white text-subtitle1">
                     {{currentPasswordCheckSection ? 'Check current password' : 'Update new password'}}
                 </q-card-section>
