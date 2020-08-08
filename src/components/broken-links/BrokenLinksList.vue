@@ -21,7 +21,7 @@
                     class="row full-width justify-between text-subtitle2 items-center"
                     :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <div class="col-12 col-sm">{{ link.url }}</div>
+                    <div class="col-12 col-sm link" @click.stop="gotoNewTab(link.url)">{{ link.url }}</div>
                     <div class="col-12 col-sm text-center">
                         <q-badge
                             :color="calculateLinkStatus(link) !== 'available' ? 'warning' : 'positive'"

@@ -38,4 +38,8 @@ export default function ({ store, app, Vue }) {
 
         return storeState
     }
+
+    Vue.prototype.gotoNewTab = function (link) {
+        window.open(link, '_blank');
+    }
 }

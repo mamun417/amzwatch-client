@@ -40,10 +40,14 @@
                     </div>
                     <div
                         class="col-12 col-sm"
-                        v-if="calculateProductStatus(product) !== 'pending' &&
-                        (calculateProductStatus(product) !== 'other' && product.product.meta.hasOwnProperty('metas'))"
                     >
-                        {{product.product.meta.metas.product_name}}
+                        <div  v-if="calculateProductStatus(product) !== 'pending' &&
+                        (calculateProductStatus(product) !== 'other' && product.product.meta.hasOwnProperty('metas'))">
+                            {{product.product.meta.metas.product_name}}
+                        </div>
+                        <div class="q-mt-sm">
+                            Link : <span class="text-caption link" @click.stop="gotoNewTab(product.product.url)">{{product.product.url}}</span>
+                        </div>
                     </div>
                     <div
                         class="col-12 col-sm inline-block"
@@ -310,6 +314,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-</style>
