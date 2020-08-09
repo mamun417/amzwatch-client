@@ -95,7 +95,11 @@
                                 :key="index"
                                 clickable
                             >
-                                <q-item-section style="overflow-wrap: anywhere">{{link.page.url}}</q-item-section>
+                                <q-item-section style="overflow-wrap: anywhere">
+                                    <div class="link" @click.stop="gotoNewTab(link.page.url)">
+                                        {{link.page.url}}
+                                    </div>
+                                </q-item-section>
                                 <q-item-section
                                     side
                                     no-wrap
