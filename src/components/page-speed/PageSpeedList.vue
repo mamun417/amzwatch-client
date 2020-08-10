@@ -30,6 +30,7 @@
                             <div
                                 v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
                                 class="q-mx-md"
+                                :key="index"
                             >
                                 <q-icon
                                     :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
@@ -46,9 +47,7 @@
                                     :color="calculateScoreType(calculateOverallScore(page.meta[device].categories)).color"
                                     track-color="grey-3"
                                     show-value
-                                >
-                                    {{ calculateOverallScore(page.meta[device].categories).toFixed(2)+'%' }}
-                                </q-circular-progress>
+                                >{{ calculateOverallScore(page.meta[device].categories).toFixed(2)+'%' }}</q-circular-progress>
                                 <span v-else class="q-ml-xs text-warning">Pending</span>
                             </div>
                         </div>
@@ -105,6 +104,7 @@
                                     <span
                                         v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
                                         class="q-mx-md"
+                                        :key="index"
                                     >
                                         <q-icon
                                             :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
@@ -124,6 +124,7 @@
                                     <span
                                         v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
                                         class="q-mx-md"
+                                        :key="index"
                                     >
                                         <q-icon
                                             :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
@@ -140,9 +141,7 @@
                                             :color="calculateScoreType(page.meta[device].audits[key].score * 100).color"
                                             track-color="grey-4"
                                             show-value
-                                        >
-                                            {{ page.meta[device].audits[key].displayValue }}
-                                        </q-circular-progress>
+                                        >{{ page.meta[device].audits[key].displayValue }}</q-circular-progress>
                                         <span v-else class="q-ml-xs text-warning">Pending</span>
                                     </span>
                                 </div>
@@ -169,6 +168,7 @@
                                     <div
                                         v-for="(device, index) in ['lhr_desktop_result', 'lhr_mobile_result']"
                                         class="q-mx-sm q-mb-sm"
+                                        :key="index"
                                     >
                                         <q-icon
                                             :name="device === 'lhr_desktop_result' ? 'desktop_mac' : 'phone_android'"
@@ -236,7 +236,7 @@ import Pagination from "components/pagination/Pagination";
 import FullPageSpeedResult from "components/modals/FullPageSpeedResult";
 
 export default {
-    components: {FullPageSpeedResult, Pagination },
+    components: { FullPageSpeedResult, Pagination },
     name: "PageSpeedList",
     props: {},
 
@@ -245,7 +245,7 @@ export default {
             pagesSpeedInfo: [],
             auditsNaming: {
                 "first-contentful-paint": "First Contentful Paint",
-                "max-potential-fid": "First input Delay"
+                "max-potential-fid": "First input Delay",
             },
             activeFullResultModal: false,
             fullSpeedResultPage: {},
@@ -268,8 +268,8 @@ export default {
     computed: {
         ...mapGetters({
             pageSpeedListPaginationMeta: "pages_speed/paginationMeta",
-            singleLoader: "ui/singleLoaderStatus"
-        })
+            singleLoader: "ui/singleLoaderStatus",
+        }),
     },
 
     methods: {
@@ -279,9 +279,9 @@ export default {
             this.$store
                 .dispatch("pages_speed/getPagesSpeed", {
                     vm: this,
-                    project_id: this.$route.params.project_id
+                    project_id: this.$route.params.project_id,
                 })
-                .then(res => {
+                .then((res) => {
                     this.pagesSpeedInfo = res.data.pageSpeedResults.data;
 
                     this.$emit(
@@ -291,7 +291,7 @@ export default {
 
                     this.$singleLoaderFalse("pageSpeedListLoader");
                 })
-                .catch(err => {
+                .catch((err) => {
                     //handle error
                 });
         },
@@ -299,7 +299,7 @@ export default {
         calculateOverallScore(obj) {
             let score = 0;
 
-            Object.keys(obj).forEach(key => {
+            Object.keys(obj).forEach((key) => {
                 if (obj[key].hasOwnProperty("score")) {
                     score += obj[key].score;
                 }
@@ -312,52 +312,54 @@ export default {
             if (!score || score < 45) {
                 return {
                     type: "Poor",
-                    color: "negative"
+                    color: "negative",
                 };
             } else if (score < 75) {
                 return {
                     type: "Average",
-                    color: "warning"
+                    color: "warning",
                 };
             }
 
             return {
                 type: "Good",
-                color: "positive"
+                color: "positive",
             };
         },
 
         showPageSpeedFullResult(page) {
-            this.activeFullResultModal = true
+            this.activeFullResultModal = true;
 
-            this.fullSpeedResultPage = page
+            this.fullSpeedResultPage = page;
 
-            let audits = page.meta['lhr_desktop_result']['audits']
+            let audits = page.meta["lhr_desktop_result"]["audits"];
 
-            this.fullSpeedAuditsNames = []
+            this.fullSpeedAuditsNames = [];
 
-            Object.keys(audits).forEach(key => {
+            Object.keys(audits).forEach((key) => {
+                let auditsInfo = page.meta.lhr_desktop_result.audits[key];
 
-                let auditsInfo = page.meta.lhr_desktop_result.audits[key]
-
-                if (auditsInfo.hasOwnProperty('displayValue') && auditsInfo.scoreDisplayMode === 'numeric') {
-                    this.fullSpeedAuditsNames.push(key)
+                if (
+                    auditsInfo.hasOwnProperty("displayValue") &&
+                    auditsInfo.scoreDisplayMode === "numeric"
+                ) {
+                    this.fullSpeedAuditsNames.push(key);
                 }
-            })
+            });
         },
 
         pageSpeedListPaginationHandle(page) {
-            this.$refs.pagesItem.forEach(item => {
-                item.hide()
-            })
+            this.$refs.pagesItem.forEach((item) => {
+                item.hide();
+            });
 
             this.$store
                 .dispatch("pages_speed/updatePageSpeedListCurrentPage", page)
                 .then(() => {
                     this.getPagesSpeedInfo();
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 

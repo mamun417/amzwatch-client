@@ -7,7 +7,11 @@
             icon="notifications"
             rounded
         >
-             <q-badge v-if="getUnseenNotifications > 0" color="red" floating>{{ getUnseenNotifications }}</q-badge>
+            <q-badge
+                v-if="getUnseenNotifications > 0"
+                color="red"
+                floating
+            >{{ getUnseenNotifications }}</q-badge>
         </q-avatar>
 
         <q-menu @show="updateNotification">
@@ -21,13 +25,20 @@
 
                     <div v-if="notifications.length">
                         <div v-for="(item, index) in notifications" :key="index">
-                            <q-item class="flex items-center" :class="[item.seen ? '' : 'bg-blue-grey-1']" clickable v-ripple>
+                            <q-item
+                                class="flex items-center"
+                                :class="[item.seen ? '' : 'bg-blue-grey-1']"
+                                clickable
+                                v-ripple
+                            >
                                 <q-item-section avatar>
                                     <q-icon size="20px" :name="calcServiceIcon(item.service_type)" />
                                 </q-item-section>
 
                                 <q-item-section>
-                                    <q-item-label lines="1">{{calcNotificationTitle(item.service_type)}}</q-item-label>
+                                    <q-item-label
+                                        lines="1"
+                                    >{{calcNotificationTitle(item.service_type)}}</q-item-label>
                                     <q-item-label
                                         caption
                                         lines="2"
@@ -41,7 +52,6 @@
                     </div>
 
                     <div v-else class="text-center q-py-md text-weight-bold">No notification found</div>
-
                 </q-list>
                 <template v-slot:loading>
                     <div class="row justify-center q-my-md">
@@ -62,7 +72,7 @@ export default {
     data() {
         return {
             notifications: [],
-            disableInfiniteScroll: true
+            disableInfiniteScroll: true,
         };
     },
 
@@ -72,15 +82,15 @@ export default {
 
     computed: {
         getUnseenNotifications() {
-            return this.notifications.filter(notification => {
-                return !notification.seen
-            }).length
+            return this.notifications.filter((notification) => {
+                return !notification.seen;
+            }).length;
         },
 
         ...mapGetters({
             notificationsPaginationMeta: "notifications/paginationMeta",
-            singleLoader: "ui/singleLoaderStatus"
-        })
+            singleLoader: "ui/singleLoaderStatus",
+        }),
     },
 
     methods: {
@@ -93,14 +103,14 @@ export default {
         },
         calcNotificationTitle(type) {
             if (type === "uptime") {
-                return "Domain is down";
+                return "Domain was down";
             }
 
             return "";
         },
         calcNotificationCaption(type, log) {
             if (type === "uptime") {
-                return `Project ${log.user_domain.project_name}'s domain is down`;
+                return `Project ${log.user_domain.project_name}'s domain was down`;
             }
 
             return "";
@@ -112,41 +122,43 @@ export default {
             this.$singleLoaderTrue("notificationsLoader");
             this.$store
                 .dispatch("notifications/getNotifications", {
-                    vm: this
+                    vm: this,
                 })
-                .then(res => {
+                .then((res) => {
                     this.notifications = res.data.notifications.data;
 
                     this.$singleLoaderFalse("notificationsLoader");
                 })
-                .catch(err => {
+                .catch((err) => {
                     //handle error
                 });
         },
 
         updateNotification() {
-            let unseenNotifications = this.notifications.filter(notification => {
-                return !notification.seen
-            })
+            let unseenNotifications = this.notifications.filter(
+                (notification) => {
+                    return !notification.seen;
+                }
+            );
 
-            let ids = unseenNotifications.map(notification => {
-                return notification.id
-            })
+            let ids = unseenNotifications.map((notification) => {
+                return notification.id;
+            });
 
-            if (ids.length > 0){
+            if (ids.length > 0) {
                 this.$store
                     .dispatch("notifications/updateNotifications", {
                         vm: this,
-                        ids: ids
+                        ids: ids,
                     })
-                    .then(res => {
-                        this.getNotifications()
+                    .then((res) => {
+                        this.getNotifications();
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         //handle error
                     });
             }
-        }
-    }
+        },
+    },
 };
 </script>
