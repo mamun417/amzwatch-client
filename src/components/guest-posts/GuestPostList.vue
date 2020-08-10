@@ -21,8 +21,16 @@
                     class="row full-width justify-between text-subtitle2 items-center"
                     :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <q-item-section class="col-12 col-sm">{{ guestPostInfo.guest_post_url }}</q-item-section>
-                    <q-item-section class="col-12 col-sm text-center">{{ guestPostInfo.holding_url }}</q-item-section>
+                    <div class="col-12 col-sm">
+                        <div class="link" @click.stop="gotoNewTab(guestPostInfo.guest_post_url)">
+                            {{ guestPostInfo.guest_post_url }}
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm text-center">
+                        <div class="link" @click.stop="gotoNewTab(guestPostInfo.holding_url)">
+                            {{ guestPostInfo.holding_url }}
+                        </div>
+                    </div>
                     <q-item-section class="col-12 col-sm inline-block"
                         :class="$q.screen.gt.sm ? 'text-right':''"
                     >

@@ -10,7 +10,9 @@
                 :key="index"
                 clickable
             >
-                <q-item-section style="overflow-wrap: anywhere">{{ parsedProduct.product.url }}</q-item-section>
+                <q-item-section style="overflow-wrap: anywhere" class="link"  @click.stop="gotoNewTab(parsedProduct.product.url)">
+                    {{ parsedProduct.product.url }}
+                </q-item-section>
                 <q-item-section
                     side
                     no-wrap

@@ -10,7 +10,7 @@
                 :key="index"
                 clickable
             >
-                <q-item-section style="overflow-wrap: anywhere">{{ scrapedProduct.product.url }}</q-item-section>
+                <q-item-section style="overflow-wrap: anywhere" class="link"  @click.stop="gotoNewTab(scrapedProduct.product.url)">{{ scrapedProduct.product.url }}</q-item-section>
                 <q-item-section
                     side
                     no-wrap

@@ -10,7 +10,7 @@
                 :key="index"
                 clickable
             >
-                <q-item-section style="overflow-wrap: anywhere">{{ page.url }}</q-item-section>
+                <q-item-section style="overflow-wrap: anywhere" class="link"  @click.stop="gotoNewTab(page.url)">{{ page.url }}</q-item-section>
                 <q-item-section side no-wrap>{{ $fromNowTime(page.updated_at.last_scraped_at) }}</q-item-section>
             </q-item>
         </q-list>

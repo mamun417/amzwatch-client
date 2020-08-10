@@ -22,7 +22,11 @@
                     class="row full-width justify-between text-subtitle2 items-center"
                     :class="$q.screen.lt.sm ? 'text-center' : ''"
                 >
-                    <div class="col-12 col-sm">{{page.url}}</div>
+                    <div class="col-12 col-sm">
+                        <div class="link" style="display: inline" @click.stop="gotoNewTab(page.url)">
+                            {{page.url}}
+                        </div>
+                    </div>
 
                     <div class="col-12 col-sm text-center">
                         <div v-if="!page.hasOwnProperty('meta')">Page is in pending state</div>
